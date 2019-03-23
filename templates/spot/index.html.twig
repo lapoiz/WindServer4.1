@@ -1,0 +1,32 @@
+{% extends 'base.html.twig' %}
+
+{% block title 'Mon Spot' %}
+
+{% block body %}
+    <div class="jumbotron text-center">
+        <h1>Spot</h1>
+        <p>Les spots actuellement dispo</p>
+    </div>
+
+    <div class="container">
+        <h2>La liste</h2>
+        <div class="rox flex">
+            {% for spot in spots %}
+                <div class="col-3">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">
+                               <a href="#">{{ spot.name }}</a>
+                            </h5>
+                            <p class="card-text">
+                                {{ spot.description }}
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+
+            {%  endfor %}
+        </div>
+    </div>
+{% endblock %}
