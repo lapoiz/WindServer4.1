@@ -16,7 +16,7 @@
                                 <a href="{{ path('spot.show', {id: spot.id, slug: spot.slug}) }}">{{ spot.name }}</a>
                             </h5>
                             <p class="card-text">
-                                {{ spot.description }}
+                                {{ spot.description|raw }}
                             </p>
                         </div>
                     </div>

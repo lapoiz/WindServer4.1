@@ -1,0 +1,10 @@
+{% extends 'admin/base_admin.html.twig' %}
+
+{% block title 'Gérer les spots' %}
+
+{% block body %}
+    <div class="container mt-4">
+        <h1>Edit</h1>
+       {{  include('admin/spot/_form.html.twig', {form: form, button: 'Editer'}) }}
+    </div>
+{% endblock %}

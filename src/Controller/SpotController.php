@@ -34,7 +34,7 @@ class SpotController extends AbstractController
     {
         $spots = $this->repositery->findAll();
 
-        return $this->render("spot/index.html.twig.", [
+        return $this->render("spot/index.html.twig", [
             'current_menu' => 'spots',
             'spots' => $spots
         ]);

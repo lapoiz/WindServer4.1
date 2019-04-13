@@ -1,0 +1,47 @@
+{% extends 'admin/base_admin.html.twig' %}
+
+{% block title 'Gérer les spots' %}
+
+{% block body %}
+    <div class="container mt-4">
+        <h1>La liste</h1>
+
+        {% for message in app.flashes('success') %}
+            <div class="alert alert-success">{{ message }}</div>
+        {% endfor %}
+
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <td>Spot</td>
+                    <td>Action</td>
+                </tr>
+            </thead>
+            <tbody>
+                {% for spot in spots %}
+                    <tr>
+                        <td>
+                            {{ spot.name }}
+                        </td>
+                        <td>
+                            <a class="btn btn-secondary"
+                               href="{{ path('admin.spot.edit', {id: spot.id}) }}">
+                                Editer</a>
+                            <form method="post" action="{{ path('admin.spot.delete', {id: spot.id}) }}"
+                                  style="display: inline-block"
+                            onsubmit="return confirm('Etes-vous vraiment sur ?')">
+                                <input type="hidden" name="_method" value="DELETE">
+                                <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ spot.id) }}">
+                                <button class="btn btn-danger">Supprimer</button>
+                            </form>
+                        </td>
+                    </tr>
+
+                {%  endfor %}
+            </tbody>
+        </table>
+        <div class="text-right">
+            <a class="btn btn-primary" href="{{ path('admin.spot.new') }}">Créer un Spot</a>
+        </div>
+    </div>
+{% endblock %}

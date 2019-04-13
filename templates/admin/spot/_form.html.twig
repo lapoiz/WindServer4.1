@@ -1,0 +1,26 @@
+{{ form_start(form) }}
+<div class="row">
+    <div class="col-mid-4">{{ form_row(form.name) }}</div>
+    <div class="col-mid-4">Autre ...</div>
+</div>
+<div class="row">
+    <div class="col-mid-12">{{ form_row(form.description) }}</div>
+</div>
+<div class="row">
+    <div class="col-mid-12">{{ form_row(form.desc_maree) }}</div>
+</div>
+
+<div class="row">
+    <div class="col-mid-4">{{ form_row(form.desc_route) }}</div>
+    <div class="col-mid-2">{{ form_row(form.time_from_paris) }}</div>
+    <div class="col-mid-2">{{ form_row(form.km_from_paris) }}</div>
+    <div class="col-mid-2">{{ form_row(form.km_autoroute_from_paris) }}</div>
+    <div class="col-mid-2">{{ form_row(form.price_autoroute_from_paris) }}</div>
+</div>
+
+<div class="row">
+    <div class="col-mid-3">{{ form_row(form.gps_lat) }}</div>
+    <div class="col-mid-3">{{ form_row(form.gps_long) }}</div>
+</div>
+<button class="btn btn-primary">{{ button|default('Enregistrer') }}</button>
+{{ form_end(form) }}
