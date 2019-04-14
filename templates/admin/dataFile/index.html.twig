@@ -1,0 +1,29 @@
+{% extends 'admin/base_admin.html.twig' %}
+
+{% block title 'Importer données' %}
+
+{% block body %}
+
+    {% for message in app.flashes('success') %}
+        <div class="alert alert-success">{{ message }}</div>
+    {% endfor %}
+    {% for message in app.flashes('danger') %}
+        <div class="alert alert-danger">{{ message }}</div>
+    {% endfor %}
+
+    <div class="container mt-4">
+        <h1>Importer les données</h1>
+
+
+        {{  include('admin/dataFile/_form.html.twig', {form: form}) }}
+
+    </div>
+
+    <div class="container mt-4">
+        <h1>Exporter les données</h1>
+
+        <a class="btn btn-primary" href="{{ path('admin_generate_data_file') }}">Générer le fichier</a><br>
+        <a href="{{ path('admin_download_data_file') }}">FIchier de données</a>
+
+    </div>
+{% endblock %}
