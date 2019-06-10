@@ -7,6 +7,7 @@ parameters:
     locale: 'fr'
     init_data_directory: '%kernel.project_dir%/public/uploads/dataFile'
     download_data_directory: '%kernel.project_dir%/public/download/dataFile'
+    svg_directory: '%kernel.project_dir%/public/download/svgFile'
 
 services:
     # default configuration for services in *this* file

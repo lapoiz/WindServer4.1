@@ -10,6 +10,8 @@ class SpotFixtures extends Fixture
 {
     public function load(ObjectManager $manager)
     {
+        /* Plus besoin avec import
+
         $spot = new Spot();
         $spot->setName("Merville-Franceville-Plage");
         $spot->setGpsLat(49.2828000);
@@ -22,5 +24,6 @@ class SpotFixtures extends Fixture
         $manager->persist($spot);
 
         $manager->flush();
+        */
     }
 }

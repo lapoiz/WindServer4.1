@@ -1,0 +1,158 @@
+{% macro svg(heigth,width) %}
+    <svg id="rosaceWindSVG"
+         xmlns:xlink="http://www.w3.org/1999/xlink"
+         xmlns="http://www.w3.org/2000/svg"
+         viewBox="0 0 340 340"
+    {% if heigth %}
+         height="{{ heigth }}"
+    {% endif %}
+    {% if width %}
+         width="{{ width }}"
+    {% endif %}
+            >
+
+        <defs>
+            <symbol id="principal">
+                <path d="M 20 10 L 40 0 20 110 35 100 20 130 z" />
+                <path d="M 20 10 L  0 0 20 110 05 100 20 130 z"
+                      fill="black" />
+            </symbol>
+
+            <symbol id="secondaire">
+                <path d="M 20 20 L 30 10 20 110 25 100 20 130 z" />
+                <path d="M 20 20 L 10 10 20 110 15 100 20 130 z"
+                      fill="black" />
+            </symbol>
+
+            <symbol id="tertiaire">
+                <path d="M 20 40 L 30 30 20 110 z" />
+                <path d="M 20 40 L 10 30 20 110 z"
+                      fill="black" />
+            </symbol>
+
+        </defs>
+
+        <text id="nordTxt" x="163" y="20" class="rosace-Lettre-principal">N</text>
+        <text id="estTxt" x="320" y="177" class="rosace-Lettre-principal">E</text>
+        <text id="sudTxt" x="163" y="332" class="rosace-Lettre-principal">S</text>
+        <text id="westTxt" x="0" y="177" class="rosace-Lettre-principal">W</text>
+
+        <text id="nord-estTxt" x="265" y="75" class="rosace-Lettre-secondaire">NE</text>
+        <text id="sud-estTxt" x="265" y="276" class="rosace-Lettre-secondaire">SE</text>
+        <text id="sud-westTxt" x="51" y="276" class="rosace-Lettre-secondaire">SW</text>
+        <text id="nord-westTxt" x="50" y="75" class="rosace-Lettre-secondaire">NW</text>
+
+
+        <text id="nord-nord-estTxt" x="210" y="60" class="rosace-Lettre-tertiaire">NNE</text>
+        <text id="est-nord-estTxt" x="275" y="123" class="rosace-Lettre-tertiaire">ENE</text>
+        <text id="est-sud-estTxt" x="282" y="222" class="rosace-Lettre-tertiaire">ESE</text>
+        <text id="sud-sud-estTxt" x="204" y="290" class="rosace-Lettre-tertiaire">SSE</text>
+        <text id="sud-sud-westTxt" x="106" y="290" class="rosace-Lettre-tertiaire">SSW</text>
+        <text id="west-sud-westTxt" x="36" y="222" class="rosace-Lettre-tertiaire">WSW</text>
+        <text id="west-nord-westTxt" x="32" y="126" class="rosace-Lettre-tertiaire">WNW</text>
+        <text id="nord-nord-westTxt" x="105" y="60" class="rosace-Lettre-tertiaire">NNW</text>
+
+        <circle cx="170" cy="170" r="40" style="stroke:black; stroke-width: 1px;fill:white;" />
+
+        <use id="nord-nord-est" xlink:href="#tertiaire" x="150" y="20" fill="Gainsboro" />
+        <use id="est-nord-est" xlink:href="#tertiaire" x="150" y="20" fill="Gainsboro" />
+        <use id="est-sud-est" xlink:href="#tertiaire" x="150" y="20" fill="Gainsboro" />
+        <use id="sud-sud-est" xlink:href="#tertiaire" x="150" y="20" fill="Gainsboro" />
+        <use id="sud-sud-west" xlink:href="#tertiaire" x="150" y="20" fill="Gainsboro" />
+        <use id="west-sud-west" xlink:href="#tertiaire" x="150" y="20" fill="Gainsboro" />
+        <use id="west-nord-west" xlink:href="#tertiaire" x="150" y="20" fill="Gainsboro" />
+        <use id="nord-nord-west" xlink:href="#tertiaire" x="150" y="20" fill="Gainsboro" />
+
+
+        <use id="nord-est" xlink:href="#secondaire" x="150" y="20" fill="DimGray" />
+        <use id="sud-est" xlink:href="#secondaire" x="150" y="20" fill="DimGray" />
+        <use id="sud-west" xlink:href="#secondaire" x="150" y="20" fill="DimGray" />
+        <use id="nord-west" xlink:href="#secondaire" x="150" y="20" fill="DimGray" />
+
+        <use id="nord" xlink:href="#principal" x="150" y="20" fill="white" />
+        <use id="sud" xlink:href="#principal" x="150" y="20" fill="white" />
+        <use id="est" xlink:href="#principal" x="150" y="20" fill="white" />
+        <use id="west" xlink:href="#principal" x="150" y="20" fill="white" />
+
+
+
+        <animateTransform attributeName="transform" attributeType="XML" type="rotate" dur="1s" begin="0s" repeatCount="1" fill="freeze"
+                          xlink:href="#est"
+                          from="0 150 170"
+                          to="90 170  170"
+                />
+        <animateTransform attributeName="transform" attributeType="XML" type="rotate" dur="1s" begin="0s" repeatCount="1" fill="freeze"
+                          xlink:href="#sud"
+                          from="0 150 170"
+                          to="180 170 170"
+                />
+        <animateTransform attributeName="transform" attributeType="XML" type="rotate" dur="1s" begin="0s" repeatCount="1" fill="freeze"
+                          xlink:href="#west"
+                          from="0 150 170"
+                          to="270 170  170"
+                />
+
+        <animateTransform attributeName="transform" attributeType="XML" type="rotate" dur="1s" begin="0s" repeatCount="1" fill="freeze"
+                          xlink:href="#nord-est"
+                          from="0 150 170"
+                          to="45 170  170"
+                />
+        <animateTransform attributeName="transform" attributeType="XML" type="rotate" dur="1s" begin="0s" repeatCount="1" fill="freeze"
+                          xlink:href="#sud-est"
+                          from="0 150 170"
+                          to="135 170 170"
+                />
+        <animateTransform attributeName="transform" attributeType="XML" type="rotate" dur="1s" begin="0s" repeatCount="1" fill="freeze"
+                          xlink:href="#sud-west"
+                          from="0 150 170"
+                          to="225 170 170"
+                />
+        <animateTransform attributeName="transform" attributeType="XML" type="rotate" dur="1s" begin="0s" repeatCount="1" fill="freeze"
+                          xlink:href="#nord-west"
+                          from="0 150 170"
+                          to="315 170 170"
+                />
+
+
+        <animateTransform attributeName="transform" attributeType="XML" type="rotate" dur="1s" begin="0s" repeatCount="1" fill="freeze"
+                          xlink:href="#nord-nord-est"
+                          from="0 150 170"
+                          to="22.5 170 170"
+                />
+        <animateTransform attributeName="transform" attributeType="XML" type="rotate" dur="1s" begin="0s" repeatCount="1" fill="freeze"
+                          xlink:href="#est-nord-est"
+                          from="0 150 170"
+                          to="65.5 170 170"
+                />
+        <animateTransform attributeName="transform" attributeType="XML" type="rotate" dur="1s" begin="0s" repeatCount="1" fill="freeze"
+                          xlink:href="#est-sud-est"
+                          from="0 150 170"
+                          to="112.5 170 170"
+                />
+        <animateTransform attributeName="transform" attributeType="XML" type="rotate" dur="1s" begin="0s" repeatCount="1" fill="freeze"
+                          xlink:href="#sud-sud-est"
+                          from="0 150 170"
+                          to="160.5 170 170"
+                />
+        <animateTransform attributeName="transform" attributeType="XML" type="rotate" dur="1s" begin="0s" repeatCount="1" fill="freeze"
+                          xlink:href="#sud-sud-west"
+                          from="0 150 170"
+                          to="202.5 170 170"
+                />
+        <animateTransform attributeName="transform" attributeType="XML" type="rotate" dur="1s" begin="0s" repeatCount="1" fill="freeze"
+                          xlink:href="#west-sud-west"
+                          from="0 150 170"
+                          to="247.5 170 170"
+                />
+        <animateTransform attributeName="transform" attributeType="XML" type="rotate" dur="1s" begin="0s" repeatCount="1" fill="freeze"
+                          xlink:href="#west-nord-west"
+                          from="0 150 170"
+                          to="292.5 170 170"
+                />
+        <animateTransform attributeName="transform" attributeType="XML" type="rotate" dur="1s" begin="0s" repeatCount="1" fill="freeze"
+                          xlink:href="#nord-nord-west"
+                          from="0 150 170"
+                          to="337.5 170 170"
+                />
+    </svg>
+{% endmacro %}

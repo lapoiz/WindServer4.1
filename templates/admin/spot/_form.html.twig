@@ -22,5 +22,13 @@
     <div class="col-mid-3">{{ form_row(form.gps_lat) }}</div>
     <div class="col-mid-3">{{ form_row(form.gps_long) }}</div>
 </div>
+
+<div class="row">
+    <div class="col-mid-12">
+        {% from "windRosace/rosaceWind.html.twig" import displayRosace %}
+        {{ displayRosace() }}
+    </div>
+</div>
+
 <button class="btn btn-primary">{{ button|default('Enregistrer') }}</button>
 {{ form_end(form) }}

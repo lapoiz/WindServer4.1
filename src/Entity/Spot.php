@@ -2,6 +2,8 @@
 
 namespace App\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Cocur\Slugify\Slugify;
 
@@ -68,12 +70,12 @@ class Spot
     private $gps_long;
 
     /**
-     * @ORM\Column(type="string", length=255, nullable=true)
+     * @ORM\Column(type="text", nullable=true)
      */
     private $desc_orientation_vent;
 
     /**
-     * @ORM\Column(type="string", length=255, nullable=true)
+     * @ORM\Column(type="string", length=512, nullable=true)
      */
     private $urlWindFinder;
 
@@ -108,19 +110,9 @@ class Spot
     private $URLTempWater;
 
     /**
-     * @ORM\Column(type="string", length=255, nullable=true)
+     * @ORM\OneToMany(targetEntity="MareeRestriction", mappedBy="spot", cascade={"remove", "persist"} , orphanRemoval=true)
      */
-    private $maree_OK;
-
-    /**
-     * @ORM\Column(type="string", length=255, nullable=true)
-     */
-    private $maree_warn;
-
-    /**
-     * @ORM\Column(type="string", length=255, nullable=true)
-     */
-    private $maree_KO;
+    private $mareeRestriction;
 
     /**
      * @ORM\Column(type="decimal", precision=5, scale=1, nullable=true)
@@ -164,11 +156,21 @@ class Spot
 
 
     /**
-     * @ORM\ManyToOne(targetEntity="Region", inversedBy="spots")
-     * @ORM\JoinColumn(name="region_id", referencedColumnName="id", nullable=true)
+     * @ORM\ManyToOne(targetEntity="Region", inversedBy="spots", cascade={"persist"})
      */
     private $region;
 
+    /**
+     * @ORM\OneToMany(targetEntity="WindOrientation", mappedBy="spot", cascade={"remove", "persist"} , orphanRemoval=true)
+     */
+    private $windOrientation;
+
+    public function __construct()
+    {
+        $this->mareeRestriction = new ArrayCollection();
+        $this->windOrientation = new ArrayCollection();
+        $this->buildWindOrientation();
+    }
 
     public function getId(): ?int
     {
@@ -528,16 +530,151 @@ class Spot
         return $this;
     }
 
-    public function getRegion()
+    public function getRegion(): ?Region
     {
         return $this->region;
     }
 
-    public function setRegion(Region $region = null): self
+    public function setRegion(?Region $region = null): self
     {
         $this->region = $region;
 
         return $this;
+    }
+
+    public function addMareeRestriction(MareeRestriction $mareeRestriction)
+    {
+        $this->mareeRestriction[] = $mareeRestriction;
+
+        return $this;
+    }
+
+
+    public function removeMareeRestriction(MareeRestriction $mareeRestriction)
+    {
+        $this->mareeRestriction->removeElement($mareeRestriction);
+    }
+
+    public function getMareeRestriction()
+    {
+        return $this->mareeRestriction;
+    }
+
+    public function addWindOrientation(?WindOrientation $windOrientation): self
+    {
+        $this->windOrientation[] = $windOrientation;
+        return $this;
+    }
+
+    public function removeWindOrientation(?WindOrientation $windOrientation)
+    {
+        $this->windOrientation->removeElement($windOrientation);
+    }
+
+    public function getWindOrientation() 
+    {
+        return $this->windOrientation;
+    }
+
+
+
+    private function buildWindOrientation()
+    {
+        $windOrientation = new WindOrientation();
+        $windOrientation->setSpot($this);
+        $windOrientation->setOrientation("n");
+        //$windOrientation->setOrientationDeg(WebsiteGetData::transformeOrientationNomLongDeg($windOrientation->getOrientation()));
+        $this->windOrientation->add($windOrientation);
+
+        $windOrientation = new WindOrientation();
+        $windOrientation->setSpot($this);
+        $windOrientation->setOrientation("nne");
+        //$windOrientation->setOrientationDeg(WebsiteGetData::transformeOrientationNomLongDeg($windOrientation->getOrientation()));
+        $this->windOrientation->add($windOrientation);
+
+        $windOrientation = new WindOrientation();
+        $windOrientation->setSpot($this);
+        $windOrientation->setOrientation("ne");
+        //$windOrientation->setOrientationDeg(WebsiteGetData::transformeOrientationNomLongDeg($windOrientation->getOrientation()));
+        $this->windOrientation->add($windOrientation);
+
+        $windOrientation = new WindOrientation();
+        $windOrientation->setSpot($this);
+        $windOrientation->setOrientation("ene");
+        //$windOrientation->setOrientationDeg(WebsiteGetData::transformeOrientationNomLongDeg($windOrientation->getOrientation()));
+        $this->windOrientation->add($windOrientation);
+
+        $windOrientation = new WindOrientation();
+        $windOrientation->setSpot($this);
+        $windOrientation->setOrientation("e");
+        //$windOrientation->setOrientationDeg(WebsiteGetData::transformeOrientationNomLongDeg($windOrientation->getOrientation()));
+        $this->windOrientation->add($windOrientation);
+
+        $windOrientation = new WindOrientation();
+        $windOrientation->setSpot($this);
+        $windOrientation->setOrientation("ese");
+        //$windOrientation->setOrientationDeg(WebsiteGetData::transformeOrientationNomLongDeg($windOrientation->getOrientation()));
+        $this->windOrientation->add($windOrientation);
+
+        $windOrientation = new WindOrientation();
+        $windOrientation->setSpot($this);
+        $windOrientation->setOrientation("se");
+        //$windOrientation->setOrientationDeg(WebsiteGetData::transformeOrientationNomLongDeg($windOrientation->getOrientation()));
+        $this->windOrientation->add($windOrientation);
+
+        $windOrientation = new WindOrientation();
+        $windOrientation->setSpot($this);
+        $windOrientation->setOrientation("sse");
+        //$windOrientation->setOrientationDeg(WebsiteGetData::transformeOrientationNomLongDeg($windOrientation->getOrientation()));
+        $this->windOrientation->add($windOrientation);
+
+        $windOrientation = new WindOrientation();
+        $windOrientation->setSpot($this);
+        $windOrientation->setOrientation("s");
+        //$windOrientation->setOrientationDeg(WebsiteGetData::transformeOrientationNomLongDeg($windOrientation->getOrientation()));
+        $this->windOrientation->add($windOrientation);
+
+        $windOrientation = new WindOrientation();
+        $windOrientation->setSpot($this);
+        $windOrientation->setOrientation("ssw");
+        //$windOrientation->setOrientationDeg(WebsiteGetData::transformeOrientationNomLongDeg($windOrientation->getOrientation()));
+        $this->windOrientation->add($windOrientation);
+
+        $windOrientation = new WindOrientation();
+        $windOrientation->setSpot($this);
+        $windOrientation->setOrientation("sw");
+        //$windOrientation->setOrientationDeg(WebsiteGetData::transformeOrientationNomLongDeg($windOrientation->getOrientation()));
+        $this->windOrientation->add($windOrientation);
+
+        $windOrientation = new WindOrientation();
+        $windOrientation->setSpot($this);
+        $windOrientation->setOrientation("wsw");
+        //$windOrientation->setOrientationDeg(WebsiteGetData::transformeOrientationNomLongDeg($windOrientation->getOrientation()));
+        $this->windOrientation->add($windOrientation);
+
+        $windOrientation = new WindOrientation();
+        $windOrientation->setSpot($this);
+        $windOrientation->setOrientation("w");
+        //$windOrientation->setOrientationDeg(WebsiteGetData::transformeOrientationNomLongDeg($windOrientation->getOrientation()));
+        $this->windOrientation->add($windOrientation);
+
+        $windOrientation = new WindOrientation();
+        $windOrientation->setSpot($this);
+        $windOrientation->setOrientation("wnw");
+        //$windOrientation->setOrientationDeg(WebsiteGetData::transformeOrientationNomLongDeg($windOrientation->getOrientation()));
+        $this->windOrientation->add($windOrientation);
+
+        $windOrientation = new WindOrientation();
+        $windOrientation->setSpot($this);
+        $windOrientation->setOrientation("nw");
+        //$windOrientation->setOrientationDeg(WebsiteGetData::transformeOrientationNomLongDeg($windOrientation->getOrientation()));
+        $this->windOrientation->add($windOrientation);
+
+        $windOrientation = new WindOrientation();
+        $windOrientation->setSpot($this);
+        $windOrientation->setOrientation("nnw");
+        //$windOrientation->setOrientationDeg(WebsiteGetData::transformeOrientationNomLongDeg($windOrientation->getOrientation()));
+        $this->windOrientation->add($windOrientation);
     }
 
 

@@ -5,6 +5,35 @@
 {% block body %}
     <div class="container mt-4">
         <h1>Edit</h1>
-       {{  include('admin/spot/_form.html.twig', {form: form, button: 'Editer'}) }}
+       {{  include('admin/spot/_form.html.twig', {form: form, button: 'Save'}) }}
+
+
     </div>
+
+    <script>
+
+        // **************************************
+        // ** Gestion de l'orientation du vent **
+        // **************************************
+        var tabOrientationState = new Array(); // Array with orientation => state, used for rosace wind
+
+        getOrientationDataFromSpot();
+
+        // Récupére les données de l'objet spot et les pousse dans la rosace
+
+        function getOrientationDataFromSpot() {
+
+            // Parcour la liste des WindOrientation
+            {% for windOrientation in spot.windOrientation %}
+            tabOrientationState["{{ windOrientation.orientation }}"]="{{ windOrientation.state?windOrientation.state:"?" }}";
+            {% endfor %}
+
+            svgLoad(tabOrientationState, true);
+        }
+
+    </script>
+
+
+    {% from "windRosace/rosaceWindAdminJS.html.twig" import js %}
+    {{ js(spot) }}
 {% endblock %}

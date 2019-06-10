@@ -21,13 +21,13 @@
                 {% for spot in spots %}
                     <tr>
                         <td>
-                            {{ spot.name }}
+                            {{ spot.name }} {% if spot.region is not null %}/ {{ spot.region.nom }} {% endif %}
                         </td>
                         <td>
                             <a class="btn btn-secondary"
-                               href="{{ path('admin.spot.edit', {id: spot.id}) }}">
+                               href="{{ path('admin_spot_edit', {id: spot.id}) }}">
                                 Editer</a>
-                            <form method="post" action="{{ path('admin.spot.delete', {id: spot.id}) }}"
+                            <form method="post" action="{{ path('admin_spot_delete', {id: spot.id}) }}"
                                   style="display: inline-block"
                             onsubmit="return confirm('Etes-vous vraiment sur ?')">
                                 <input type="hidden" name="_method" value="DELETE">
@@ -41,7 +41,7 @@
             </tbody>
         </table>
         <div class="text-right">
-            <a class="btn btn-primary" href="{{ path('admin.spot.new') }}">Créer un Spot</a>
+            <a class="btn btn-primary" href="{{ path('admin_spot_new') }}">Créer un Spot</a>
         </div>
     </div>
 {% endblock %}

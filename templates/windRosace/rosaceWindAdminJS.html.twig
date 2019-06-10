@@ -1,0 +1,132 @@
+{% macro js(spot) %}
+
+    <script>
+
+        // **************************************
+        // ** Gestion de l'orientation du vent **
+        // **************************************
+        var tabOrientationState = new Array(); // Array with orientation => state, used for rosace wind
+        var tabIdInputState = new Array();// Array with orientation => idInputState
+
+        getOrientationDataFromForm();
+
+        // Récupére les données du formulaire et les pousse dans la rosace
+
+        function getOrientationDataFromForm() {
+
+            var inputOrientation, inputState;
+
+            // Parcour tout les champs orientation
+            for (var numOrientation = 0; numOrientation <= {{ spot.windOrientation | length }}; numOrientation++) {
+
+                inputState = $("#"+getStateInputId(numOrientation));
+                inputOrientation = $("#"+getOrientationInputId(numOrientation));
+
+                tabIdInputState[inputOrientation.val()]=getStateInputId(numOrientation);
+
+                if (inputState.val()) {
+                    tabOrientationState[inputOrientation.val()]=inputState.val();
+                }
+            }
+            svgLoad(tabOrientationState);
+        }
+
+        // Build the id of the input
+        function getStateInputId(num) {
+            return "spot_windOrientation_"+num+"_state";
+        }
+        // Build the id of the input
+        function getOrientationInputId(num) {
+            return "spot_windOrientation_"+num+"_orientation";
+        }
+
+        // **************************************
+        // ** Gestion dynamique de la rosace   **
+        // **************************************
+
+        function nextState(state) {
+            var nextState = "OK";
+            switch (state) {
+                case "top": nextState="OK";
+                    break;
+                case "OK": nextState="warn";
+                    break;
+                case "warn": nextState="KO";
+                    break;
+                case "KO": nextState="?";
+                    break;
+                case "?": nextState="top";
+                    break;
+            }
+            return nextState;
+        }
+
+        function orientationNameFromId(id) {
+            var result=id;
+            switch (id) {
+                case "nord":
+                    result = "n";
+                    break;
+                case "nord-nord-est":
+                    result = "nne";
+                    break;
+                case "nord-est":
+                    result = "ne";
+                    break;
+                case "est-nord-est":
+                    result = "ene";
+                    break;
+                case "est":
+                    result = "e";
+                    break;
+                case "est-sud-est":
+                    result = "ese";
+                    break;
+                case "sud-est":
+                    result = "se";
+                    break;
+                case "sud-sud-est":
+                    result = "sse";
+                    break;
+                case "sud":
+                    result = "s";
+                    break;
+                case "sud-sud-west":
+                    result = "ssw";
+                    break;
+                case "sud-west":
+                    result = "sw";
+                    break;
+                case "west-sud-west":
+                    result = "wsw";
+                    break;
+                case "west":
+                    result = "w";
+                    break;
+                case "west-nord-west":
+                    result = "wnw";
+                    break;
+                case "nord-west":
+                    result = "nw";
+                    break;
+                case "nord-nord-west":
+                    result = "nnw";
+                    break;
+            }
+            return result;
+        }
+
+        $("use").click(function() {
+            var id = $(this).attr("id");
+            var orientationName=orientationNameFromId(id);
+
+            tabOrientationState[id]=nextState(tabOrientationState[id]);
+            $(this).attr("fill", colorState(tabOrientationState[id],'w'));
+            $('#'+id+'Txt').attr("fill", colorState(tabOrientationState[id],'b'));
+            var inputState = $("#"+tabIdInputState[orientationName]);//inputState correspondant
+            inputState.val(tabOrientationState[id]);
+        });
+
+    </script>
+
+{% endmacro %}

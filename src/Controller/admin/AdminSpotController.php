@@ -4,6 +4,7 @@ namespace App\Controller\admin;
 
 use App\Form\SpotType;
 use App\Repository\SpotRepository;
+use App\Utils\RosaceWindManage;
 use Doctrine\Common\Persistence\ObjectManager;
 use phpDocumentor\Reflection\Types\This;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -33,7 +34,7 @@ class AdminSpotController extends AbstractController
     }
 
     /**
-     * @Route("/admin", name="admin.spot.index")
+     * @Route("/admin", name="admin_spot_index")
      * @return \Symfony\Component\HttpFoundation\Response
      */
     public function index() : Response
@@ -43,7 +44,7 @@ class AdminSpotController extends AbstractController
     }
 
     /**
-     * @Route("/admin/spot/create", name="admin.spot.new")
+     * @Route("/admin/spot/create", name="admin_spot_new")
      * @param Request $request
      * @return Response
      */
@@ -53,11 +54,13 @@ class AdminSpotController extends AbstractController
         $form = $this->createForm(SpotType::class, $spot);
         $form->handleRequest($request);
 
+        RosaceWindManage::createRosaceWind($spot, $this->getParameter('svg_directory'));
+
         if ($form->isSubmitted() && $form->isValid()) {
             $this->manager->persist($spot);
             $this->manager->flush();
             $this->addFlash('success', 'Spot crée avec succés');
-            return $this->redirectToRoute('admin.spot.index');
+            return $this->redirectToRoute('admin_spot_index');
         }
 
         return $this->render('admin/spot/new.html.twig', [
@@ -67,7 +70,7 @@ class AdminSpotController extends AbstractController
     }
 
     /**
-     * @Route("/admin/spot/edit/{id}", name="admin.spot.edit")
+     * @Route("/admin/spot/edit/{id}", name="admin_spot_edit")
      * @param Spot $spot
      * @param Request $request
      * @return \Symfony\Component\HttpFoundation\Response
@@ -78,9 +81,16 @@ class AdminSpotController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+
+            $spot = $form->getData();
+            $this->manager->persist($spot);
             $this->manager->flush();
-            $this->addFlash('success', 'Spot modifié avec succés');
-            return $this->redirectToRoute('admin.spot.index');
+
+            // Créé l'image .svg dans repertoire définit dans config/services.yaml, utile pour inserer dans map France
+            RosaceWindManage::createRosaceWind($spot, $this->getParameter('svg_directory'));
+
+            $this->addFlash('success', 'Spot '.$spot->getName().', modifié avec succés');
+            return $this->redirectToRoute('admin_spot_index');
         }
 
         return $this->render('admin/spot/edit.html.twig', [
@@ -91,7 +101,7 @@ class AdminSpotController extends AbstractController
 
 
     /**
-     * @Route("/admin/spot/delete/{id}", name="admin.spot.delete", methods="DELETE")
+     * @Route("/admin/spot/delete/{id}", name="admin_spot_delete", methods="DELETE")
      * @param Spot $spot
      * @param Request $request
      * @return Response
@@ -103,6 +113,6 @@ class AdminSpotController extends AbstractController
             $this->manager->flush();
             $this->addFlash('success', 'Spot supprimé avec succés');
         //}
-        return $this->redirectToRoute("admin.spot.index");
+        return $this->redirectToRoute("admin_spot_index");
     }
 }

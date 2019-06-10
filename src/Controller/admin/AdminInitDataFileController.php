@@ -9,9 +9,14 @@
 namespace App\Controller\admin;
 
 
+use App\Entity\Region;
+use App\Utils\GetDataMaree;
 use App\Entity\InitDataFile;
 use App\Entity\Spot;
 use App\Form\InitDataFileType;
+use App\Utils\GetDataWindOrientation;
+use App\Utils\WebsiteGetData;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Persistence\ObjectManager;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Filesystem\Filesystem;
@@ -21,6 +26,8 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class AdminInitDataFileController extends AbstractController
 {
+    var $manager;
+
     public function __construct(ObjectManager $manager)
     {
         $this->manager = $manager;
@@ -91,6 +98,7 @@ class AdminInitDataFileController extends AbstractController
             }
 
             $initDataFile->setDataFile($fileName);
+            return $this->redirectToRoute("admin_spot_index");
         }
 
         return $this->render('admin/dataFile/index.html.twig', [
@@ -98,13 +106,6 @@ class AdminInitDataFileController extends AbstractController
         ]);
     }
 
-    /**
-     * @return string
-     */
-    private function generateInitDataFileName()
-    {
-        return 'InitDataFile'.uniqid().'.csv';
-    }
 
     /**
      * @param UploadedFile $file
@@ -119,31 +120,36 @@ class AdminInitDataFileController extends AbstractController
             $this->manager->getConnection()->getConfiguration()->setSQLLogger(null);
 
             $size = count($data);
-            $batchSize = 10; // tout les 20 elements on enregistre
+            $batchSize = 5; // tout les X elements on enregistre
             $i = 1;
 
             // Starting progress
-            //$progressBar = new ProgressBar();
+
+            // Récupére les régions existantes (doivent être créé avant)
+            $tabRegions = $this->getTabRegions();
 
             // Processing on each row of data
             foreach ($data as $row) {
                 try {
-                    $spot = $this->importRow($row);
-                    $this->manager->persist($spot);
+                    $spot = $this->importRow($row,$tabRegions);
+
+                    //$this->manager->merge($spot);
+
                     if (($i % $batchSize) === 0) {
                         $this->manager->flush();
                         // Detaches all objects from Doctrine for memory save
-                        //$em->clear();
+                        $this->manager->clear();
                     }
-
+                    $i++;
                     // Advancing for progress display on console
-                    //$progress->advance(1);
+
                 } catch (\Exception $e) {
-                    //Todo
+                    $this->addFlash('danger', 'Erreur'.$e->getMessage());
                 }
                 $i++;
             }
         }
+        $this->manager->flush();
     }
 
     /**
@@ -181,15 +187,12 @@ class AdminInitDataFileController extends AbstractController
         return $data;
     }
 
-    private function importRow($row)
+    private function importRow($row,$tabRegions)
     {
         //Todo
         $spot = new Spot();
         $spot->setName($row['Nom']);
 
-        if (!empty($row['Region'])) {
-            // Todo: Region (vérifié si existant ...)
-        }
         if (!empty($row['Description'])) {
             $spot->setDescription($this->cleanDescription($row['Description']));
         }
@@ -240,12 +243,39 @@ class AdminInitDataFileController extends AbstractController
             $spot->setURLTempWater($row['Temp eau']);
         }
         if (!empty($row['Maree']) and trim($row['Maree']) != '') {
-            $spot->setURLMaree($row['Maree']);
+            GetDataMaree::putDataFromMareeInfo($spot,$row['Maree']);
+
+            $marreRestrictionArray = array('OK','warn','KO');
+            foreach ($marreRestrictionArray as $mareeState) {
+                if (!empty($row[$mareeState])) {
+                    GetDataMaree::putMareeRestriction($spot,$row[$mareeState], $mareeState);
+                }
+            }
         }
+
+        /* @var \App\Entity\WindOrientation $orientation */
+        foreach ($spot->getWindOrientation() as $orientation) {
+            $orientation->setState(WebsiteGetData::transformeOrientationState($row[$orientation->getOrientation()]));
+        }
+        //GetDataWindOrientation::getDataFromDataCSV($row,$spot);
 
         //Todo: UrlWebcam
         //Todo: UrlTemWater
         //Todo: UrlBalise
+
+        //if (!empty($row['Region']) && !empty($tabRegions[$row['Region']])) {
+            /** @var Region $region  */
+            /*$region = $tabRegions[$row['Region']];
+            $spot->setRegion($region);
+            $region->addSpot($spot);
+
+            $this->manager->persist($spot);
+            $this->manager->flush($region);
+        } else {
+            */
+            $this->manager->persist($spot);
+
+        //}
 
         return $spot;
     }
@@ -280,4 +310,19 @@ class AdminInitDataFileController extends AbstractController
 
     }
 
+    private function generateInitDataFileName()
+    {
+        return 'InitDataFile'.uniqid().'.csv';
+    }
+
+
+    private function getTabRegions() {
+        $result = array();
+        $regionList = $this->manager->getRepository(Region::class)->findAll();
+
+        foreach ($regionList as $region) {
+            $result[$region->getNom()] = $region;
+        }
+        return $result;
+    }
 }

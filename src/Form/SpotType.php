@@ -4,6 +4,7 @@ namespace App\Form;
 
 use App\Entity\Spot;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -25,6 +26,14 @@ class SpotType extends AbstractType
             ->add('price_autoroute_from_paris')
             ->add('gps_lat')
             ->add('gps_long')
+
+            ->add('windOrientation', CollectionType::class, [
+                'entry_type' => WindOrientationType::class,
+                'attr' =>['style' => 'display:none'],
+                'label' =>false,
+
+            ])
+
         ;
     }
 

@@ -1,0 +1,36 @@
+{% macro displayRosace(widthGraph, heightGraph) %}
+
+    <style type="text/css">
+
+        #rosaceWindSVG {
+            border:1px dashed #ccc;
+            height:{{ (widthGraph is defined and widthGraph is not null)?widthGraph:"340px" }};
+            width:{{ (heightGraph is defined and heightGraph is not null)?heightGraph:"340px"  }};
+        }
+
+        #rosaceWindSVG path {
+            stroke:black;
+            stroke-width:1
+        }
+
+        .rosace-Lettre-principal {
+            font-size: 20px;
+            text-decoration: none;
+            font-weight:bold
+        }
+
+        .rosace-Lettre-tertiaire {
+            font-size: 10px;
+            text-decoration: none;
+            font-style: italic;
+        }
+
+    </style>
+
+    {% from "windRosace/rosaceWindSVG.html.twig" import svg %}
+    {{ svg() }}
+
+
+    <script src="{{ asset('javascript/rosaceWind.js') }}"></script>
+
+{% endmacro %}
