@@ -217,4 +217,30 @@ class WebsiteGetData
         return $result;
     }
 
+    /**
+     * @param $orientationValue:  "OK", "warn", "KO", "top"
+     * @return -1 , 0, 1 , 2
+     */
+    static function transformeOrientationStateToValue($orientationValue) {
+        $result=-2;
+
+        switch ($orientationValue) {
+            case 'KO':
+                $result=-1;
+                break;
+
+            case 'warn':
+                $result=0;
+                break;
+
+            case 'OK':
+                $result=1;
+                break;
+
+            case 'top':
+                $result=2;
+                break;
+        }
+        return $result;
+    }
 }

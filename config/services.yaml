@@ -8,6 +8,8 @@ parameters:
     init_data_directory: '%kernel.project_dir%/public/uploads/dataFile'
     download_data_directory: '%kernel.project_dir%/public/download/dataFile'
     svg_directory: '%kernel.project_dir%/public/download/svgFile'
+    rosace_directory : 'rosaces'
+    rosace_directory_kernel : '%kernel.project_dir%/public/%rosace_directory%'
 
 services:
     # default configuration for services in *this* file

@@ -3,12 +3,12 @@
 namespace App\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;
-use App\Entity\Spot;
-use Doctrine\Common\Collections\Collection;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\RegionRepository")
+ * @UniqueEntity("codeRegion")
  */
 class Region
 {
@@ -38,6 +38,11 @@ class Region
      * @ORM\OneToMany(targetEntity="Spot", mappedBy="region")
      */
     private $spots;
+
+    /**
+     * @ORM\Column(type="string", length=10, unique=true)
+     */
+    private $codeRegion;
 
 
     /**
@@ -105,5 +110,17 @@ class Region
     public function getSpots()
     {
         return $this->spots;
+    }
+
+    public function getCodeRegion(): ?string
+    {
+        return $this->codeRegion;
+    }
+
+    public function setCodeRegion(string $codeRegion): self
+    {
+        $this->codeRegion = $codeRegion;
+
+        return $this;
     }
 }

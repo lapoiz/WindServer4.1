@@ -4,11 +4,15 @@ namespace App\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
+use Symfony\Component\HttpFoundation\File\File;
 use Doctrine\ORM\Mapping as ORM;
 use Cocur\Slugify\Slugify;
+use Vich\UploaderBundle\Mapping\Annotation as Vich;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\SpotRepository")
+ * @Vich\Uploadable
  */
 class Spot
 {
@@ -55,17 +59,17 @@ class Spot
     private $km_autoroute_from_paris;
 
     /**
-     * @ORM\Column(type="integer", nullable=true)
+     * @ORM\Column(type="decimal", scale=2, nullable=true)
      */
     private $price_autoroute_from_paris;
 
     /**
-     * @ORM\Column(type="decimal", nullable=true)
+     * @ORM\Column(type="decimal", scale=6, nullable=true)
      */
     private $gps_lat;
 
     /**
-     * @ORM\Column(type="decimal", nullable=true)
+     * @ORM\Column(type="decimal", scale=6, nullable=true)
      */
     private $gps_long;
 
@@ -73,6 +77,11 @@ class Spot
      * @ORM\Column(type="text", nullable=true)
      */
     private $desc_orientation_vent;
+
+    /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     */
+    private $URLMap;
 
     /**
      * @ORM\Column(type="string", length=512, nullable=true)
@@ -165,10 +174,72 @@ class Spot
      */
     private $windOrientation;
 
+
+    /**
+     * @ORM\OneToMany(targetEntity="WebSiteInfo", mappedBy="spot", cascade={"remove", "persist"} , orphanRemoval=true)
+     */
+    private $webSiteInfos;
+
+    /**
+     * @ORM\Column(type="string", length=10)
+     */
+    private $codeSpot;
+
+
+
+    /**
+     * @Vich\UploadableField(mapping="spot_image", fileNameProperty="imageName")
+     * @var File|null
+     */
+    private $imageFile;
+
+    /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     * @var string|null
+     */
+    private $imageName;
+
+    /**
+     * @ORM\Column(type="datetime", nullable=true)
+     */
+    private $updated_at;
+
+    /**
+     * @ORM\Column(type="boolean", nullable=true)
+     */
+    private $isFoil;
+
+    /**
+     * @ORM\Column(type="text", nullable=true)
+     */
+    private $desc_foil;
+
+    /**
+     * @ORM\Column(type="boolean", nullable=true)
+     */
+    private $isContraintEte;
+
+    /**
+     * @ORM\Column(type="text", nullable=true)
+     */
+    private $desc_contraintEte;
+
+    /**
+     * @ORM\Column(type="text", nullable=true)
+     */
+    private $desc_wave;
+
+    /**
+     * @ORM\OneToMany(targetEntity="Commentaire", mappedBy="spot", cascade={"remove", "persist"} , orphanRemoval=true)
+     */
+    private $commentaires;
+
     public function __construct()
     {
         $this->mareeRestriction = new ArrayCollection();
         $this->windOrientation = new ArrayCollection();
+        $this->webSiteInfos = new ArrayCollection();
+        $this->commentaires = new ArrayCollection();
         $this->buildWindOrientation();
     }
 
@@ -266,36 +337,36 @@ class Spot
         return $this;
     }
 
-    public function getPriceAutorouteFromParis(): ?int
+    public function getPriceAutorouteFromParis()
     {
         return $this->price_autoroute_from_paris;
     }
 
-    public function setPriceAutorouteFromParis(?int $price_autoroute_from_paris): self
+    public function setPriceAutorouteFromParis( $price_autoroute_from_paris): self
     {
         $this->price_autoroute_from_paris = $price_autoroute_from_paris;
 
         return $this;
     }
 
-    public function getGpsLat(): ?int
+    public function getGpsLat()
     {
         return $this->gps_lat;
     }
 
-    public function setGpsLat(?int $gps_lat): self
+    public function setGpsLat($gps_lat): self
     {
         $this->gps_lat = $gps_lat;
 
         return $this;
     }
 
-    public function getGpsLong(): ?int
+    public function getGpsLong()
     {
         return $this->gps_long;
     }
 
-    public function setGpsLong(?int $gps_long): self
+    public function setGpsLong($gps_long): self
     {
         $this->gps_long = $gps_long;
 
@@ -311,6 +382,24 @@ class Spot
     {
         $this->desc_orientation_vent = $desc_orientation_vent;
 
+        return $this;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getURLMap()
+    {
+        return $this->URLMap;
+    }
+
+    /**
+     * @param mixed $URLMap
+     * @return Spot
+     */
+    public function setURLMap($URLMap)
+    {
+        $this->URLMap = $URLMap;
         return $this;
     }
 
@@ -677,5 +766,168 @@ class Spot
         $this->windOrientation->add($windOrientation);
     }
 
+    public function getWebSiteInfos()
+    {
+        return $this->webSiteInfos;
+    }
 
+    /**public function setWebSiteInfos($webSiteInfos)
+    {
+        $this->webSiteInfos = $webSiteInfos;
+        return $this;
+    }*/
+
+    public function addWebSiteInfos(WebSiteInfo $webSiteInfo)
+    {
+        $this->webSiteInfos[] = $webSiteInfo;
+        return $this;
+    }
+
+    public function removeWebSiteInfo(WebSiteInfo $webSiteInfo)
+    {
+        $this->webSiteInfos->removeElement($webSiteInfo);
+    }
+
+
+    public function getCodeSpot(): ?string
+    {
+        return $this->codeSpot;
+    }
+
+    public function setCodeSpot(string $codeSpot): self
+    {
+        $this->codeSpot = $codeSpot;
+
+        return $this;
+    }
+
+    /**
+     * @return File|null
+     */
+    public function getImageFile(): ?File
+    {
+        return $this->imageFile;
+    }
+
+    /**
+     * @param File|null $imageFile
+     */
+    public function setImageFile(?File $imageFile): void
+    {
+        $this->imageFile = $imageFile;
+        if ($this->imageFile instanceof UploadedFile) {
+            $this->updated_at = new \DateTime('now');
+        }
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getImageName(): ?string
+    {
+        return $this->imageName;
+    }
+
+    /**
+     * @param string|null $imageName
+     */
+    public function setImageName(?string $imageName): void
+    {
+        $this->imageName = $imageName;
+    }
+
+    public function getUpdatedAt(): ?\DateTimeInterface
+    {
+        return $this->updated_at;
+    }
+
+    public function setUpdatedAt(\DateTimeInterface $updated_at): self
+    {
+        $this->updated_at = $updated_at;
+
+        return $this;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getPersonalNamer(): ?string
+    {
+        return $this->getCodeSpot();
+    }
+
+    public function getIsFoil(): ?bool
+    {
+        return $this->isFoil;
+    }
+
+    public function setIsFoil(?bool $isFoil): self
+    {
+        $this->isFoil = $isFoil;
+
+        return $this;
+    }
+
+    public function getDescFoil(): ?string
+    {
+        return $this->desc_foil;
+    }
+
+    public function setDescFoil(?string $desc_foil): self
+    {
+        $this->desc_foil = $desc_foil;
+
+        return $this;
+    }
+
+    public function getIsContraintEte(): ?bool
+    {
+        return $this->isContraintEte;
+    }
+
+    public function setIsContraintEte(?bool $isContraintEte): self
+    {
+        $this->isContraintEte = $isContraintEte;
+
+        return $this;
+    }
+
+    public function getDescContraintEte(): ?string
+    {
+        return $this->desc_contraintEte;
+    }
+
+    public function setDescContraintEte(?string $desc_contraintEte): self
+    {
+        $this->desc_contraintEte = $desc_contraintEte;
+
+        return $this;
+    }
+
+    public function getDescWave(): ?string
+    {
+        return $this->desc_wave;
+    }
+
+    public function setDescWave(?string $desc_wave): self
+    {
+        $this->desc_wave = $desc_wave;
+
+        return $this;
+    }
+
+    public function getCommentaires()
+    {
+        return $this->commentaires;
+    }
+
+    public function setCommentaires($commentaires)
+    {
+        $this->commentaires = $commentaires;
+        return $this;
+    }
+
+    public function addCommentaire(Commentaire $newComment) {
+        $this->commentaires->add($newComment);
+    }
 }

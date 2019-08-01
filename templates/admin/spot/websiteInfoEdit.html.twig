@@ -1,0 +1,110 @@
+{% extends 'admin/base_admin.html.twig' %}
+
+{% block title 'Website Info' %}
+
+{% block body %}
+    <div class="container mt-4">
+        <h1>Website sur : {{  spot.name }}</h1>
+
+
+        <a href="{{ path('admin_spot_index') }}">admin</a>-><a href="{{ path('admin_spot_edit', {'id':spot.id}) }}">{{ spot.name }}</a>
+
+        {{ form_start(form) }}
+
+
+            <div class="websiteInfosDiv" data-prototype="
+                {% filter escape %}
+                    {{ include('admin/spot/websiteInfoForm.html.twig', { 'form': form.websiteInfos.vars.prototype }) }}
+                {% endfilter %}"
+            >
+
+                {% for website in form.websiteInfos %}
+
+                    <div class="row">
+                        <div class="col-sm-3">
+                            <div class="row">
+                                <div class="col-sm-12">
+                                    {{ form_row(website.name) }}
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-sm-12">
+                                    {{ form_row(website.url) }}
+                                    <a href="{{ website.url.vars.value }}" target="_blank">test</a>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-sm-12">
+                                    {{ form_row(website.date) }}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-mid-8">
+                            {{ form_row(website.description) }}
+                        </div>
+                    </div>
+
+                {% endfor %}
+            </div>
+
+        {{ form_rest(form) }}
+        </form>
+
+        <a
+            class="dt-button buttons-collection buttons-colvis btn btn-white btn-secondary btn-bold"
+            href="{{ path('admin_spot_edit', {'id':spot.id}) }}"
+        >
+            Cancel
+        </a>
+    </div>
+
+
+    <script>
+        // Récupère le div qui contient la collection de websiteInfo
+        var collectionHolder = $('div.websiteInfosDiv');
+
+        // ajoute un lien « add a div.restrictions »
+        var addWebsiteInfoButton = $('<div class="col-sm-3"><button type="button" class="btn btn-primary" onclick="addWebsiteInfoForm()">Ajouter</button></div>');
+        var newButtonDiv = $('<div class="row" id="addButton"></div>').append(addWebsiteInfoButton);
+
+        function addWebsiteInfoForm() {
+            // Récupère l'élément ayant l'attribut data-prototype comme expliqué plus tôt
+            var prototype = collectionHolder.attr('data-prototype');
+
+            // Remplace '__name__' dans le HTML du prototype par un nombre basé sur
+            // la longueur de la collection courante
+            var newForm = prototype.replace(/__name__/g, collectionHolder.children().length);
+
+            // Affiche le formulaire dans la page dans un div, avant le button "ajouter"
+            var newFormDiv = $('<div class="row"></div>').append(newForm);
+            newButtonDiv.before(newFormDiv);
+
+            addWebsiteInfoFormDeleteButton(newFormDiv);
+        }
+
+        function addWebsiteInfoFormDeleteButton(formDiv) {
+            var removeFormButton = $('<div class="col-sm-1"><button type="button" class="btn btn-danger">Supprimer</button></div>');
+            formDiv.append(removeFormButton);
+
+            removeFormButton.on('click', function(e) {
+                formDiv.remove();
+            });
+        }
+
+
+        jQuery(document).ready(function() {
+            collectionHolder.append(newButtonDiv);
+
+            $('div').find('.websiteInfosDiv > div').each(function() {
+                if ($(this).attr('id')!="addButton") {
+                    addWebsiteInfoFormDeleteButton($(this));
+                }
+            });
+        });
+
+        //$("#websiteInfo_form").on('submit', function(e){
+        //});
+
+    </script>
+
+{% endblock %}

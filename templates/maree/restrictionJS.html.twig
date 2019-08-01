@@ -1,0 +1,34 @@
+{% macro restrictionMaree(spot) %}
+    <script>
+
+        // **************************************
+        // ** Charge les restrictions de marée **
+        // **************************************
+
+        jQuery(document).ready(function() {
+            // Parcour la liste des MareeRestriction
+            {% for mareeRestriction in spot.mareeRestriction %}
+            drawPlotBandGraphMaree({{ mareeRestriction.hauteurMin }},{{ mareeRestriction.hauteurMax }},"{{ mareeRestriction.state }}");
+            {% endfor %}
+        });
+
+        function drawPlotBandMareeGraphSpot() {
+            {% for mareeRestriction in spot.mareeRestriction %}
+            drawOnePlotBandMareeGraphSpot({{ mareeRestriction.hauteurMin }},{{ mareeRestriction.hauteurMax }},"{{ mareeRestriction.state }}");
+            {% endfor %}
+        }
+
+        // dessine sur le graph princiapl du spot, une restriction de marée
+        function drawOnePlotBandMareeGraphSpot(hMin, hMax, state) {
+
+
+            //$('#meteoGraph').highcharts().yAxis[1].addPlotBand({
+            myChart.yAxis[1].addPlotBand({
+                color: getColorPlotBandForState(state),
+                from: hMin,
+                to: hMax
+                })
+        }
+
+    </script>
+{% endmacro %}

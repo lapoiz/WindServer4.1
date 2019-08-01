@@ -5,28 +5,47 @@
 {% block body %}
     <div class="jumbotron text-center">
         <h1>Spot</h1>
-        <p>Les spots actuellement dispo</p>
+        <p>Les spots actuellements dispo</p>
     </div>
 
     <div class="container">
-        <h2>La liste</h2>
-        <div class="rox flex">
-            {% for spot in spots %}
-                <div class="col-3">
-                    <div class="card">
-                        <div class="card-body">
-                            <h5 class="card-title">
-                               <a href="#">{{ spot.name }}</a>
-                            </h5>
-                            <p class="card-text">
-                                {{ spot.description|raw }}
-                            </p>
-                        </div>
+            {% set numRegion = 0 %}
+            {% set nbRegionParCol = 3 %}
+            {% for regionTab in regions %}
+
+                {% if numRegion is divisible by(nbRegionParCol) %}
+        <div class="row flex classWithPad">
+                {% endif %}
+
+            <div class="col-4">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">
+                            {{ regionTab["region"].nom }}
+                        </h5>
+                        {% for spot in regionTab["spots"] %}
+                            <div class="row">
+                                <div class="col-6">
+                                    <a href="{{ path('spot.show', {id: spot.id, slug: spot.slug}) }}">{{ spot.name }}</a>
+                                </div>
+                                <div class="col-2">
+                                    <a href="{{ path('spot.show', {id: spot.id, slug: spot.slug}) }}"><img src="{{ urlImage ~ spot.id ~ '.min.png' }}"></a>
+                                </div>
+                            </div>
+                        {%  endfor %}
                     </div>
                 </div>
+            </div>
 
-
-            {%  endfor %}
+                {% if (numRegion+1) is divisible by(nbRegionParCol) %}
         </div>
+                {% endif %}
+                {% set numRegion = numRegion+1 %}
+            {%  endfor %}
+
+    {% if numRegion is not divisible by(nbRegionParCol) %}
+        </div>
+    {% endif %}
+
     </div>
 {% endblock %}

@@ -194,9 +194,24 @@ class GetDataMaree
             case 1:
                 return 'OK';
             case 2:
-                return 'OK';
+                return 'top';
         }
-        return 'KO'; // ? ou autre
+        return '?'; // ? ou autre
+    }
+
+    // "OK", "KO", "warn" => -1, 0, 1, 2, ?
+    static function getValueFromOrientationState($rowValue) {
+        switch ($rowValue) {
+            case 'KO':
+                return -1;
+            case 'warn':
+                return 0;
+            case 'OK':
+                return 1;
+            case 'top':
+                return 2;
+        }
+        return -2; // ? ou autre
     }
 
     // exemple: "2->10,5"

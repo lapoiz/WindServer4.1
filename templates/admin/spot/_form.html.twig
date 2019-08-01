@@ -1,29 +1,141 @@
 {{ form_start(form) }}
+
 <div class="row">
-    <div class="col-mid-4">{{ form_row(form.name) }}</div>
-    <div class="col-mid-4">Autre ...</div>
-</div>
-<div class="row">
-    <div class="col-mid-12">{{ form_row(form.description) }}</div>
-</div>
-<div class="row">
-    <div class="col-mid-12">{{ form_row(form.desc_maree) }}</div>
+    <div class="col-mid-6">
+        {{ form_row(form.name) }}
+    </div>
+    <div class="col-mid-6">
+        {{ form_row(form.imageFile) }}
+    </div>
 </div>
 
 <div class="row">
-    <div class="col-mid-4">{{ form_row(form.desc_route) }}</div>
-    <div class="col-mid-2">{{ form_row(form.time_from_paris) }}</div>
-    <div class="col-mid-2">{{ form_row(form.km_from_paris) }}</div>
-    <div class="col-mid-2">{{ form_row(form.km_autoroute_from_paris) }}</div>
-    <div class="col-mid-2">{{ form_row(form.price_autoroute_from_paris) }}</div>
+    <div class="col-mid-12">
+        {{ form_row(form.description) }}
+    </div>
 </div>
 
 <div class="row">
-    <div class="col-mid-3">{{ form_row(form.gps_lat) }}</div>
-    <div class="col-mid-3">{{ form_row(form.gps_long) }}</div>
+    <div class="col-mid-6">
+        {{ form_row(form.uRLMap) }}
+    </div>
+    <div class="col-mid-6">
+
+    </div>
+</div>
+
+
+<div class="row">
+    <div class="col-mid-2">
+        {{ form_row(form.isFoil) }}
+    </div>
+    <div class="col-mid-10">
+        {{ form_row(form.descFoil) }}
+    </div>
 </div>
 
 <div class="row">
+    <div class="col-mid-2">
+        {{ form_row(form.isContraintEte) }}
+    </div>
+    <div class="col-mid-10">
+        {{ form_row(form.descContraintEte) }}
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-mid-12">
+        {{ form_row(form.descWave) }}
+    </div>
+</div>
+
+<div id="fieldsURL" style="display: none">
+    <div class="row">
+        <div class="col-mid-4">
+            {{ form_row(form.urlBalise) }}
+        </div>
+        <div class="col-mid-4">
+            {{ form_row(form.uRLTempWater) }}
+        </div>
+        <div class="col-mid-4">
+            {{ form_row(form.urlWebcam) }}
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-mid-4">
+            {{ form_row(form.uRLWindguru) }}
+        </div>
+        <div class="col-mid-4">
+            {{ form_row(form.urlWindFinder) }}
+        </div>
+        <div class="col-mid-4">
+            {{ form_row(form.uRLMeteoFrance) }}
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-mid-4">
+            {{ form_row(form.uRLMeteoConsult) }}
+        </div>
+        <div class="col-mid-4">
+            {{ form_row(form.uRLMerteo) }}
+        </div>
+        <div class="col-mid-4">
+            {{ form_row(form.uRLTempWater) }}
+        </div>
+    </div>
+</div>
+<div class="row">
+
+    <div class="col-mid-3">
+        <a  id="buttonURL"
+            class="dt-button buttons-collection buttons-colvis btn btn-white btn-primary btn-bold"
+            href=""
+        >
+            Gestion des URL
+        </a>
+    </div>
+    <div class="col-mid-1"></div>
+
+    <div class="col-mid-3">
+        <a
+                class="dt-button buttons-collection buttons-colvis btn btn-white btn-primary btn-bold"
+                href="{{ path('admin_maree_edit', {'id':spot.id}) }}"
+        >
+            Gestion des marées
+        </a>
+    </div>
+
+    <div class="col-mid-1"></div>
+    <div class="col-mid-3">
+        <a
+                class="dt-button buttons-collection buttons-colvis btn btn-white btn-primary btn-bold"
+                href="{{ path('admin_spot_websiteInfo_edit', {'id':spot.id}) }}"
+        >
+            Gestion des websites d'info
+        </a>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-mid-12">
+        {{ form_row(form.desc_route) }}
+    </div>
+</div>
+<div class="row">
+    <div class="col-mid-3">{{ form_row(form.time_from_paris) }}</div>
+    <div class="col-mid-3">{{ form_row(form.price_autoroute_from_paris) }}</div>
+    <div class="col-mid-3">{{ form_row(form.km_from_paris) }}</div>
+    <div class="col-mid-3">{{ form_row(form.km_autoroute_from_paris) }}</div>
+</div>
+
+<div class="row">
+    <div class="col-mid-6">{{ form_row(form.gps_lat) }}</div>
+    <div class="col-mid-6">{{ form_row(form.gps_long) }}</div>
+</div>
+
+<div class="row" id="rosace">
     <div class="col-mid-12">
         {% from "windRosace/rosaceWind.html.twig" import displayRosace %}
         {{ displayRosace() }}
@@ -31,4 +143,16 @@
 </div>
 
 <button class="btn btn-primary">{{ button|default('Enregistrer') }}</button>
+
+<script>
+    $(function(){
+        $('#buttonURL').click(function(){
+            $('#fieldsURL').toggle() // AFFICHE ET CACHE A CHAQUE CLIQUE SUR LE BOUTTON
+        });
+    });
+</script>
+
+
+
+
 {{ form_end(form) }}

@@ -4,12 +4,151 @@
     <h1>{{ spot.name }}</h1>
 {% endblock %}
 
+
+{% block headScript %}
+    <script src="http://code.highcharts.com/highcharts.js"></script>
+{% endblock %}
+
 {% block body %}
-    <div class="jumbotron text-center">
-        <h1>{{ spot.name }}</h1>
+    <div class="text-center">
+        <h1 {% if spot.imageFile %} ba{% endif %}>
+            <div class="row">
+                <div class="col-sm-5 centered">
+                    {% from "windRosace/rosaceWind.html.twig" import displayRosace %}
+                    {{ displayRosace("200px","200px") }}
+                </div>
+
+                <div class="col-sm-2 centered align-middle">
+                    {{ spot.name }}
+                </div>
+
+                <div class="col-sm-5 centered">
+                    {% from "maree/graph.html.twig" import graphMaree %}
+                    {{ graphMaree(spot, "300px","220px" ) }}
+                    {% from "maree/restrictionJS.html.twig" import restrictionMaree %}
+                    {{ restrictionMaree(spot) }}
+                </div>
+            </div>
+        </h1>
     </div>
 
     <div class="container">
         {{ spot.description|raw }}
+
+    <div class="row">
+        <div class="col-sm-6 center-block text-center" heigth="220px">
+            <h3 class="titreSVG">Orientation du vent à {{ spot.name }}</h3>
+
+            <div class="row">
+                <div class="col-sm-6 centered">
+
+
+                    <script>
+
+                        // **************************************
+                        // ** Gestion de l'orientation du vent **
+                        // **************************************
+                        var tabOrientationState = new Array(); // Array with orientation => state, used for rosace wind
+
+                        getOrientationDataFromSpot();
+
+                        // Récupére les données de l'objet spot et les pousse dans la rosace
+
+                        function getOrientationDataFromSpot() {
+                            // Parcour la liste des WindOrientation
+                            {% for windOrientation in spot.windOrientation %}
+                            tabOrientationState["{{ windOrientation.orientation }}"]="{{ windOrientation.state?windOrientation.state:"?" }}";
+                            {% endfor %}
+
+                            svgLoad(tabOrientationState, true);
+                        }
+
+                    </script>
+                </div>
+            </div>
+
+            {% if spot.URLMaree|default is not empty %}
+                <div class="col-sm-6 centered">
+                    <div class="row">
+
+                        <div class="col-sm-6 centered">
+                            {{ spot.descMaree|raw }}
+                        </div>
+                    </div>
+                </div>
+            {% endif %}
+
+        </div>
     </div>
+
+    <div class="row">
+        <div class="col-12">
+            <div class="row">
+                <div class="col-12">
+                    <h3>Commentaires</h3>
+                </div>
+            </div>
+            {% for comment in spot.commentaires %}
+                {% if comment.isVisible %}
+            <div class="row">
+                <h4>{{ comment.titre }}</h4>
+                <div class="col-12">
+                    {{ comment.description }}
+                </div>
+            </div>
+                {% else %}
+                    {% if app.user %}
+                    <div class="row">
+                        <h4>{{ comment.titre }}</h4>
+                        <div class="col-11">
+                            {{ comment.description }}
+                        </div>
+                        <div class="col-1">
+                            <button class="btn-secondary" onclick="putVisibleComment({{ comment.id }})">Visible</button>
+                        </div>
+                    </div>
+                    {% endif %}
+                {% endif %}
+            {% endfor %}
+
+
+            <div class="row">
+                <h4>Nouveau commentaire </h4>
+                <div class="col-12">
+
+                    <form action="{{ path('spot_add_comment', {'id':spot.id}) }}" method="POST"
+                          id="comment_form">
+
+                    <div class="row">
+                        <div class="col-4">
+                            {{ form_row(form.titre) }}
+                        </div>
+                        <div class="col-4">
+                            {{ form_row(form.pseudo) }}
+                        </div>
+
+                        <div class="col-4">
+                            {{ form_row(form.mail) }}
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-12">
+                            {{ form_row(form.commentaire) }}
+                        </div>
+                    </div>
+
+                    {{ form_end(form) }}
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <script>
+        function putVisibleComment(idComment) {
+            alert("il va falloir coder l'ajax ...");
+        }
+    </script>
+
 {% endblock %}

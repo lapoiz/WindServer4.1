@@ -1,0 +1,266 @@
+{% macro getInfoMaree() %}
+
+    <div class="row">
+        <div class="col-sm-12" id="infoMareeDiv">
+            <button class="btn btn-primary center-block" onclick="vaChercher()">Va chercher</button>
+        </div>
+    </div>
+
+
+    <script>
+        var buttonVaChercherHTML=$('#infoMareeDiv').html();
+        var idURLInfoMaree = null;
+
+        function vaChercher(){
+
+            // **** Récupére ne n°id de l'URL pour l'utiliser dans  getDateCoef()
+
+            // var urlInfoMaree = $('#laPoiz_windBundle_maree_mareeURL').val();
+            var urlInfoMaree = $('#maree_URLMaree').val();
+            if (urlInfoMaree === 'undefined') {
+                // pas d'URL
+                alert('Indiquez une URL dans le champs: "Marée URL"');
+            } else {
+                $('#infoMareeDiv').html(buildTableDisplayGetMaree());
+
+                // Récupére l'id utilisé dans l'URL http://maree.info/82 -> 82
+                var regGetId = new RegExp("[0-9]+");
+                var resultMatch = urlInfoMaree.match(regGetId);
+
+                if (resultMatch!=null) {
+                    idURLInfoMaree = resultMatch[0];
+                    getDateCoef(idURLInfoMaree); // ***** Va chercher les date de coef et l'affiche *****
+                } else {
+                    alert("Impossible de récuperer les éléments de l'URL:"+urlInfoMaree);
+                    $('#infoMareeDiv').html(buttonVaChercherHTML);
+                }
+            }
+            return false;
+        }
+
+        // Affiche les date du coef max et son coef ainsi que min, et normal (coef 80)
+        function getDateCoef(idURLInfoMaree) {
+
+            // *** Construit l'URL
+            var asset_url="{{ path('admin_ajax_maree_getcoef', {'idURLInfoMaree':'__id_URL_mareeInfo__'}) }}";
+            var reg=new RegExp("__id_URL_mareeInfo__", "g");
+            var url= asset_url.replace(reg,idURLInfoMaree);
+            //alert("url: "+url);
+
+            // *** Envoie l'ajax
+            $.ajax({
+                type: "GET",
+                url: url,
+                idURLInfoMaree: idURLInfoMaree,
+                cache: false,
+                success: function(dateCoef){
+                    // *** Affiche les données
+                    // dateCoef:
+                    displayDateCoef(dateCoef);
+
+                    // *** Lance la requête suivante: récupérer les hauteurs de la marée basse et de la marée haute
+
+                    // Pour tester: http://localhost/Wind/web/app_dev.php/admin/BO/ajax/maree/16/forDay/20150128
+                    getHauteurMarée(idURLInfoMaree,dateCoef["max"]["idDateUrl"], "max");
+                    getHauteurMarée(idURLInfoMaree,dateCoef["min"]["idDateUrl"], "min");
+                    if (dateCoef["norm"]!=null) {
+                        getHauteurMarée(idURLInfoMaree,dateCoef["norm"]["idDateUrl"], "norm");
+                    } else {
+                        getHauteurMarée(idURLInfoMaree,dateCoef["normBis"]["idDateUrl"], "norm");
+                    }
+
+                } ,
+                error: function(data){
+                    alert("URL ("+url+") ne semble pas valide.");
+                    $('#infoMareeDiv').html(buttonVaChercherHTML);
+                }
+            });
+        };
+
+        // Affiche date et coef
+        // Pour tester: http://localhost/Wind/web/app_dev.php/admin/BO/ajax/maree/dateCoef/16
+        function displayDateCoef(dateCoef) {
+            var htmlDisplay = '';
+            var find = false;
+            if (dateCoef["norm"]) {
+                find = true;
+                htmlDisplay += displayOneLigneDateCoef(dateCoef["norm"], "norm");
+            } else if (dateCoef["normBis"]) {
+                find = true;
+                htmlDisplay += displayOneLigneDateCoef(dateCoef["normBis"], "norm");
+            }
+            if (dateCoef["max"]) {
+                find = true;
+                htmlDisplay += displayOneLigneDateCoef(dateCoef["max"], "max");
+            }
+            if (dateCoef["min"]) {
+                find = true;
+                htmlDisplay += displayOneLigneDateCoef(dateCoef["min"], "min");
+            }
+             if (!find) {
+                 $('#infoMareeDiv').html(buttonVaChercherHTML);
+             }
+
+        }
+
+        // affiche la date et le coef dans le tableau
+        function displayOneLigneDateCoef(oneCoef, typeHauteur) {
+            $("#"+typeHauteur+"DateTD").html(oneCoef["date"]);
+            $("#"+typeHauteur+"CoefTD").html(oneCoef["coef"]);
+        }
+
+        // Va chercher la marée haute et basse pour le coef de type typeHauteur ("max, "min", "norm")
+        function getHauteurMarée(idURLInfoMaree,idDateUrl, typeHauteur) {
+            //alert("getHauteurMarée: "+idURLInfoMaree +"   " +idDateUrl);
+
+            var url = "{{ path('admin_ajax_maree_getforday', {'idURLInfoMaree':'__id_URL_mareeInfo__', 'idDateURLInfoMaree':'__date_URL_mareeInfo__'}) }}";
+            var reg=new RegExp("__id_URL_mareeInfo__", "g");
+            url= url.replace(reg,idURLInfoMaree);
+            reg=new RegExp("__date_URL_mareeInfo__", "g");
+            url= url.replace(reg,idDateUrl);
+
+            //alert("url: "+url);
+            // *** Envoie l'ajax
+            $.ajax({
+                type: "GET",
+                url: url,
+                idURLInfoMaree: idURLInfoMaree,
+                idDateURLInfoMaree: idDateUrl,
+                cache: false,
+                success: function(hauteurJson){
+                    // *** Lance la requête suivante: récupérer les hauteurs de la marée basse et de la marée haute
+                    // Pour tester : http://localhost/Wind/web/app_dev.php/admin/BO/ajax/maree/16/forDay/20150128
+                    setHauteur(hauteurJson,typeHauteur);
+                    reloadGraphMaree();
+                } ,
+                error: function(data){
+                    alert("URL ("+url+") ne semble pas valide.");
+                    $('#infoMareeDiv').html(buttonVaChercherHTML);
+                }
+            });
+        }
+
+        // affiche les nouvelles hauteurs et les places pour être enregistrés
+        function setHauteur(hauteurJson,typeHauteur) {
+            var hMax = 0;
+            var hMin = 100;
+            var hauteur;
+            for(var key in hauteurJson){
+                //alert(key + ' = ' + hauteurJson[key]);
+                hauteur = parseFloat(getJsonHauteur(hauteurJson[key]));
+                if (hauteur>hMax) {
+                    hMax = hauteur;
+                }
+                if (hauteur<hMin) {
+                    hMin = hauteur;
+                }
+            }
+
+            //hMax: hauteur Max
+            //hMin: hauteur Min
+
+            var hMoy = (hMax+hMin)/2;
+            var hMaréeHaute=hMoy;
+            var hMaréeBasse=hMoy;
+
+            if (typeHauteur=="max") { // -> on a déjà les valeurs
+                hMaréeHaute=hMax;
+                hMaréeBasse=hMin;
+                // On les pousse dans le Input du formulaire, en vue de l'enregistrement
+                $("#laPoiz_windBundle_maree_hauteurMHGrandeMaree").val(hMaréeHaute);
+                $("#laPoiz_windBundle_maree_hauteurMBGrandeMaree").val(hMaréeBasse);
+
+
+            } else if (typeHauteur=="min") {
+                // on récupére la plus haute des plus basses et la plus basse des plus hautes ...
+                hMaréeHaute=hMax;
+                hMaréeBasse=hMin;
+                for(var key in hauteurJson){
+                    //alert(key + ' = ' + hauteurJson[key]);
+                    hauteur = parseFloat(getJsonHauteur(hauteurJson[key]));
+                    if (hauteur>hMoy) {
+                        // marée haute
+                        if(hMaréeHaute>hauteur) {
+                            // la plus petite des marées hautes
+                            hMaréeHaute=hauteur;
+                        }
+                    } else {
+                        if (hMaréeBasse<hauteur) {
+                            // la plus grande des marées basses
+                            hMaréeBasse = hauteur;
+                        }
+                    }
+                    $("#laPoiz_windBundle_maree_hauteurMHPetiteMaree").val(hMaréeHaute);
+                    $("#laPoiz_windBundle_maree_hauteurMBPetiteMaree").val(hMaréeBasse);
+                }
+            } else if (typeHauteur=="norm") {
+                // on récupére les moyennes
+                var nbMaréeBasse=0;
+                var nbMaréeHaute=0;
+                hMaréeHaute = 0;
+                hMaréeBasse = 0;
+                for(var key in hauteurJson){
+                    hauteur = parseFloat(getJsonHauteur(hauteurJson[key]));
+
+                    if (hauteur>hMoy) {
+                        hMaréeHaute += hauteur;
+                        nbMaréeHaute++;
+                    }
+                    if (hauteur<hMoy) {
+                        hMaréeBasse += hauteur;
+                        nbMaréeBasse++;
+                    }
+                }
+                hMaréeBasse = Math.round((hMaréeBasse/nbMaréeBasse)*100)/100; // arrondi à 2 decimal
+                hMaréeHaute = Math.round((hMaréeHaute/nbMaréeHaute)*100)/100;
+                $("#laPoiz_windBundle_maree_hauteurMHMoyenneMaree").val(hMaréeHaute);
+                $("#laPoiz_windBundle_maree_hauteurMBMoyenneMaree").val(hMaréeBasse);
+            };
+
+            //alert(typeHauteur+"->   hMaréeHaute: "+hMaréeHaute+"  hMaréeBasse:"+hMaréeBasse);
+
+            $("#"+typeHauteur+"HMinTD").html(hMaréeBasse);
+            $("#"+typeHauteur+"HMaxTD").html(hMaréeHaute);
+
+            // pousse hMin et hMax
+        }
+
+        // jsonHauteur = 1.25m -> 1.25
+        function getJsonHauteur(jsonHauteur) {
+            return jsonHauteur.replace('m','');
+        }
+
+        // Construit la table ou sera affiché les élément sur les marée récupéré dans le site maree.info.com
+        function buildTableDisplayGetMaree() {
+            var htmlTable='';
+            htmlTable +='<table class="table table-bordered table-striped">';
+            htmlTable +='   <thead>';
+            htmlTable +='       <th></th>';
+            htmlTable +='       <th>Date</th>';
+            htmlTable +='       <th>Coef</th>';
+            htmlTable +='       <th>Hauteur Max</th>';
+            htmlTable +='       <th>Hauteur Min</th>';
+            htmlTable +='   </thead>';
+            htmlTable +='   <tbody>';
+            htmlTable +='       <tr>';
+            htmlTable +='           <td>Coef Max</td>';
+            htmlTable +='           <td id="maxDateTD"></td><td id="maxCoefTD"></td><td id="maxHMaxTD"></td><td id="maxHMinTD"></td>';
+            htmlTable +='       </tr>';
+            htmlTable +='       <tr>';
+            htmlTable +='           <td>Coef Min</td>';
+            htmlTable +='           <td id="minDateTD"></td><td id="minCoefTD"></td><td id="minHMaxTD"></td><td id="minHMinTD"></td>';
+            htmlTable +='       </tr>';
+            htmlTable +='       <tr>';
+            htmlTable +='           <td>Coef Moyen</td>';
+            htmlTable +='           <td id="normDateTD"></td><td id="normCoefTD"></td><td id="normHMaxTD"></td><td id="normHMinTD"></td>';
+            htmlTable +='       </tr>';
+            htmlTable +='   </tbody>';
+            htmlTable +='</table>';
+
+            return htmlTable;
+        }
+
+
+    </script>
+
+{% endmacro %}

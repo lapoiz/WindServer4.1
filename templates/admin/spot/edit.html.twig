@@ -2,12 +2,23 @@
 
 {% block title 'Gérer les spots' %}
 
+{% block headScript %}
+    <script src="http://code.highcharts.com/highcharts.js"></script>
+{% endblock %}
+
 {% block body %}
     <div class="container mt-4">
         <h1>Edit</h1>
+        <a href="{{ path('admin_spot_index') }}">admin</a>
+
        {{  include('admin/spot/_form.html.twig', {form: form, button: 'Save'}) }}
 
-
+        <a
+                class="dt-button buttons-collection buttons-colvis btn btn-white btn-secondary btn-bold"
+                href="{{ path('admin_spot_index') }}"
+        >
+            Cancel
+        </a>
     </div>
 
     <script>
@@ -36,4 +47,7 @@
 
     {% from "windRosace/rosaceWindAdminJS.html.twig" import js %}
     {{ js(spot) }}
+
+
+
 {% endblock %}

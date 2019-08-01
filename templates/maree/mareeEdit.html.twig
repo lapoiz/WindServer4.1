@@ -1,0 +1,234 @@
+{% extends 'admin/base_admin.html.twig' %}
+
+{% block title 'Restriction marée' %}
+
+{% block headScript %}
+    <script src="http://code.highcharts.com/highcharts.js"></script>
+{% endblock %}
+
+{% block body %}
+    <div class="container mt-4">
+        <h1>Marée de {{  spot.name }}</h1>
+
+
+        <a href="{{ path('admin_spot_index') }}">admin</a>-><a href="{{ path('admin_spot_edit', {'id':spot.id}) }}">{{ spot.name }}</a>
+
+        <h3>URL pour récupérer les prévisions de marées</h3>
+
+        <div class="row">
+            <div class="col-sm-6">
+                <form action="{{ path('admin_maree_edit', {'id':spot.id}) }}" method="POST"
+                      id="maree_form">
+
+                    {{ form_row(form.URLMaree) }}
+
+                    <div class="row">
+                        <div class="col-sm-12 margin-top-05">
+                            {% from "maree/infoMaree.html.twig" import getInfoMaree %}
+                            {{ getInfoMaree() }}
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-sm-12">
+
+                            <h3>Restrictions</h3>
+                            <div class="restrictions" data-prototype="
+                                {% filter escape %}
+                                    {{ include('maree/restrictionMareeForm.html.twig', { 'form': form.mareeRestriction.vars.prototype }) }}
+                                {% endfilter %}"
+                            >
+
+                                {#{{ form_widget(form.mareeRestriction.vars.prototype)|e }}">#}
+                                {# itère sur chaque mareeRestriction existant et affiche ses champs : hauteurMax, hauteurMin et state #}
+                                {% for restriction in form.mareeRestriction %}
+                                    <div class="row">
+                                        <div class="col-sm-3">
+                                            {{ form_row(restriction.hauteurMin) }}
+                                        </div>
+                                        <div class="col-sm-3">
+                                            {{ form_row(restriction.hauteurMax) }}
+                                        </div>
+                                        <div class="col-sm-3">
+                                            {{ form_row(restriction.state) }}
+                                        </div>
+                                    </div> <!--fermer dans function ajoutant le btn supprime mareeEdit -->
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+
+                    <br />
+                    {{ form_rest(form) }}
+                </form>
+                <a
+                        class="dt-button buttons-collection buttons-colvis btn btn-white btn-secondary btn-bold"
+                        href="{{ path('admin_spot_edit', {'id':spot.id}) }}"
+                >
+                    Cancel
+                </a>
+            </div>
+            <div class="col-sm-6">
+                {% from "maree/graph.html.twig" import graphMaree %}
+                {{ graphMaree(spot) }}
+            </div>
+        </div>
+
+    </div>
+
+<script>
+    // Récupère le div qui contient la collection de restrictions
+    var collectionHolder = $('div.restrictions');
+
+    // ajoute un lien « add a div.restrictions »
+    var addRestrictionButton = $('<div class="col-sm-3"><button type="button" class="btn btn-primary" onclick="addRestrictionForm()">Ajouter</button></div>');
+    //var addSaveRestrictionButton = $('<div class="col-sm-3"><button type="button" class="btn btn-primary" onclick="saveRestrictionForm()">Save restrictions</button></div>');
+    var newButtonDiv = $('<div class="row" id="addButton"></div>').append(addRestrictionButton);//.append(addSaveRestrictionButton);
+
+    function addRestrictionForm() {
+        // Récupère l'élément ayant l'attribut data-prototype comme expliqué plus tôt
+        var prototype = collectionHolder.attr('data-prototype');
+
+        // Remplace '__name__' dans le HTML du prototype par un nombre basé sur
+        // la longueur de la collection courante
+        var newForm = prototype.replace(/__name__/g, collectionHolder.children().length);
+
+        // Affiche le formulaire dans la page dans un div, avant le button "ajouter"
+        var newFormDiv = $('<div class="row"></div>').append(newForm);
+        newButtonDiv.before(newFormDiv);
+
+        //addRestrictionFormDeleteButton($newFormDiv);
+        addRestrictionFormDeleteButton(newFormDiv);
+    }
+
+
+    //function addRestrictionFormDeleteButton($newFormDiv) {
+    function addRestrictionFormDeleteButton(formDiv) {
+        var removeFormButton = $('<div class="col-sm-3"><button type="button" class="btn btn-danger">Supprimer</button></div>');
+        formDiv.append(removeFormButton);
+
+        removeFormButton.on('click', function(e) {
+            formDiv.remove();
+        });
+    }
+
+
+    jQuery(document).ready(function() {
+        collectionHolder.append(newButtonDiv);
+
+        collectionHolder.find('div.row').each(function() {
+            if ($(this).attr('id')!="addButton") {
+                addRestrictionFormDeleteButton($(this));
+                addPlotBandOnGraph($(this));
+            }
+        });
+    });
+
+    $("#maree_form").on('submit', function(e){
+
+        if (!checkRestriction()) {
+            e.preventDefault();
+            alert("Vérifiez l'entrecroisement des restrictions");
+        };
+    });
+
+
+    // Récupere des Ipunt Hidden les valeurs et les pousses dans le graph
+    function reloadGraphMaree() {
+        var graph = getChartMaree();
+
+        updateSerieGraph(graph.get("serieGM"),
+                parseFloat($("#laPoiz_windBundle_maree_hauteurMHGrandeMaree").val()),
+                parseFloat($("#laPoiz_windBundle_maree_hauteurMBGrandeMaree").val()));
+        updateSerieGraph(graph.get("seriePM"),
+                parseFloat($("#laPoiz_windBundle_maree_hauteurMHPetiteMaree").val()),
+                parseFloat($("#laPoiz_windBundle_maree_hauteurMBPetiteMaree").val()));
+        updateSerieGraph(graph.get("serieMM"),
+                parseFloat($("#laPoiz_windBundle_maree_hauteurMHMoyenneMaree").val()),
+                parseFloat($("#laPoiz_windBundle_maree_hauteurMBMoyenneMaree").val()));
+    }
+
+    // Ajoute PlotBand au graph en fonction des input
+    function addPlotBandOnGraph($formDiv) {
+        var tabRestriction = getRestrictionFormDiv($formDiv);
+        drawPlotBandGraphMaree(tabRestriction["hMin"],tabRestriction["hMax"],tabRestriction["state"]);
+    }
+
+    function getRestrictionFormDiv($formDiv) {
+        var hMin, hMax,state;
+
+        var regHautMin=new RegExp("hauteurMin$", "g");
+        var regHautMax=new RegExp("hauteurMax$", "g");
+        var regState=new RegExp("state$", "g");
+
+        //alert("addPlotBandOnGraph("+$formDiv+")");
+        $formDiv.find('input').each(function() {
+            //alert("  $(this): "+$(this));
+            var idInput = $(this).attr('id')+"";
+
+            // récupére input hMin
+            if (idInput.match(regHautMin)!=null) {
+                hMin=parseFloat($(this).val());
+            }
+            // récupére input fin
+            if (idInput.match(regHautMax)!=null) {
+                hMax=parseFloat($(this).val());
+            }
+        });
+
+        $formDiv.find('select').each(function() {
+        // récupére l'état (warn, Ok, KO
+            var idSelect = $(this).attr('id')+"";
+            if (idSelect.match(regState)) {
+                state=$(this).val();
+            }
+        });
+
+        //alert("hMin: "+hMin+"  hMax: "+hMax+"  state: "+state);
+        return {"hMin":hMin,"hMax":hMax,"state":state};
+    }
+
+    function effacerMaree() {
+        if (confirm("Voulez vous vraiment effacer cet élément ?")) {
+            window.location.replace("{{ path('admin_ajax_maree_delete', {'id':spot.id})}}");
+        }
+    }
+
+    // Verifie qu'il n'y a pas un pb entre les hMin et hMax des différentes restrictions
+    function checkRestriction() {
+        var tabRestriction = [];
+        var index=0;
+        var error=false;
+
+        var hMin, hMax;
+
+        collectionHolder.find('div.row').each(function() {
+            tabRestriction[index]=getRestrictionFormDiv($(this));
+            index++;
+        });
+
+        for (var i=0; i<index; i++) {
+            hMin = tabRestriction[i]["hMin"];
+            hMax = tabRestriction[i]["hMax"];
+            if (hMin>hMax) {
+                error = true;
+            } else {
+                for (var j=i+1; j<index; j++) {
+                    if (hMin>tabRestriction[j]["hMin"]) {
+                        if (hMin<tabRestriction[j]["hMax"]) {
+                            error = true;
+                        }
+                    } else if (hMax>tabRestriction[j]["hMin"]) {
+                        error = true;
+                    }
+                }
+            }
+        }
+        return !error;
+    }
+
+</script>
+
+
+
+{% endblock %}

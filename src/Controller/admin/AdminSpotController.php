@@ -3,6 +3,8 @@ namespace App\Controller\admin;
 
 
 use App\Form\SpotType;
+use App\Form\WebsiteInfoSpotType;
+use App\Form\WebsiteInfoType;
 use App\Repository\SpotRepository;
 use App\Utils\RosaceWindManage;
 use Doctrine\Common\Persistence\ObjectManager;
@@ -99,7 +101,6 @@ class AdminSpotController extends AbstractController
         ]);
     }
 
-
     /**
      * @Route("/admin/spot/delete/{id}", name="admin_spot_delete", methods="DELETE")
      * @param Spot $spot
@@ -115,4 +116,41 @@ class AdminSpotController extends AbstractController
         //}
         return $this->redirectToRoute("admin_spot_index");
     }
+
+
+    /**
+     * @Route("/admin/spot/websiteInfo/edit/{id}", name="admin_spot_websiteInfo_edit")
+     * @param Spot $spot
+     * @param Request $request
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
+    public function websiteInfoEdit(Spot $spot, Request $request) : Response
+    {
+        $form = $this->createForm(WebsiteInfoSpotType::class, $spot);
+
+        if ($request->isMethod('POST')) {
+            $form->handleRequest($request);
+
+            if ($form->isSubmitted() && $form->isValid()) {
+                $spot = $form->getData();
+
+                $websiteInfos = $spot->getWebSiteInfos();
+                foreach ($websiteInfos as $website) {
+                    $website->setSpot($spot);
+                    $this->manager->persist($website);
+                }
+                $this->manager->persist($spot);
+                $this->manager->flush();
+
+                $this->addFlash('success', 'Website info modifié avec succés');
+            }
+        }
+        //$form->add('Save',SubmitType::class);
+
+        return $this->render('admin/spot/websiteInfoEdit.html.twig', [
+            'spot' => $spot,
+            'form' => $form->createView()
+        ]);
+    }
+
 }
