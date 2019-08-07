@@ -1,0 +1,30 @@
+.myCard {
+    width: 300px;
+    height: 650px;
+}
+
+.card {
+    margin-bottom: 5px;
+}
+
+.sub-card {
+    border: 1px solid rgba(0,0,0,.125);
+    border-radius: .25rem;
+    margin-bottom: 5px;
+    padding: 5px;
+}
+div.row {
+    display: block;
+    width: 100%;
+}
+
+#map{ /* hauteur de la carte */
+    height:200px;
+}
+table {
+    width: 100%;
+}
+ td {
+     width: 50%;
+     text-align: center;
+ }

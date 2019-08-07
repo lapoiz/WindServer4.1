@@ -21,6 +21,7 @@ use App\Form\InitDataFileType;
 use App\Utils\RosaceWindManage;
 use App\Utils\WebsiteGetData;
 use Doctrine\Common\Persistence\ObjectManager;
+use Knp\Snappy\Image;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Csv;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -93,9 +94,10 @@ class AdminInitDataFileController extends AbstractController
     /**
      * @Route("/data_file/init", name="admin_init_data_file")
      * @param Request $request
+     * @param Image $imageGenerator
      * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
      */
-    public function initDataFileAction(Request $request)
+    public function initDataFileAction(Request $request, Image $imageGenerator)
     {
         $initDataFile = new InitDataFile();
         $form = $this->createForm(InitDataFileType::class, $initDataFile);
@@ -111,7 +113,7 @@ class AdminInitDataFileController extends AbstractController
 
             // Move the file to the directory
             try {
-                $this->import($file);
+                $this->import($file,$imageGenerator);
                 $file->move(
                     $directoryName,
                     $fileName
@@ -137,10 +139,8 @@ class AdminInitDataFileController extends AbstractController
      * Import le fichier CVS mis en parametre
      *
      */
-    private function import(UploadedFile $file)
+    private function import(UploadedFile $file,Image $imageGenerator)
     {
-        //Todo: jamais utilisé ? On n'enregistre pas $spot ....
-
         $data = $this->csv_to_array($file->getPathname());
         if ($data != null) {
             // Turning off doctrine default logs queries for saving memory
@@ -158,7 +158,7 @@ class AdminInitDataFileController extends AbstractController
             // Processing on each row of data
             foreach ($data as $row) {
                 try {
-                    $spot = $this->importRow($row,$tabRegions);
+                    $spot = $this->importRow($row,$tabRegions, $imageGenerator);
 
                     //$this->manager->merge($spot);
 
@@ -214,9 +214,8 @@ class AdminInitDataFileController extends AbstractController
         return $data;
     }
 
-    private function importRow($row,$tabRegions)
+    private function importRow($row,$tabRegions, Image $imageGenerator)
     {
-        //Todo
         $spot = new Spot();
         $spot->setName($row['Nom']);
 
@@ -344,6 +343,7 @@ class AdminInitDataFileController extends AbstractController
         }
         $urlImage=$this->getParameter('rosace_directory_kernel');
         RosaceWindManage::createRosaceWind($spot,$urlImage);
+        $this->createImageCard($spot,$imageGenerator);
 
         return $spot;
     }
@@ -708,4 +708,26 @@ class AdminInitDataFileController extends AbstractController
         return $columnLetter;
     }
 
+
+    /**
+     * Dupliqué dans AdminSpotController
+     * @param Spot $spot
+     * @param Image $imageGenerator
+     */
+    private function createImageCard(Spot $spot,Image $imageGenerator) {
+        $urlImage = $this->getParameter('snappy_directory_kernel').DIRECTORY_SEPARATOR.'card.'.$spot->getId().'.jpg';
+        if( file_exists ( $urlImage))
+            unlink( $urlImage ) ;
+
+        $view = $this->renderView('spot/card.html.twig', array(
+            'spot' => $spot,
+            'urlImage' => $this->getParameter('rosace_directory').DIRECTORY_SEPARATOR,
+        ));
+        $imageGenerator->setOption('width',317);
+        $imageGenerator->setOption('height',565);
+        $imageGenerator->setOption('javascript-delay',1000);
+        $imageGenerator->setOption('quality', 100);
+
+        return $imageGenerator->generateFromHtml($view, $urlImage);
+    }
 }

@@ -8,17 +8,17 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
-class HomeController  extends AbstractController
+class TestController  extends AbstractController
 {
 
     /**
-     * @Route("/" , name="home")
+     * @Route("/test" , name="test")
      * @return Response
      */
-    public function index(SpotRepository $repository) : Response
+    public function test(SpotRepository $repository) : Response
     {
         $spots = $repository->findAll();
-        return $this->render('pages/Home.html.twig',[
+        return $this->render('tests/test-meteo.html.twig',[
             "spots" => $spots,
             "urlImage" => $this->getParameter('snappy_directory').DIRECTORY_SEPARATOR
         ]);

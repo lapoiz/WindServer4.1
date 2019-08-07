@@ -1,13 +1,90 @@
 {% extends 'base.html.twig' %}
 
+{% block stylesheets %}
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Swiper/4.5.0/css/swiper.min.css">
+{% endblock %}
+
+{% block headScript %}
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Swiper/4.5.0/js/swiper.min.js"></script>
+{% endblock %}
+
+
 {% block title 'Les spots' %}
 
 {% block body %}
     <h1>Welcome</h1>
 
+
+ICI
+    <section>
+        <div class="container">
+            <div class="row">
+                <div class="main_drag roomy-50">
+                    <div class="col-md-12">
+                        <div class="swiper-container">
+                            <div class="swiper-wrapper">
+                                <div class="swiper-slide" style="background-image:url({{ asset(urlImage ~ 'card.1.jpg') }})"></div>
+                                <div class="swiper-slide" style="background-image:url({{ asset(urlImage ~ 'card.2.jpg') }})"></div>
+                                <div class="swiper-slide" style="background-image:url({{ asset(urlImage ~ 'card.3.jpg') }})"></div>
+                            </div>
+                            <!-- If we need navigation buttons -->
+                            <div class="swiper-button-prev"></div>
+                            <div class="swiper-button-next"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+LA
+
+
+
+
+
+
+
+
+
+
+
+<!--
+
     <div class="container">
+        <div class="row">
+            <div class="main_drag roomy-50">
+                <div class="col-md-12">
+                    <div class="swiper-container swiper-container-horizontal swiper-container-3d swiper-container-coverflow">
+                        <div class="swiper-wrapper" style="transform: translate3d(-710px, 0px, 0px); transition-duration: 0ms;">
+                            <div class="swiper-slide swiper-slide-duplicate swiper-slide-duplicate-active"
+                                 style='background-image: url("assets/images/drag1.png"); transform: translate3d(0px, 0px, -979.412px) rotateX(0deg) rotateY(48.9706deg); z-index: -9; transition-duration: 0ms; margin-right: 30px;'
+                                 data-swiper-slide-index="0">
+                            </div>
+                            <div class="swiper-slide swiper-slide-duplicate swiper-slide-duplicate-next"
+                                 style='background-image: url("assets/images/drag3.png"); transform: translate3d(0px, 0px, -652.941px) rotateX(0deg) rotateY(32.6471deg); z-index: -6; transition-duration: 0ms; margin-right: 30px;'
+                                 data-swiper-slide-index="1">
+                            </div>
+                            <div class="swiper-slide swiper-slide-duplicate swiper-slide-prev"
+                                 style='background-image: url("assets/images/drag2.png"); transform: translate3d(0px, 0px, -326.471px) rotateX(0deg) rotateY(16.3235deg); z-index: -2; transition-duration: 0ms; margin-right: 30px;'
+                                 data-swiper-slide-index="2">
+                            </div>
+                            <div class="swiper-slide swiper-slide-active"
+                                 style='background-image: url("assets/images/drag1.png"); transform: translate3d(0px, 0px, 0px) rotateX(0deg) rotateY(0deg); z-index: 1; transition-duration: 0ms; margin-right: 30px;'
+                                 data-swiper-slide-index="0">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+-->
+
+
         <h2>La liste</h2>
-        <div class="rox flex">
+        <div class="row flex">
             {% for spot in spots %}
                 <div class="col-3">
                     <div class="card">
@@ -21,9 +98,7 @@
                         </div>
                     </div>
                 </div>
-
-
             {%  endfor %}
         </div>
-    </div>
+
 {% endblock %}

@@ -1,4 +1,4 @@
-{% macro graphMaree(spot, widthGraph, heightGraph) %}
+{% macro graphMaree(spot, widthGraph, heightGraph, withoutTitle, textColor) %}
 
     <div id="mareeGraph" style="width:{{ (widthGraph is defined and widthGraph is not null)?widthGraph:"100%" }};
             height:{{ (heightGraph is defined and heightGraph is not null)?heightGraph:"100%"  }}"></div>
@@ -9,6 +9,9 @@
     var mareeChart;
 
     document.addEventListener('DOMContentLoaded', function () {
+
+        {% set isWithTitle = (withoutTitle is defined and withoutTitle is not null)?not withoutTitle:true %}
+        {% set isTextColor = (textColor is defined and textColor is not null)?true:false %}
 
         // Gande Marée
         var hMinGM = {{ (spot.hauteurMBGrandeMaree is empty)?'0.34':spot.hauteurMBGrandeMaree }};
@@ -21,18 +24,19 @@
         var hMaxPM = {{ (spot.hauteurMHPetiteMaree is empty)?'5.32':spot.hauteurMHPetiteMaree }};
 
 
-
-
         //$('#mareeGraph').highcharts({
         mareeChart = Highcharts.chart('mareeGraph', {
 
                 chart: {
-                    marginBottom: 110,
                     renderTo: 'mareeGraph',
-                    height: 300,
+                    height: {{ (heightGraph is defined and heightGraph is not null)?heightGraph:"300" }},
                     reflow: false,
-                    marginLeft: 50,
-                    marginRight: 20,
+
+                    {% if not isWithTitle %}
+                    marginLeft: 5,
+                    marginBottom: 5,
+                    {% endif %}
+
                     backgroundColor: null,
                     style: {
                         position: 'absolute'
@@ -43,25 +47,45 @@
             credits: {
                     enabled: false
                 },
+        {% if isWithTitle %}
                 title: {
-                    text: 'La marée'
+                    text: 'Marée du Spot'
                 },
                 subtitle: {
                     text: 'Quand peut-on naviguer ?'
                 },
+        {% else %}
+                title: {
+                    text: ''
+                },
+        {% endif %}
                 xAxis: {
                     title: {
-                        text: "Période des marées: 12 h 25 min"
+                    {% if isWithTitle %}
+                        text: "Période des marées: 12 h 25 min",
+                    {% else %}
+                        text: '',
+                    {% endif %}
                     },
                     labels: {
                         enabled:false//default is true
-                        }
-
+                    },
                 },
                 yAxis: {
                     title: {
-                        text: 'Hauteur de la marée (m)'
+                        {% if isWithTitle %}
+                        text: "Hauteur de la marée (m)",
+                        {% else %}
+                        text: '',
+                        {% endif %}
+                    },
+                {% if isTextColor %}
+                    labels: {
+                        style: {
+                            color: "{{ textColor }}"
+                        }
                     }
+                {% endif %}
                 },
                 tooltip: {
                     valueSuffix: 'm'

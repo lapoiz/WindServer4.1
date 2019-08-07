@@ -10,6 +10,10 @@ parameters:
     svg_directory: '%kernel.project_dir%/public/download/svgFile'
     rosace_directory : 'rosaces'
     rosace_directory_kernel : '%kernel.project_dir%/public/%rosace_directory%'
+    snappy_directory : 'snappy'
+    snappy_directory_kernel : '%kernel.project_dir%/public/%snappy_directory%'
+    phantomjs_directory_kernel2: '%kernel.project_dir%/vendor/horror/php-phantomjs/bin/phantomjs.exe'
+    phantomjs_directory_kernel: '%kernel.project_dir%/vendor/horror/php-phantomjs/src/JonnyW/PhantomJs/Engine.php'
 
 services:
     # default configuration for services in *this* file

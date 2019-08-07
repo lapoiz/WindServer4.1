@@ -69,6 +69,7 @@
                 </a>
             </div>
             <div class="col-sm-6">
+                {%  set isWithTitle=true %}
                 {% from "maree/graph.html.twig" import graphMaree %}
                 {{ graphMaree(spot) }}
             </div>
