@@ -61,8 +61,23 @@
                             <td>
                                 <img src="{{ absolute_url(asset(urlImage ~ spot.id ~ '.png')) }}" width="120px"></td>
                             <td class="text-black-50">
-                                {{ spot.name }} <br>
-                                <small class="text-muted">{{ spot.region.nom }}</small>
+                                <table>
+                                    <tr>
+                                        <td>
+                                            {{ spot.name }} <br>
+                                            <small class="text-muted">{{ spot.region.nom }}</small>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>Note du spot: {{ spot.noteGeneral }}
+                                            {% if spot.noteGeneral is not null %}
+                                                {% from "spot/note.html.twig" import star %}
+                                                {{ star(spot.noteGeneral) }}
+                                            {%  endif %}
+                                        </td>
+                                    </tr>
+                                </table>
+
                             </td>
                         </tr>
                     </tbody>

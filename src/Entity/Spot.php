@@ -234,6 +234,11 @@ class Spot
      */
     private $commentaires;
 
+    /**
+     * @ORM\Column(type="decimal", scale=1, precision=3, nullable=true)
+     */
+    private $noteGeneral;
+
     public function __construct()
     {
         $this->mareeRestriction = new ArrayCollection();
@@ -929,5 +934,17 @@ class Spot
 
     public function addCommentaire(Commentaire $newComment) {
         $this->commentaires->add($newComment);
+    }
+
+    public function getNoteGeneral()
+    {
+        return $this->noteGeneral;
+    }
+
+    public function setNoteGeneral(?int $noteGeneral): self
+    {
+        $this->noteGeneral = $noteGeneral;
+
+        return $this;
     }
 }

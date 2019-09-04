@@ -20,7 +20,7 @@ class HomeController  extends AbstractController
         $spots = $repository->findAll();
         return $this->render('pages/Home.html.twig',[
             "spots" => $spots,
-            "urlImage" => $this->getParameter('snappy_directory').DIRECTORY_SEPARATOR
+            "urlImage" => $this->getParameter('snappy_directory')
         ]);
     }
 }

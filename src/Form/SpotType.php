@@ -21,6 +21,9 @@ class SpotType extends AbstractType
             ->add('name', null,  [
                 'label' => 'Nom du spot'
             ])
+            ->add('noteGeneral', TextType::class,[
+                'label' => 'Note du spot de 0 à 5.'])
+
             ->add('description', TextareaType::class, array('attr' => array('class' => 'ckeditor')))
 
             ->add('isFoil', ChoiceType::class, [
