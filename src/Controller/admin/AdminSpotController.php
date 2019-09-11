@@ -156,7 +156,7 @@ class AdminSpotController extends AbstractController
 
 
     /**
-     * @Route("/admin/spot/card/{id}", name="admin.spot.show.card")
+     * @Route("/spot/card/{id}", name="admin.spot.show.card")
      * @param Request $request
      * @return Response
      */
