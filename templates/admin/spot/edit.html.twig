@@ -48,6 +48,7 @@
     {% from "windRosace/rosaceWindAdminJS.html.twig" import js %}
     {{ js(spot) }}
 
-
-
+    <div class="container mt-4">
+        <img src="{{ asset(urlCardImage ~ '/card.'~spot.id~'.jpg') }}">
+    </div>
 {% endblock %}
