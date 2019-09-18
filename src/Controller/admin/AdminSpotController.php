@@ -5,6 +5,7 @@ namespace App\Controller\admin;
 use App\Form\SpotType;
 use App\Form\WebsiteInfoSpotType;
 use App\Repository\SpotRepository;
+use App\Service\HTMLtoImage;
 use App\Utils\RosaceWindManage;
 use Doctrine\Common\Persistence\ObjectManager;
 use JonnyW\PhantomJs\Client;
@@ -77,7 +78,7 @@ class AdminSpotController extends AbstractController
      * @param Request $request
      * @return \Symfony\Component\HttpFoundation\Response
      */
-    public function edit(Spot $spot, Request $request, Image $imageGenerator) : Response
+    public function edit(Spot $spot, Request $request, HTMLtoImage $cardGenerator) : Response
     {
         $form = $this->createForm(SpotType::class, $spot);
         $form->handleRequest($request);
@@ -90,7 +91,8 @@ class AdminSpotController extends AbstractController
 
             // Créé l'image .svg dans repertoire définit dans config/services.yaml, utile pour inserer dans map France
             RosaceWindManage::createRosaceWind($spot, $this->getParameter('svg_directory'));
-            $this->createImageCard($spot,$imageGenerator);
+            $cardGenerator->createImageCard($spot);
+            //$this->createImageCard($spot,$imageGenerator);
 
             $this->addFlash('success', 'Spot '.$spot->getName().', modifié avec succés');
             return $this->redirectToRoute('admin_spot_index');
