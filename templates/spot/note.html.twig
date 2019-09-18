@@ -1,9 +1,9 @@
 {% macro star(nbStar) %}
     {% for i in 1..5 %}
         {% if i<=nbStar %}
-            <span class="fa fa-star checked"></span>
+            <span class="fas fa-star"></span>
         {% else %}
-            <span class="fa fa-star"></span>
+            <span class="far fa-star"></span>
         {% endif %}
     {% endfor %}
 {% endmacro %}

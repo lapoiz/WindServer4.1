@@ -14,6 +14,7 @@ parameters:
     snappy_directory_kernel : '%kernel.project_dir%/public/%snappy_directory%'
     phantomjs_directory_kernel2: '%kernel.project_dir%/vendor/horror/php-phantomjs/bin/phantomjs.exe'
     phantomjs_directory_kernel: '%kernel.project_dir%/vendor/horror/php-phantomjs/src/JonnyW/PhantomJs/Engine.php'
+    html_image_directory: 'cards'
 
 services:
     # default configuration for services in *this* file
@@ -35,3 +36,9 @@ services:
 
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones
+
+    # Service pour transformer une page HTML en image
+    App\Service\HTMLtoImage:
+        arguments:
+            $convertioKey: 'cc30e0857effdcd895d4d5b5b3b7a7e5'
+            $htmlImageDirectoryKernel: '%kernel.project_dir%/public/%html_image_directory%'

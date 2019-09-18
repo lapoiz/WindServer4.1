@@ -36,6 +36,15 @@ class SpotRepository extends ServiceEntityRepository
     }
     */
 
+    public function findFirst(): ?Spot
+    {
+        return $this->createQueryBuilder('s')
+            ->setMaxResults( 1 )
+            ->orderBy('s.id', 'ASC')
+            ->getQuery()
+            ->getOneOrNullResult()
+            ;
+    }
     /*
     public function findOneBySomeField($value): ?Spot
     {

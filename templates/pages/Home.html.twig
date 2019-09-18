@@ -29,7 +29,8 @@
                         <div class="swiper-container">
                             <div class="swiper-wrapper">
                                 {% for spot in spots %}
-                                <div class="swiper-slide" style="background-image:url({{ asset(urlImage ~ '/card.'~spot.id~'.jpg') }})"></div>
+                                <a href="{{ path('spot.show', {id: spot.id, slug: spot.slug}) }}"
+                                        class="swiper-slide" style="background-image:url({{ asset(urlImage ~ '/card.'~spot.id~'.jpg') }})"></a>
                                 {%  endfor %}
                             </div>
                             <!-- If we need navigation buttons -->
