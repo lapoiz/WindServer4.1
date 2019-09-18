@@ -98,7 +98,7 @@ class AdminSpotController extends AbstractController
 
         return $this->render('admin/spot/edit.html.twig', [
             'spot' => $spot,
-            "urlImage" => $this->getParameter('card_image_directory'),
+            "urlCardImage" => $this->getParameter('card_image_directory'),
             'form' => $form->createView()
         ]);
     }
