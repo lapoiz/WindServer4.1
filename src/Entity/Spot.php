@@ -36,6 +36,11 @@ class Spot
     /**
      * @ORM\Column(type="text", nullable=true)
      */
+    private $shortDescription;
+
+    /**
+     * @ORM\Column(type="text", nullable=true)
+     */
     private $desc_route;
 
     /**
@@ -238,6 +243,11 @@ class Spot
      * @ORM\Column(type="decimal", scale=1, precision=3, nullable=true)
      */
     private $noteGeneral;
+
+    /**
+     * @ORM\Column(type="decimal", scale=1, precision=3, nullable=true)
+     */
+    private $niveauMin;
 
     public function __construct()
     {
@@ -944,6 +954,53 @@ class Spot
     public function setNoteGeneral(?int $noteGeneral): self
     {
         $this->noteGeneral = $noteGeneral;
+
+        return $this;
+    }
+
+    public function getNiveauMin(): ?string
+    {
+        return $this->niveauMin;
+    }
+
+    public function setNiveauMin(?string $niveauMin): self
+    {
+        $this->niveauMin = $niveauMin;
+
+        return $this;
+    }
+
+    public function addWebSiteInfo(WebSiteInfo $webSiteInfo): self
+    {
+        if (!$this->webSiteInfos->contains($webSiteInfo)) {
+            $this->webSiteInfos[] = $webSiteInfo;
+            $webSiteInfo->setSpot($this);
+        }
+
+        return $this;
+    }
+
+    public function removeCommentaire(Commentaire $commentaire): self
+    {
+        if ($this->commentaires->contains($commentaire)) {
+            $this->commentaires->removeElement($commentaire);
+            // set the owning side to null (unless already changed)
+            if ($commentaire->getSpot() === $this) {
+                $commentaire->setSpot(null);
+            }
+        }
+
+        return $this;
+    }
+
+    public function getShortDescription(): ?string
+    {
+        return $this->shortDescription;
+    }
+
+    public function setShortDescription(?string $shortDescription): self
+    {
+        $this->shortDescription = $shortDescription;
 
         return $this;
     }

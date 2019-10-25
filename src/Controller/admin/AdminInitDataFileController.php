@@ -14,6 +14,7 @@ use App\Entity\Region;
 use App\Entity\WebSiteInfo;
 use App\Entity\WindOrientation;
 use App\Repository\SpotRepository;
+use App\Service\HTMLtoImage;
 use App\Utils\GetDataMaree;
 use App\Entity\InitDataFile;
 use App\Entity\Spot;
@@ -21,7 +22,7 @@ use App\Form\InitDataFileType;
 use App\Utils\RosaceWindManage;
 use App\Utils\WebsiteGetData;
 use Doctrine\Common\Persistence\ObjectManager;
-use Knp\Snappy\Image;
+//use Knp\Snappy\Image;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Csv;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -94,10 +95,10 @@ class AdminInitDataFileController extends AbstractController
     /**
      * @Route("/data_file/init", name="admin_init_data_file")
      * @param Request $request
-     * @param Image $imageGenerator
+     * @param HTMLtoImage $imageGenerator
      * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
      */
-    public function initDataFileAction(Request $request, Image $imageGenerator)
+    public function initDataFileAction(Request $request, HTMLtoImage $imageGenerator)
     {
         $initDataFile = new InitDataFile();
         $form = $this->createForm(InitDataFileType::class, $initDataFile);
@@ -139,7 +140,7 @@ class AdminInitDataFileController extends AbstractController
      * Import le fichier CVS mis en parametre
      *
      */
-    private function import(UploadedFile $file,Image $imageGenerator)
+    private function import(UploadedFile $file,HTMLtoImage $imageGenerator)
     {
         $data = $this->csv_to_array($file->getPathname());
         if ($data != null) {
@@ -214,7 +215,7 @@ class AdminInitDataFileController extends AbstractController
         return $data;
     }
 
-    private function importRow($row,$tabRegions, Image $imageGenerator)
+    private function importRow($row,$tabRegions, HTMLtoImage $hTMLtoImage)
     {
         $spot = new Spot();
         $spot->setName($row['Nom']);
@@ -343,7 +344,7 @@ class AdminInitDataFileController extends AbstractController
         }
         $urlImage=$this->getParameter('rosace_directory_kernel');
         RosaceWindManage::createRosaceWind($spot,$urlImage);
-        $this->createImageCard($spot,$imageGenerator);
+        $hTMLtoImage->createImageCard($spot);
 
         return $spot;
     }
@@ -706,28 +707,5 @@ class AdminInitDataFileController extends AbstractController
             $columnLetter++;
         }
         return $columnLetter;
-    }
-
-
-    /**
-     * Dupliqué dans AdminSpotController
-     * @param Spot $spot
-     * @param Image $imageGenerator
-     */
-    private function createImageCard(Spot $spot,Image $imageGenerator) {
-        $urlImage = $this->getParameter('snappy_directory_kernel').DIRECTORY_SEPARATOR.'card.'.$spot->getId().'.jpg';
-        if( file_exists ( $urlImage))
-            unlink( $urlImage ) ;
-
-        $view = $this->renderView('spot/card.html.twig', array(
-            'spot' => $spot,
-            'urlImage' => $this->getParameter('rosace_directory').DIRECTORY_SEPARATOR,
-        ));
-        $imageGenerator->setOption('width',317);
-        $imageGenerator->setOption('height',565);
-        $imageGenerator->setOption('javascript-delay',1000);
-        $imageGenerator->setOption('quality', 100);
-
-        return $imageGenerator->generateFromHtml($view, $urlImage);
     }
 }

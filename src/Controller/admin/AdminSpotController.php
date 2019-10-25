@@ -8,8 +8,6 @@ use App\Repository\SpotRepository;
 use App\Service\HTMLtoImage;
 use App\Utils\RosaceWindManage;
 use Doctrine\Common\Persistence\ObjectManager;
-use JonnyW\PhantomJs\Client;
-use Knp\Snappy\Image;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -76,6 +74,7 @@ class AdminSpotController extends AbstractController
      * @Route("/admin/spot/edit/{id}", name="admin_spot_edit")
      * @param Spot $spot
      * @param Request $request
+     * @param HTMLtoImage $cardGenerator
      * @return \Symfony\Component\HttpFoundation\Response
      */
     public function edit(Spot $spot, Request $request, HTMLtoImage $cardGenerator) : Response
@@ -92,7 +91,6 @@ class AdminSpotController extends AbstractController
             // Créé l'image .svg dans repertoire définit dans config/services.yaml, utile pour inserer dans map France
             RosaceWindManage::createRosaceWind($spot, $this->getParameter('svg_directory'));
             $cardGenerator->createImageCard($spot);
-            //$this->createImageCard($spot,$imageGenerator);
 
             $this->addFlash('success', 'Spot '.$spot->getName().', modifié avec succés');
             return $this->redirectToRoute('admin_spot_index');
@@ -178,81 +176,17 @@ class AdminSpotController extends AbstractController
      * @param Request $request
      * @return Response
      */
-    public function showImageCard($id, Image $imageGenerator, Request $request) : Response
+    public function showImageCard($id, HTMLtoImage $hTMLtoImage, Request $request) : Response
     {
         $spot = $this->repository->find($id);
-        $this->createImageCard($spot, $imageGenerator);
-        //$this->createImageCardPhantomJS($spot);
-        $this->createImageCardAPIrest7($spot,$request);
+        $hTMLtoImage->createImageCard($spot);
 
-        $urlImage = $this->getParameter('snappy_directory').DIRECTORY_SEPARATOR.'card.'.$spot->getId().'.jpg';
+        $urlImage = $this->getParameter('card_image_directory').DIRECTORY_SEPARATOR.'card.'.$spot->getId().'.jpg';
 
         return $this->render("admin/spot/imageCard.html.twig", [
             'spot' => $spot,
             'urlImage' => $urlImage,
         ]);
-
-    }
-
-    /**
-     * Dupliqué dans AdminInitDataFileController
-     * @param Spot $spot
-     * @param Image $imageGenerator
-     */
-    private function createImageCard(Spot $spot,Image $imageGenerator) {
-        $urlImage = $this->getParameter('snappy_directory_kernel').DIRECTORY_SEPARATOR.'card.'.$spot->getId().'.jpg';
-        if( file_exists ( $urlImage))
-            unlink( $urlImage ) ;
-
-        $view = $this->renderView('spot/card.html.twig', array(
-            'spot' => $spot,
-            'urlImage' => $this->getParameter('rosace_directory').DIRECTORY_SEPARATOR,
-        ));
-        $imageGenerator->setOption('width',317);
-        $imageGenerator->setOption('height',565);
-        $imageGenerator->setOption('javascript-delay',1000);
-        $imageGenerator->setOption('quality', 100);
-
-        return $imageGenerator->generateFromHtml($view, $urlImage);
-    }
-
-    private function createImageCardPhantomJS(Spot $spot) {
-
-        $urlImage = $this->getParameter('snappy_directory_kernel').DIRECTORY_SEPARATOR.'card2.'.$spot->getId().'.jpg';
-        if( file_exists ( $urlImage))
-            unlink( $urlImage ) ;
-
-        /* @var $client Client */
-        $client = Client::getInstance();
-        $client->getEngine()->setPath($this->getParameter('phantomjs_directory_kernel'));
-
-
-        /* @var $request \JonnyW\PhantomJs\Http\RequestInterface */
-        $request = $client->getMessageFactory()->createCaptureRequest('http://jonnyw.me');
-
-        $request->setOutputFile($urlImage);
-        $response = $client->getMessageFactory()->createResponse();
-
-        $client->send($request, $response);
-    }
-
-    private function createImageCardAPIrest7(Spot $spot, $request)
-    {
-        $urlImage = $this->getParameter('snappy_directory_kernel') . DIRECTORY_SEPARATOR . 'card3.' . $spot->getId() . '.jpg';
-        if (file_exists($urlImage))
-            unlink($urlImage);
-        $url=$this->generateUrl('admin.spot.show.card', [
-            'id' => $spot->getId(),
-        ]);
-        $urlAbsolute = $request->getSchemeAndHttpHost().$url;
-        $data = json_decode(file_get_contents('http://api.rest7.com/v1/html_to_image.php?url=' . $urlAbsolute . '&format=jpg'));
-
-        if (@$data->success !== 1)
-        {
-            die('Failed');
-        }
-        $image = file_get_contents($data->file);
-        file_put_contents($urlImage, $image);
 
     }
 }

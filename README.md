@@ -6,13 +6,15 @@ cd wind
 
 SYMFONY_ENV=prod
 
-APP_ENV=prod php bin/console command_name
+APP_ENV=prod 
+
+php bin/console command_name
 
 composer install --no-dev --optimize-autoloader
 
 vi .env
-
 php bin/console doctrine:schema:update --force
+
 
 composer require orm-fixtures
 

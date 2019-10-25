@@ -1,14 +1,23 @@
 {{ form_start(form) }}
 
 <div class="row">
-    <div class="col-mid-4">
+    <div class="col-mid-3">
         {{ form_row(form.name) }}
     </div>
-    <div class="col-mid-4">
+    <div class="col-mid-3">
         {{ form_row(form.noteGeneral) }}
     </div>
-    <div class="col-mid-4">
+    <div class="col-mid-3">
+        {{ form_row(form.niveauMin) }}
+    </div>
+    <div class="col-mid-3">
         {{ form_row(form.imageFile) }}
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-mid-12">
+        {{ form_row(form.shortDescription) }}
     </div>
 </div>
 

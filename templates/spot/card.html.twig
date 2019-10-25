@@ -78,6 +78,11 @@
                                             {%  endif %}
                                         </td>
                                     </tr>
+                                    <tr>
+                                        <td>
+                                            <small>Niveau min: {{ spot.niveauMin }}</small>
+                                        </td>
+                                    </tr>
                                 </table>
 
                             </td>
@@ -91,13 +96,26 @@
             </div>
         </div>
 
-        <div class="sub-card bg-white text-white" style="position: fixed">
-            <div >
-                    {% from "maree/graph.html.twig" import graphMaree %}
-                    {{ graphMaree(spot, "100","75",true, "white" ) }}
-                    {% from "maree/restrictionJS.html.twig" import restrictionMaree %}
-                    {{ restrictionMaree(spot) }}
-            </div>
+
+        <div class="sub-card bg-white" style="position: fixed; width: 300px">
+            <table>
+                <tbody>
+                    <tr>
+                            {% if (spot.uRLMaree is defined) and (spot.uRLMaree is not null) %}
+                        <td style="width: 100px">
+
+                                    {% from "maree/graph.html.twig" import graphMaree %}
+                                    {{ graphMaree(spot, "100","75",true, "white" ) }}
+                                    {% from "maree/restrictionJS.html.twig" import restrictionMaree %}
+                                    {{ restrictionMaree(spot) }}
+                        </td>
+                            {% endif %}
+                        <td style="width: 200px">
+                            {{ spot.shortDescription|raw }}
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
         </div>
     </div>
     </body>
