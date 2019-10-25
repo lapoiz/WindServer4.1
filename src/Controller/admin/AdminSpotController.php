@@ -55,7 +55,7 @@ class AdminSpotController extends AbstractController
         $form = $this->createForm(SpotType::class, $spot);
         $form->handleRequest($request);
 
-        RosaceWindManage::createRosaceWind($spot, $this->getParameter('svg_directory'));
+        RosaceWindManage::createRosaceWind($spot, $this->getParameter('rosace_directory_kernel'));
 
         if ($form->isSubmitted() && $form->isValid()) {
             $this->manager->persist($spot);
@@ -89,7 +89,7 @@ class AdminSpotController extends AbstractController
             $this->manager->flush();
 
             // Créé l'image .svg dans repertoire définit dans config/services.yaml, utile pour inserer dans map France
-            RosaceWindManage::createRosaceWind($spot, $this->getParameter('svg_directory'));
+            RosaceWindManage::createRosaceWind($spot, $this->getParameter('rosace_directory_kernel'));
             $cardGenerator->createImageCard($spot);
 
             $this->addFlash('success', 'Spot '.$spot->getName().', modifié avec succés');
@@ -167,7 +167,7 @@ class AdminSpotController extends AbstractController
 
         return $this->render("spot/card.html.twig", [
             'spot' => $spot,
-            'urlImage' => $this->getParameter('rosace_directory').DIRECTORY_SEPARATOR,
+            'urlRosaceImage' => $this->getParameter('rosace_directory').DIRECTORY_SEPARATOR,
         ]);
     }
 

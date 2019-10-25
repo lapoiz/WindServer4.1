@@ -6,7 +6,6 @@
         "ext-ctype": "*",
         "ext-iconv": "*",
         "cocur/slugify": "^3.2",
-        "convertio/convertio-php": "^0.4.0",
         "doctrine/doctrine-fixtures-bundle": "^3.2",
         "fabpot/goutte": "^3.2",
         "knplabs/knp-snappy-bundle": "^1.6",

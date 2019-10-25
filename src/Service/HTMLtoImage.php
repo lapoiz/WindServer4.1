@@ -10,42 +10,36 @@ namespace App\Service;
 
 
 use App\Entity\Spot;
-use Convertio\Convertio;
-use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
+use Psr\Container\ContainerInterface;
 
 class HTMLtoImage
 {
-    private $convertioKey;
-    private $htmlImageDirectoryKernel;
-    private $router;
+    private $cardImageDirectoryKernel;
+    private $templating;
+    private $container;
 
-    public function __construct(UrlGeneratorInterface $router, $convertioKey, $htmlImageDirectoryKernel)
+    public function __construct(\Twig_Environment $templating, ContainerInterface $container, $cardImageDirectoryKernel)
     {
-        $this->router = $router;
-        $this->convertioKey = $convertioKey;
-        $this->htmlImageDirectoryKernel = $htmlImageDirectoryKernel;
+        $this->templating = $templating;
+        $this->container = $container;
+        $this->cardImageDirectoryKernel = $cardImageDirectoryKernel;
     }
 
     public function createImageCard(Spot $spot) {
 
-        $immagePath = $this->htmlImageDirectoryKernel.DIRECTORY_SEPARATOR.'card.'.$spot->getId().'.jpg';
-        $urlCardPage = $this->router->generate('admin.spot.show.card',
-            array(
-                'id' => $spot->getId()
+        $immagePath = $this->cardImageDirectoryKernel.DIRECTORY_SEPARATOR.'card.'.$spot->getId().'.jpg';
+        $urlRosaceImage = $this->container->getParameter('rosace_directory').DIRECTORY_SEPARATOR;
+
+        $this->container->get('knp_snappy.image')->generateFromHtml(
+            $this->templating->render(
+                'spot/card.html.twig',
+                array(
+                    'spot'  => $spot,
+                    'urlRosaceImage' => $urlRosaceImage
+                )
             ),
-            UrlGeneratorInterface::ABSOLUTE_URL
+            $immagePath
         );
-        if (strpos($urlCardPage,'localhost')) {
-            // testing mode ... pas super propre ...
-            $urlCardPage = 'http://www.lapoiz.com/wind/public/spot/card/1';
-        }
 
-        $API = new Convertio($this->convertioKey);
-
-        $API->settings(array('api_protocol' => 'http', 'http_timeout' => 10));
-        $API->startFromURL($urlCardPage, 'jpg')
-        ->wait()->wait()->wait()
-        ->download($immagePath)
-        ->delete();
     }
 }
