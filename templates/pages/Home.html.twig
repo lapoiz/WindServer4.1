@@ -30,7 +30,7 @@
                             <div class="swiper-wrapper">
                                 {% for spot in spots %}
                                 <a href="{{ path('spot.show', {id: spot.id, slug: spot.slug}) }}"
-                                   class="swiper-slide" style="background-image:url({{ 'http://localhost/lapoiz/public/cards/card.'~spot.id~'.jpg' }})">{{ urlImage }}</a>
+                                   class="swiper-slide" style="background-image:url({{ asset(urlImage ~ '/card.'~spot.id~'.jpg') }})"></a>
 <!--                                        class="swiper-slide" style="background-image:url({{ asset(urlImage ~ '/card.'~spot.id~'.jpg') }})">{{ urlImage }}</a> -->
                                 {%  endfor %}
                             </div>
