@@ -48,25 +48,43 @@ class GenerateCardCommand extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $spots = $this->entityManager->getRepository(Spot::class)->findAll();
-
-        /**
-         * @var Spot $spot
-         */
-        foreach ($spots as $spot) {
+        $spotId = $input->getArgument('spotId');
+        if ($spotId) {
             $output->writeln("--------------------------------------- ");
-            $output->writeln("spot : ".$spot->getName());
-            $url = $this->router->generate('admin.spot.show.card', array('id' => $spot->getId()),UrlGenerator::ABSOLUTE_URL);
-            $command = "wkhtmltoimage --format 'jpg' '".$url."' '/var/www/wind/public/cards/card.".$spot->getId().".jpg'";
-            $output->writeln("commande: ".$command);
+            $output->writeln("spot ID : " . $spotId);
+            $url = $this->router->generate('admin.spot.show.card', array('id' => $spotId), UrlGenerator::ABSOLUTE_URL);
+            $command = "wkhtmltoimage --format 'jpg' '" . $url . "' '/var/www/wind/public/cards/card." . $spotId . ".jpg'";
+            $output->writeln("commande: " . $command);
             $process = new Process($command);
             $process->run();
 
             // executes after the command finishes
             if (!$process->isSuccessful()) {
-                $output->writeln("Error : ".$process->getErrorOutput());
+                $output->writeln("Error : " . $process->getErrorOutput());
             } else {
                 $output->writeln($process->getOutput());
+            }
+        } else {
+            $spots = $this->entityManager->getRepository(Spot::class)->findAll();
+
+            /**
+             * @var Spot $spot
+             */
+            foreach ($spots as $spot) {
+                $output->writeln("--------------------------------------- ");
+                $output->writeln("spot : " . $spot->getName());
+                $url = $this->router->generate('admin.spot.show.card', array('id' => $spot->getId()), UrlGenerator::ABSOLUTE_URL);
+                $command = "wkhtmltoimage --format 'jpg' '" . $url . "' '/var/www/wind/public/cards/card." . $spot->getId() . ".jpg'";
+                $output->writeln("commande: " . $command);
+                $process = new Process($command);
+                $process->run();
+
+                // executes after the command finishes
+                if (!$process->isSuccessful()) {
+                    $output->writeln("Error : " . $process->getErrorOutput());
+                } else {
+                    $output->writeln($process->getOutput());
+                }
             }
         }
     }
