@@ -11,6 +11,7 @@ namespace App\Command;
 
 use App\Entity\Spot;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\Routing\Generator\UrlGenerator;
 use Symfony\Component\Routing\RouterInterface;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
@@ -55,7 +56,7 @@ class GenerateCardCommand extends Command
         foreach ($spots as $spot) {
             $output->writeln("--------------------------------------- ");
             $output->writeln("spot : ".$spot->getName());
-            $url = $this->router->generate('admin.spot.show.card', array('id' => $spot->getId()));
+            $url = $this->router->generate('admin.spot.show.card', array('id' => $spot->getId()),UrlGenerator::ABSOLUTE_PATH);
             $command = "wkhtmltoimage --format 'jpg' '".$url."' '/var/www/wind/public/cards/card.".$spot->getId().".jpg'";
             $output->writeln("commande: ".$command);
             $process = new Process($command);
