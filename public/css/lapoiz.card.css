@@ -28,3 +28,19 @@ table {
      width: 50%;
      text-align: center;
  }
+
+.kiteLevel {
+    color: #0055aa;
+    font-style: italic;
+}
+
+.imgInterditSrc {
+    margin:-15px;
+    position: absolute;
+    z-index: 10;
+}
+.imgInterdit {
+    margin:-15px;
+    position: absolute;
+    z-index: 20;
+}

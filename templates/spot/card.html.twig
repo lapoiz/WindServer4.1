@@ -50,13 +50,13 @@
                             <td class="text-black-50">
                                 <table>
                                     <tr>
-                                        <td>
+                                        <td colspan="2">
                                             {{ spot.name }} <br>
                                             <small class="text-muted">{{ spot.region.nom }}</small>
                                         </td>
                                     </tr>
                                     <tr>
-                                        <td>
+                                        <td colspan="2">
                                             {% if spot.noteGeneral is not null %}
                                                 {% from "spot/note.html.twig" import star %}
                                                 {{ star(spot.noteGeneral) }}
@@ -64,8 +64,30 @@
                                         </td>
                                     </tr>
                                     <tr>
+                                        <td colspan="2">
+                                            <small>Niveau min:
+                                                {% from "spot/niveau.html.twig" import level %}
+                                                {{ level(spot.niveauMin) }}</small>
+                                        </td>
+                                    </tr>
+                                    <tr>
                                         <td>
-                                            <small>Niveau min: {{ spot.niveauMin }}</small>
+                                            {% if spot.isFoil %}
+                                                <img src="{{ absolute_url(asset('images/foil.png')) }}" width="30px">
+                                            {% else %}
+                                                <div>
+                                                    <img class="imgInterditSrc" src="{{ absolute_url(asset('images/foil.png')) }}" width="30px">
+                                                    <img class="imgInterdit" src="{{ absolute_url(asset('images/interdit.png')) }}" width="30px">
+                                                </div>
+                                            {% endif %}
+                                        </td>
+                                        <td>
+                                            {% if spot.isContraintEte %}
+                                                <img class="imgInterditSrc" src="{{ absolute_url(asset('images/été.png')) }}" width="30px">
+                                                <img class="imgInterdit" src="{{ absolute_url(asset('images/interdit.png')) }}" width="30px">
+                                            {% else %}
+                                                <img src="{{ absolute_url(asset('images/été.png')) }}" width="30px">
+                                            {% endif %}
                                         </td>
                                     </tr>
                                 </table>

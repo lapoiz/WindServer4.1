@@ -44,22 +44,4 @@
         </div>
     </section>
 
-        <h2>La liste</h2>
-        <div class="row flex">
-            {% for spot in spots %}
-                <div class="col-3">
-                    <div class="card">
-                        <div class="card-body">
-                            <h5 class="card-title">
-                                <a href="{{ path('spot.show', {id: spot.id, slug: spot.slug}) }}">{{ spot.name }}</a>
-                            </h5>
-                            <p class="card-text">
-                                <img src="{{ asset(urlImage ~ '/card.'~spot.id~'.jpg') }}">
-                            </p>
-                        </div>
-                    </div>
-                </div>
-            {%  endfor %}
-        </div>
-
 {% endblock %}

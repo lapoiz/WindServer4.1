@@ -1,0 +1,15 @@
+{% macro level(level) %}
+        {# Niveau définit dans Form/SpotType.php #}
+        {% if level<1 %}
+            <span class="kiteLevel">Stagiaire</span>
+        {% elseif level<2 %}
+            <span class="kiteLevel">débutant</span>
+        {% elseif level<3 %}
+            <span class="kiteLevel">autonome</span>
+        {% elseif level<4 %}
+            <span class="kiteLevel">bon</span>
+        {% else %}
+            <span class="kiteLevel">expert</span>
+        {% endif %}
+{% endmacro %}
+

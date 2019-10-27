@@ -11,6 +11,7 @@ namespace App\Service;
 
 use App\Entity\Spot;
 use Psr\Container\ContainerInterface;
+use Symfony\Component\Filesystem\Filesystem;
 
 class HTMLtoImage
 {
@@ -30,6 +31,11 @@ class HTMLtoImage
         $immagePath = $this->cardImageDirectoryKernel.DIRECTORY_SEPARATOR.'card.'.$spot->getId().'.jpg';
         $urlRosaceImage = $this->container->getParameter('rosace_directory').DIRECTORY_SEPARATOR;
 
+        $filesystem = new Filesystem();
+
+        if ($filesystem->exists($immagePath)) {
+            $filesystem->remove($immagePath);
+        }
         $this->container->get('knp_snappy.image')->generateFromHtml(
             $this->templating->render(
                 'spot/card.html.twig',
