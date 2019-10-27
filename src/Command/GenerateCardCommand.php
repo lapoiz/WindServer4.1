@@ -57,10 +57,11 @@ class GenerateCardCommand extends Command
         $os=$_ENV['OS_NAME'];
 
         $commandExec = "wkhtmltoimage";
-        $pathCard="/var/www/wind/public/cards/";
+        //$pathCard="/var/www/wind/public/cards/";
+        $pathCard=str_replace('/',DIRECTORY_SEPARATOR,$this->params->get('card_directory_kernel')).DIRECTORY_SEPARATOR; //.$this->params->get('kernel.project_dir').DIRECTORY_SEPARATOR;
+
         if ('windows'===$os) {
             $commandExec = "wkhtmltoimage.exe";
-            $pathCard=str_replace('/',DIRECTORY_SEPARATOR,$this->params->get('card_directory_kernel')).DIRECTORY_SEPARATOR; //.$this->params->get('kernel.project_dir').DIRECTORY_SEPARATOR;
         }
 
         $spotId = $input->getArgument('spotId');
