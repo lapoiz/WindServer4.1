@@ -20,8 +20,8 @@ class InitDataFile
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Assert\NotBlank(message="Please, upload the CSV file.")
-     * @Assert\File(mimeTypes={ "text/plain" })
+     * @Assert\NotBlank(message="Please, upload the XLSX file.")
+     * @Assert\File(mimeTypes={ "application/octet-stream", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" })
      */
     private $dataFile;
 

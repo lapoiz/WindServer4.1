@@ -24,7 +24,6 @@ use App\Utils\WebsiteGetData;
 use Doctrine\Common\Persistence\ObjectManager;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Csv;
-use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\Request;
@@ -47,11 +46,10 @@ class AdminInitDataFileController extends AbstractController
 
     /**
      * @Route("/data_file/generate", name="admin_generate_data_file")
-     * @param HTMLtoImage $imageGenerator
      * @param Request $request
      * @return
      */
-    public function generateDataFileAction(Request $request, HTMLtoImage $imageGenerator)
+    public function generateDataFileAction(Request $request)
     {
         try {
             $spreadsheet = new Spreadsheet();
@@ -64,7 +62,6 @@ class AdminInitDataFileController extends AbstractController
 
             // Create your Office 2007 Excel (XLSX Format)
             $writer = new Csv($spreadsheet);
-            $writerXlsx = new Xlsx($spreadsheet);
             //$writer->setUseBOM(true);
             $writer->setDelimiter(';');
             $writer->setEnclosure('');
@@ -73,14 +70,13 @@ class AdminInitDataFileController extends AbstractController
 
             $fileName = $this->getDownloadFileName();
             // Create the file
-            $writer->save($fileName.".csv");
-            $writerXlsx->save($fileName.".xlsx");
+            $writer->save($fileName);
 
             $this->addFlash('success', 'Fichier généré');
         } catch (\Exception $exception) {
             $this->addFlash('danger', 'probleme:'.$exception->getMessage());
         }
-        return $this->initDataFileAction($request, $imageGenerator);
+        return $this->initDataFileAction($request);
     }
 
     /**
@@ -129,7 +125,7 @@ class AdminInitDataFileController extends AbstractController
             }
 
             $initDataFile->setDataFile($fileName);
-            return $this->redirectToRoute("admin_init_data_file");
+            return $this->redirectToRoute("admin_spot_index");
         }
 
         return $this->render('admin/dataFile/index.html.twig', [
@@ -140,29 +136,30 @@ class AdminInitDataFileController extends AbstractController
 
     /**
      * @param UploadedFile $file
-     * Import le fichier XLSX mis en parametre
+     * Import le fichier CVS mis en parametre
      */
     private function import(UploadedFile $file,HTMLtoImage $imageGenerator)
     {
-        $spreadsheet = $this->excel_to_spreadsheet($file->getPathname());
-        if ($spreadsheet != null) {
-            $data=$this->spreadsheet_to_data($spreadsheet);
-
+        $data = $this->csv_to_array($file->getPathname());
+        if ($data != null) {
             // Turning off doctrine default logs queries for saving memory
             $this->manager->getConnection()->getConfiguration()->setSQLLogger(null);
 
-            $data = $data["Spots from LaPoiz"]; // Nom de l'onglet
-            //$nbCol = count($data["columnValues"]);
-            $batchSize = 5; // tout les X lignes on enregistre
+            $size = count($data);
+            $batchSize = 5; // tout les X elements on enregistre
             $i = 1;
+
+            // Starting progress
 
             // Récupére les régions existantes (doivent être créé avant)
             $tabRegions = $this->getTabRegions();
 
             // Processing on each row of data
-            foreach ($data["columnValues"] as $row) {
+            foreach ($data as $row) {
                 try {
                     $spot = $this->importRow($row,$tabRegions, $imageGenerator);
+
+                    //$this->manager->merge($spot);
 
                     if (($i % $batchSize) === 0) {
                         $this->manager->flush();
@@ -177,56 +174,40 @@ class AdminInitDataFileController extends AbstractController
                 }
                 $i++;
             }
-        } else {
-            $this->addFlash('danger', 'Erreur impossible de charger le fichier.');
         }
         $this->manager->flush();
     }
 
-    private function excel_to_spreadsheet($filename='')
+    /**
+     * Convert a comma separated file into an associated array.
+     * The first row should contain the array keys.
+     *
+     * @param string $filename Path to the CSV file
+     * @param string $delimiter The separator used in the file
+     * @return array
+     * @link http://gist.github.com/385876
+     * @author Jay Williams <http://myd3.com/>
+     * @copyright Copyright (c) 2010, Jay Williams
+     * @license http://www.opensource.org/licenses/mit-license.php MIT License
+     */
+    private function csv_to_array($filename='', $delimiter=';')
     {
-        if(file_exists($filename) && is_readable($filename))
+        if(!file_exists($filename) || !is_readable($filename))
+            return FALSE;
+
+        $header = NULL;
+        $data = array();
+        if (($handle = fopen($filename, 'r')) !== FALSE)
         {
-            $reader = new \PhpOffice\PhpSpreadsheet\Reader\Xlsx();
-            $reader->setReadDataOnly(true);
-            return $reader->load($filename);
-        } else {
-            return null;
-        }
-    }
-
-    protected function spreadsheet_to_data($spreadsheet)
-    {
-        $data = [];
-        foreach ($spreadsheet->getWorksheetIterator() as $worksheet) {
-            $worksheetTitle = $worksheet->getTitle();
-            $data[$worksheetTitle] = [
-                'columnNames' => [],
-                'columnValues' => [],
-            ];
-            foreach ($worksheet->getRowIterator() as $row) {
-                $rowIndex = $row->getRowIndex();
-                $colIndex = 0;
-                if ($rowIndex > 2) {
-                    $data[$worksheetTitle]['columnValues'][$rowIndex] = [];
-                }
-                $cellIterator = $row->getCellIterator();
-                $cellIterator->setIterateOnlyExistingCells(false); // Loop over all cells, even if it is not set
-                foreach ($cellIterator as $cell) {
-                    // boucle sur les valeur de la ligne
-                    if ($rowIndex === 1) {
-                        // premiere ligne => ligne des titres de col
-                        $data[$worksheetTitle]['columnNames'][] = $cell->getCalculatedValue();
-                    }
-                    if ($rowIndex > 1) {
-                        // ligne de valeur
-                        $data[$worksheetTitle]['columnValues'][$rowIndex][$data[$worksheetTitle]['columnNames'][$colIndex]] = $cell->getCalculatedValue();
-                        $colIndex++;
-                    }
-                }
+            while (($row = fgetcsv($handle, 10000, $delimiter)) !== FALSE)
+            {
+                if(!$header)
+                    $header = $row;
+                else
+                    $data[] = array_combine($header, $row);
             }
+            fclose($handle);
         }
-
         return $data;
     }
 
@@ -402,14 +383,13 @@ class AdminInitDataFileController extends AbstractController
     private function getDownloadFileName()
     {
         $filename = $this->getParameter('download_data_directory');
-        return $filename.'/data';
+        return $filename.'/data.csv';
 
     }
 
     private function generateInitDataFileName()
     {
-        //return 'InitDataFile'.uniqid().'.csv';
-        return 'InitDataFile'.uniqid().'.xlsx';
+        return 'InitDataFile'.uniqid().'.csv';
     }
 
     /**

@@ -13,7 +13,7 @@ class InitDataFileType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('dataFile', FileType::class, ['label' => 'Fichier de données (CSV)'])
+            ->add('dataFile', FileType::class, ['label' => 'Fichier de données (XLSX)'])
         ;
     }
 
