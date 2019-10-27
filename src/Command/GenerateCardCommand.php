@@ -26,6 +26,8 @@ class GenerateCardCommand extends Command
 
     protected static $defaultName = 'app:generate-card';
 
+    protected $cmdOptions = "--width 300 --height 500";// --format 'jpg'";
+
     /** @var EntityManagerInterface */
     protected $entityManager;
     /** @var RouterInterface */
@@ -85,7 +87,7 @@ class GenerateCardCommand extends Command
             $output->writeln("spot ID : " . $spotId);
         }
         $url = $this->router->generate('admin.spot.show.card', array('id' => $spotId), UrlGenerator::ABSOLUTE_URL);
-        $command = $commandExec." --width 300 --height 500 --format 'jpg' '" . $url . "' ".$pathCard."card." . $spotId . ".jpg";
+        $command = $commandExec." ".$this->cmdOptions." '" . $url . "' ".$pathCard."card." . $spotId . ".jpg";
         $output->writeln("commande: " . $command);
         $process = new Process($command);
         $process->run();
