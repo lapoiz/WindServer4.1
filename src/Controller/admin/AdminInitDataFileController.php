@@ -63,17 +63,10 @@ class AdminInitDataFileController extends AbstractController
             $this->exportInExcel($sheet, $allSpots);
 
             // Create your Office 2007 Excel (XLSX Format)
-            $writer = new Csv($spreadsheet);
             $writerXlsx = new Xlsx($spreadsheet);
-            //$writer->setUseBOM(true);
-            $writer->setDelimiter(';');
-            $writer->setEnclosure('');
-            $writer->setLineEnding("\r\n");
-            $writer->setSheetIndex(0);
 
             $fileName = $this->getDownloadFileName();
             // Create the file
-            $writer->save($fileName.".csv");
             $writerXlsx->save($fileName.".xlsx");
 
             $this->addFlash('success', 'Fichier généré');
@@ -367,6 +360,7 @@ class AdminInitDataFileController extends AbstractController
     private function cleanDescription($desc)
     {
         // Enléve les <br /> pour mettre à la ligne
+        /*
         $desc = str_replace('<br/>', '\u239D', $desc);
         $desc = str_replace('<br />', '\u240D', $desc);
         $desc = str_replace('<b>', '\u241D', $desc);
@@ -384,6 +378,7 @@ class AdminInitDataFileController extends AbstractController
         $desc = str_replace('\u244D', '</ul>', $desc);
         $desc = str_replace('\u245D', '<li>', $desc);
         $desc = str_replace('\u246D', '</li>', $desc);
+        */
         return $desc;
     }
 
@@ -408,7 +403,6 @@ class AdminInitDataFileController extends AbstractController
 
     private function generateInitDataFileName()
     {
-        //return 'InitDataFile'.uniqid().'.csv';
         return 'InitDataFile'.uniqid().'.xlsx';
     }
 
