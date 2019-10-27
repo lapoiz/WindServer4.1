@@ -8,4 +8,4 @@ knp_snappy:
         binary:     '"C:\Program Files\wkhtmltopdf\bin\wkhtmltoimage.exe"'
         #binary:     wkhtmltoimage
         options:    []
-    temporary_folder: '%kernel.cache_dir%\snappy'
+    #temporary_folder: '%kernel.cache_dir%\snappy'
