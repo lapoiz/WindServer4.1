@@ -56,7 +56,7 @@ class GenerateCardCommand extends Command
         foreach ($spots as $spot) {
             $output->writeln("--------------------------------------- ");
             $output->writeln("spot : ".$spot->getName());
-            $url = $this->router->generate('admin.spot.show.card', array('id' => $spot->getId()),UrlGenerator::ABSOLUTE_PATH);
+            $url = $this->router->generate('admin.spot.show.card', array('id' => $spot->getId()),UrlGenerator::ABSOLUTE_URL);
             $command = "wkhtmltoimage --format 'jpg' '".$url."' '/var/www/wind/public/cards/card.".$spot->getId().".jpg'";
             $output->writeln("commande: ".$command);
             $process = new Process($command);
