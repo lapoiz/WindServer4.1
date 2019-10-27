@@ -11,6 +11,7 @@ namespace App\Command;
 
 use App\Entity\Spot;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 use Symfony\Component\Routing\Generator\UrlGenerator;
 use Symfony\Component\Routing\RouterInterface;
 use Symfony\Component\Console\Command\Command;
@@ -29,11 +30,14 @@ class GenerateCardCommand extends Command
     protected $entityManager;
     /** @var RouterInterface */
     private $router;
+    /** @var ParameterBagInterface */
+    private $params;
 
-    public function __construct(EntityManagerInterface $em, RouterInterface $router)
+    public function __construct(EntityManagerInterface $em, RouterInterface $router, ParameterBagInterface $params)
     {
         $this->entityManager = $em;
         $this->router = $router;
+        $this->params = $params;
 
         parent::__construct();
     }
@@ -48,22 +52,18 @@ class GenerateCardCommand extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
+        $os=$_ENV['OS_NAME'];
+
+        $commandExec = "wkhtmltoimage";
+        $pathCard="/var/www/wind/public/cards/";
+        if ('windows'===$os) {
+            $commandExec = "wkhtmltoimage.exe";
+            $pathCard=str_replace('/',DIRECTORY_SEPARATOR,$this->params->get('card_directory_kernel')).DIRECTORY_SEPARATOR; //.$this->params->get('kernel.project_dir').DIRECTORY_SEPARATOR;
+        }
+
         $spotId = $input->getArgument('spotId');
         if ($spotId) {
-            $output->writeln("--------------------------------------- ");
-            $output->writeln("spot ID : " . $spotId);
-            $url = $this->router->generate('admin.spot.show.card', array('id' => $spotId), UrlGenerator::ABSOLUTE_URL);
-            $command = "wkhtmltoimage --format 'jpg' '" . $url . "' '/var/www/wind/public/cards/card." . $spotId . ".jpg'";
-            $output->writeln("commande: " . $command);
-            $process = new Process($command);
-            $process->run();
-
-            // executes after the command finishes
-            if (!$process->isSuccessful()) {
-                $output->writeln("Error : " . $process->getErrorOutput());
-            } else {
-                $output->writeln($process->getOutput());
-            }
+            $this->commandeGenerateCard($output,$spotId,$commandExec,$pathCard, null);
         } else {
             $spots = $this->entityManager->getRepository(Spot::class)->findAll();
 
@@ -71,21 +71,30 @@ class GenerateCardCommand extends Command
              * @var Spot $spot
              */
             foreach ($spots as $spot) {
-                $output->writeln("--------------------------------------- ");
-                $output->writeln("spot : " . $spot->getName());
-                $url = $this->router->generate('admin.spot.show.card', array('id' => $spot->getId()), UrlGenerator::ABSOLUTE_URL);
-                $command = "wkhtmltoimage --format 'jpg' '" . $url . "' '/var/www/wind/public/cards/card." . $spot->getId() . ".jpg'";
-                $output->writeln("commande: " . $command);
-                $process = new Process($command);
-                $process->run();
-
-                // executes after the command finishes
-                if (!$process->isSuccessful()) {
-                    $output->writeln("Error : " . $process->getErrorOutput());
-                } else {
-                    $output->writeln($process->getOutput());
-                }
+                $this->commandeGenerateCard($output,$spot->getId(),$commandExec,$pathCard,$spot->getName());
             }
+        }
+    }
+
+    private function commandeGenerateCard(OutputInterface $output, String $spotId, String $commandExec, String $pathCard, $spotName)
+    {
+        $output->writeln("--------------------------------------- ");
+        if ($spotName) {
+            $output->writeln("spot : " . $spotName);
+        } else {
+            $output->writeln("spot ID : " . $spotId);
+        }
+        $url = $this->router->generate('admin.spot.show.card', array('id' => $spotId), UrlGenerator::ABSOLUTE_URL);
+        $command = $commandExec." --width 300 --height 500 --format 'jpg' '" . $url . "' ".$pathCard."card." . $spotId . ".jpg";
+        $output->writeln("commande: " . $command);
+        $process = new Process($command);
+        $process->run();
+
+        // executes after the command finishes
+        if (!$process->isSuccessful()) {
+            $output->writeln("Error : " . $process->getErrorOutput());
+        } else {
+            $output->writeln($process->getOutput());
         }
     }
 }

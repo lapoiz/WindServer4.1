@@ -7,5 +7,7 @@ knp_snappy:
         enabled:    true
         binary:     '"C:\Program Files\wkhtmltopdf\bin\wkhtmltoimage.exe"'
         #binary:     wkhtmltoimage
-        options:    []
+        options:
+            width: 300
+            height: 500
     #temporary_folder: '%kernel.cache_dir%\snappy'
