@@ -116,13 +116,16 @@ class AdminInitDataFileController extends AbstractController
                     $fileName
                 );
                 $this->addFlash('success', 'Fichier uploadé');
+
+                $initDataFile->setDataFile($fileName);
+                return $this->redirectToRoute("admin.spots.maree.to.image");
             } catch (FileException $e) {
                 // ... handle exception if something happens during file upload
                 $this->addFlash('danger', 'Erreur'.$e.getMessage());
+                $initDataFile->setDataFile($fileName);
+                return $this->redirectToRoute("admin_init_data_file");
             }
 
-            $initDataFile->setDataFile($fileName);
-            return $this->redirectToRoute("admin_init_data_file");
         }
 
         return $this->render('admin/dataFile/index.html.twig', [

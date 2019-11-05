@@ -23,10 +23,17 @@
                 </div>
 
                 <div class="col-sm-5 centered">
-                    {% from "maree/graph.html.twig" import graphMaree %}
-                    {{ graphMaree(spot, "300px","220px" ) }}
-                    {% from "maree/restrictionJS.html.twig" import restrictionMaree %}
-                    {{ restrictionMaree(spot) }}
+                    {% from "maree/graphFunctions.html.twig" import graphFunctionMaree %}
+                    {{ graphFunctionMaree() }}
+                    {% from "maree/graphMaree.html.twig" import graphMaree %}
+                    {{ graphMaree(spot,"300px","220px" ) }}
+
+                    <script>
+                        document.addEventListener('DOMContentLoaded', function () {
+                            buildNewChart{{ spot.id }}();
+                        });
+                    </script>
+
                 </div>
             </div>
         </h1>

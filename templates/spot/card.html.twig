@@ -6,7 +6,9 @@
         <link rel="stylesheet" href="{{ absolute_url(asset('fontawsome/css/all.css')) }}">
 
         <script src="{{ absolute_url(asset('javascript/jquery-3.4.1.slim.min.js')) }}"></script>
+
         <script src="{{ absolute_url(asset('javascript/highcharts.js')) }}"></script>
+        <script src="{{ absolute_url(asset('javascript/highcharts-exporting.js')) }}"></script>
 
         <link rel="stylesheet" href="{{ absolute_url(asset('css/leaflet.css')) }}">
         <script src="{{ absolute_url(asset('javascript/leaflet.js')) }}" ></script>
@@ -111,10 +113,19 @@
                             {% if (spot.uRLMaree is defined) and (spot.uRLMaree is not null) %}
                         <td style="width: 100px">
 
-                                    {% from "maree/graph.html.twig" import graphMaree %}
-                                    {{ graphMaree(spot, "100","75",true, "white" ) }}
-                                    {% from "maree/restrictionJS.html.twig" import restrictionMaree %}
-                                    {{ restrictionMaree(spot) }}
+                            {% from "maree/graphFunctions.html.twig" import graphFunctionMaree %}
+                            {{ graphFunctionMaree("100","75",true, "white" ) }}
+
+
+                            {% from "maree/graphMaree.html.twig" import graphMaree %}
+                            {{ graphMaree(spot,"100","75") }}
+
+
+                            <script>
+                                document.addEventListener('DOMContentLoaded', function () {
+                                    buildNewChart{{ spot.id }}();
+                                });
+                            </script>
                         </td>
                             {% endif %}
                         <td style="width: 200px">

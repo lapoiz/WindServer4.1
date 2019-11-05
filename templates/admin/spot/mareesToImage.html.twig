@@ -1,0 +1,169 @@
+{% extends 'admin/base_admin.html.twig' %}
+
+{% block headerElements %}
+
+    <script src="{{ absolute_url(asset('javascript/highcharts.js')) }}"></script>
+    <script src="{{ absolute_url(asset('javascript/highcharts-exporting.js')) }}"></script>
+
+    {{ parent() }}
+{% endblock %}
+
+{% block title 'Généré les images des marées' %}
+
+{% block body %}
+    <div class="container mt-8">
+
+        {% from "maree/graphFunctions.html.twig" import graphFunctionMaree %}
+        {{ graphFunctionMaree("200","100",true, "white" ) }}
+
+        {% for spot in spots %}
+            {% if (spot.mareeRestriction is not null and spot.mareeRestriction.count>0) %}
+                {% from "maree/graphMaree.html.twig" import graphMaree %}
+                {{ graphMaree(spot,"200","100") }}
+            {% endif %}
+        {% endfor %}
+
+        <button class="btn-primary" onclick="sendAgain()">Send again</button>
+
+        <script>
+            document.addEventListener('DOMContentLoaded', function () {
+                buildTableChart();
+                var trChart=addTrToTableChart();
+                var tdChart;
+                {% set i = 0 %}
+
+                {% for spot in spots %}
+                {% if spot.mareeRestriction is not null and spot.mareeRestriction.count>0 %}
+                    {% set i=i+1 %}
+
+                    {% if i>5 %}
+                trChart=addTrToTableChart();
+                        {% set i=0 %}
+                    {% endif %}
+
+                addTdToTableChart({{ spot.id }}, trChart);
+                buildNewTdChart{{ spot.id }}();
+                {% endif %}
+                {% endfor %}
+
+                sendImageMaree();
+            });
+
+            var exportUrl = 'http://export.highcharts.com/';
+            var tabSpotId = [];
+            var nbSpotIdBloc=0;
+            var listIdSpot = [{% for spot in spots %}{% if spot.mareeRestriction is not null and spot.mareeRestriction.count>0 %}{{ spot.id }},{% endif %}{% endfor %}];
+
+            // Contraintes : pas plus de 10 envoies sur export
+            // Séparation en paquet de 10 envois
+            function sendImageMaree() {
+                var i = 0;
+                var numPacket = -1;
+
+                listIdSpot.forEach(function (spotId) {
+                    //console.log("sendImageMaree spotId:"+spotId+"   i:"+i+" => %10 = "+((i % 10) == 0));
+                    //console.log("numPacket : "+numPacket);
+                    if ((i % 10) == 0) {
+                        i = 0;
+                        numPacket++;
+                        tabSpotId[numPacket] = [];
+                        tabSpotId[numPacket][i] = spotId;
+                    } else {
+                        tabSpotId[numPacket][i] = spotId;
+                    }
+                    i++;
+                });
+
+                sendImageMareeBloc(0);
+            }
+
+            function sendImageMareeBloc(numBlock) {
+                //console.log("sendImageMareeBloc("+numBlock+")");
+                //console.dir(tabSpotId[numBlock]);
+                tabSpotId[numBlock].forEach(function (spotId) {
+                    //console.log("sendImageMareeBloc => "+$('#mareeGraph'+spotId));
+                    var chart = $('#mareeGraph'+spotId).highcharts();
+                    var options = chart.options;
+                    //console.dir(options);
+                    var object = {
+                        options: JSON.stringify(options),
+                        type: 'image/png',
+                        async: true
+                    };
+                    //console.log("Ready to send spotId: "+spotId);
+                    $.ajax({
+                        type: 'post',
+                        url: exportUrl,
+                        data: object,
+                        success: function (data) {
+                            //console.log("Send spotId: "+spotId);
+                            sendImageURL(exportUrl + data, spotId,numBlock);
+                        },
+                        error: function (data) {
+                            console.log("Error for export spotId: "+spotId);
+                            console.log(data.responseText);
+                        },
+                    });
+
+                });
+
+            }
+            function sendImageURL(urlImage, spotId, numBlock) {
+                $.ajax({
+                    type: 'post',
+                    url: '{{ path('admin.ajax.spots.maree.url.image') }}',
+                    dataType: "json",
+                    data: {
+                        'urlImage' : urlImage,
+                        'spotId':spotId
+                    },
+                    async: true,
+                    success: function (data) {
+                        console.log("OK for spotId: "+spotId);
+                        effacerMaree(spotId);
+                        nbSpotIdBloc++;
+                        lanceNouveauBloc(numBlock);
+                    },
+                    error: function (xhr, ajaxOptions, thrownError)
+                    {
+                        console.log("Error");
+                    }
+                });
+            }
+
+            function effacerMaree(spotId) {
+                //$('#mareeGraph'+spotId).empty();
+                $('#mareeGraph'+spotId).remove();
+            }
+
+            function lanceNouveauBloc(numBlock) {
+                //console.log("lanceNouveauBloc("+numBlock+")");
+                if ((nbSpotIdBloc%10)==0) {
+                    nbSpotIdBloc=0;
+                    if (tabSpotId.length > numBlock) {
+                        numBlock++;
+                        sendImageMareeBloc(numBlock);
+                    }
+                }
+            }
+
+            function sendAgain() {
+                console.log("sendAgain");
+
+                tabSpotId = [];
+                nbSpotIdBloc=0;
+                var newListIdSpot = [];
+                listIdSpot.forEach(function (spotId) {
+                    if ($('#mareeGraph'+spotId).length!=0) {
+                        newListIdSpot.push(spotId);
+                    }
+                });
+                listIdSpot=newListIdSpot;
+                //console.dir(listIdSpot);
+                sendImageMaree();
+            }
+
+        </script>
+
+    </div>
+{% endblock %}

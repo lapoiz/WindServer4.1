@@ -13,6 +13,16 @@
             <div class="alert alert-danger">{{ message }}</div>
         {% endfor %}
 
+
+        <div class="text-right">
+            <a class="btn btn-primary" href="{{ path('admin.spots.maree.to.image') }}">Généré les images des marées</a>
+        </div>
+
+        <div class="text-right">
+            <a class="btn btn-primary" href="{{ path('admin_spot_new') }}">Créer un Spot</a>
+        </div>
+        <br>
+
         <table class="table table-striped">
             <thead>
                 <tr>
@@ -46,5 +56,10 @@
         <div class="text-right">
             <a class="btn btn-primary" href="{{ path('admin_spot_new') }}">Créer un Spot</a>
         </div>
+        <br>
+        <div class="text-right">
+            <a class="btn btn-primary" href="{{ path('admin.spots.maree.to.image') }}">Généré les images des marées</a>
+        </div>
+
     </div>
 {% endblock %}

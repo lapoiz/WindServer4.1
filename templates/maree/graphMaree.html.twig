@@ -1,0 +1,56 @@
+{% macro graphMaree(spot, widthGraph, heightGraph) %}
+
+    {# A Appeler pour chaque spot #}
+    {# Après graphFunction.html.twig #}
+    {# Mettre dans fichier twig principal:
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            buildNewChart{{ spot.id }}();
+        });
+    </script>
+        #}
+
+
+<script>
+
+    /* Fonctionnement classique : ajout du div String dans le div principal id="mareeGraph" */
+    function buildNewChart{{ spot.id }}() {
+        var divNewChart = createDivChart({{ spot.id }});
+        $('#mareeGraph').append(divNewChart);
+        buildNewDivChart{{ spot.id }}();
+    }
+    /* Fonctionnement affichage tableau : ajout du div String dans td  id="tdSpotId" */
+    function buildNewTdChart{{ spot.id }}() {
+        var divNewChart = createDivChart({{ spot.id }});
+        $('#td{{ spot.id }}').append(divNewChart).children().last();
+
+        buildNewDivChart{{ spot.id }}();
+    }
+    /* Création du graphe avec fonction dans graphFunction.html.twig */
+    function buildNewDivChart{{ spot.id }}() {
+        buildChart('mareeGraph{{ spot.id }}',
+                {{ (widthGraph is defined and widthGraph is not null)?widthGraph:"300px"}},
+                {{ (heightGraph is defined and heightGraph is not null)?heightGraph:"150px"}},
+                {{ (spot.hauteurMBGrandeMaree is empty)?'0.34':spot.hauteurMBGrandeMaree }},
+                {{ (spot.hauteurMHGrandeMaree is empty)?'7.80':spot.hauteurMHGrandeMaree }},
+                {{ (spot.hauteurMBMoyenneMaree is empty)?'1.59':spot.hauteurMBMoyenneMaree }},
+                {{ (spot.hauteurMHMoyenneMaree is empty)?'6.55':spot.hauteurMHMoyenneMaree }},
+                {{ (spot.hauteurMBPetiteMaree is empty)?'2.82':spot.hauteurMBPetiteMaree }},
+                {{ (spot.hauteurMHPetiteMaree is empty)?'5.32':spot.hauteurMHPetiteMaree }});
+
+        // Parcour la liste des MareeRestriction
+        {% for mareeRestriction in spot.mareeRestriction %}
+        drawPlotBandGraphMaree({{ spot.id }},{{ mareeRestriction.hauteurMin }},{{ mareeRestriction.hauteurMax }},"{{ mareeRestriction.state }}");
+        {% endfor %}
+
+        // A EFFACER => OUI !!!!!!!!!!!!!! voir avec edit marée
+        function drawPlotBandMareeGraphSpot() {
+            {% for mareeRestriction in spot.mareeRestriction %}
+            drawOnePlotBandMareeGraphSpot({{ spot.id }},{{ mareeRestriction.hauteurMin }},{{ mareeRestriction.hauteurMax }},"{{ mareeRestriction.state }}");
+            {% endfor %}
+        }
+    }
+
+</script>
+
+{% endmacro %}

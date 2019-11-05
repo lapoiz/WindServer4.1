@@ -1,0 +1,242 @@
+{% macro graphFunctionMaree(widthGraph, heightGraph, withoutTitle, textColor) %}
+
+    {# A Appeler qu'une seul fois #}
+
+    <div id="mareeGraph"></div>
+
+<script>
+
+    {% set isWithTitle = (withoutTitle is defined and withoutTitle is not null)?not withoutTitle:true %}
+    {% set isTextColor = (textColor is defined and textColor is not null)?true:false %}
+
+
+    function buildChart(idChart, widthGraph, heightGraph, hMinGM, hMaxGM, hMinMM, hMaxMM, hMinPM, hMaxPM) {
+        return Highcharts.chart(idChart, {
+            chart: {
+                renderTo: idChart,
+                height: heightGraph,
+                width: widthGraph,
+                reflow: false,
+
+                {% if not isWithTitle %}
+                marginLeft: 5,
+                marginBottom: 5,
+                {% endif %}
+
+                backgroundColor: null,
+                style: {
+                    position: 'relative'
+                }
+            },
+
+
+            credits: {
+                enabled: false
+            },
+            {% if isWithTitle %}
+            title: {
+                text: 'Marée du Spot'
+            },
+            subtitle: {
+                text: 'Quand peut-on naviguer ?'
+            },
+            {% else %}
+            title: {
+                text: ''
+            },
+            {% endif %}
+            xAxis: {
+                title: {
+                    {% if isWithTitle %}
+                    text: "Période des marées: 12 h 25 min",
+                    {% else %}
+                    text: '',
+                    {% endif %}
+                },
+                labels: {
+                    enabled:false//default is true
+                },
+            },
+            yAxis: {
+                title: {
+                    {% if isWithTitle %}
+                    text: "Hauteur de la marée (m)",
+                    {% else %}
+                    text: '',
+                    {% endif %}
+                },
+                {% if isTextColor %}
+                labels: {
+                    style: {
+                        color: "{{ textColor }}"
+                    }
+                }
+                {% endif %}
+            },
+            tooltip: {
+                valueSuffix: 'm'
+            },
+            legend: {
+                enabled: false
+            },
+            tooltip: {
+                formatter: function() {
+                    return  '<b>' + this.series.name +'</b>:';
+                }
+            },
+            series: [
+                {
+                    // marée normal (coef: 80 - Brest)
+                    name: 'Marée normal',
+                    id: 'serieMM',
+                    marker: {
+                        enabled: false
+                    },
+                    pointInterval: 10 * 60 * 1000,
+                    data: (function () {
+                        // generate sinusoidal data
+                        return getSinuPoint(hMaxMM,hMinMM);
+                    }()),
+                    type: 'areaspline',
+                    color: '#4040ff',
+                    fillColor: {
+                        linearGradient: { x1: 0, y1: 0, x2: 0, y2: 1},
+                        stops: [
+                            [0, 'rgba(100,100,255,0.8)'],
+                            [1, 'rgba(10,60,30,0.2)']
+                        ]
+                    }
+                }, {
+                    // petite marée (coef: 40 - Brest)
+                    name: 'Petite marée',
+                    id: 'seriePM',
+                    marker: {
+                        enabled: false
+                    },
+                    pointInterval: 10 * 60 * 1000,
+                    data: (function () {
+                        // generate sinusoidal data
+                        return getSinuPoint(hMaxPM,hMinPM);
+                    }()),
+                    type: 'spline',
+                    color: '#4040ff',
+                    dashStyle: 'ShortDot'
+                }, {
+                    // grande marée (coef: 118 - Brest)
+                    name: 'Grande marée',
+                    id: 'serieGM',
+                    marker: {
+                        enabled: false
+                    },
+                    pointInterval: 10 * 60 * 1000,
+                    data: (function () {
+                        // generate sinusoidal data
+                        return getSinuPoint(hMaxGM,hMinGM);
+                    }()),
+                    type: 'spline',
+                    color: '#4040ff',
+                    dashStyle: 'ShortDot'
+                }
+            ],
+            exporting: {
+                enabled: true
+            }
+
+        });
+    }
+
+    /* créé le string du div receptacle du Graph des marées */
+    function createDivChart(spotId){
+        return '<div id="mareeGraph'+spotId+'" style="width:{{ (widthGraph is defined and widthGraph is not null)?widthGraph:"100%" }};\n' +
+            '            height:{{ (heightGraph is defined and heightGraph is not null)?heightGraph:"100%" }}">'+spotId+'</div>';
+    }
+
+    function getAmplitudeSinu(hMax,hMin) {
+        return ((hMax+hMin)/2 - hMin);
+    }
+    function getMilieuSinu(hMax,hMin) {
+        return ((hMax+hMin)/2);
+    }
+    function getSinuPoint(hMax,hMin) {
+        var hauteurMilieu = getMilieuSinu(hMax,hMin);
+        var amplitude = getAmplitudeSinu(hMax,hMin);
+
+        var data = [],
+                i;
+
+        for (i = 0; i <= 10; i += 0.2) {
+            data.push({
+                x: i,
+                y: amplitude*Math.sin(i) + hauteurMilieu
+            });
+        }
+        return data;
+    }
+    function updateSerieGraph(serie, hMax,hMin) {
+        var hauteurMilieu = getMilieuSinu(hMax,hMin);
+        var amplitude = getAmplitudeSinu(hMax,hMin);
+        var x;
+        var y;
+        //alert(serie.name+" hauteurMilieu: "+hauteurMilieu+"  amplitude: "+amplitude+"   hMax: "+hMax+"  hMin: "+hMin);
+        var i=0; // var de data
+        for (x = 0; x <= 10; x += 0.2) {
+            //chart.series[0].data[0].update(y)
+            y = amplitude*Math.sin(x) + hauteurMilieu;
+            serie.data[i].update(y);// met à jour la valeur y du point x=i
+            i++;
+        }
+    }
+    function drawPlotBandGraphMaree(spotId, hMin, hMax, state) {
+        //getChartMaree().yAxis[0].addPlotBand({
+        //var chart = $('#mareeGraph').highcharts();
+
+        $('#mareeGraph'+spotId).highcharts().yAxis[0].addPlotBand({
+                color: getColorPlotBandForState(state),
+                from: hMin,
+                to: hMax
+            }
+        )
+    }
+    function getColorPlotBandForState(state) {
+        var color = "white";
+        switch (state) {
+            case "OK":
+                color="rgba(0,128,0,1)";
+                break;
+            case "KO":
+                color="rgba(255,0,0,1)";
+                break;
+            case "warn":
+                color="rgba(255,165,0,1)";
+                break;
+        }
+        return color;
+    }
+
+    function buildTableChart() {
+        var tableChart = '<table id="tableChart"></table>';
+        $('#mareeGraph').append(tableChart);
+    }
+    function addTrToTableChart() {
+        var trChart = '<tr></tr>';
+        return $('#tableChart').append(trChart).children().last();
+    }
+    function addTdToTableChart(spotId, trChart) {
+        var tdChart = '<td id=td'+spotId+'></td>';
+        return trChart.append(tdChart).children().last();
+    }
+
+
+    // A effacer ???????????? => OUI
+    function drawOnePlotBandMareeGraphSpot(spotId, hMin, hMax, state) {
+        $('#meteoGraph'+spotId).highcharts().yAxis[1].addPlotBand({
+            color: getColorPlotBandForState(state),
+            from: hMin,
+            to: hMax
+        })
+    }
+
+
+</script>
+
+{% endmacro %}

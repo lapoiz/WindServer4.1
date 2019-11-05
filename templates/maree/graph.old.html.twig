@@ -157,6 +157,12 @@
                 }
 
             });
+
+        var chart = $('#mareeGraph').highcharts();
+        setTimeout(function() {
+            chart.exportChart();
+        }, 2000);
+
     });
 
 
