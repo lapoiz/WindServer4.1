@@ -12,6 +12,8 @@ parameters:
     rosace_directory_kernel : '%kernel.project_dir%/public/%rosace_directory%'
     card_image_directory: 'cards'
     card_directory_kernel : '%kernel.project_dir%/public/%card_image_directory%'
+    maree_image_directory: 'maree'
+    maree_directory_kernel: '%kernel.project_dir%/public/%maree_image_directory%'
 
 services:
     # default configuration for services in *this* file

@@ -5,53 +5,23 @@
 {% endblock %}
 
 
-{% block headScript %}
-    <script src="http://code.highcharts.com/highcharts.js"></script>
+{% block headerElements %}
+
+    <script src="{{ absolute_url(asset('javascript/jquery-3.4.1.slim.min.js')) }}"></script>
+
+    <script src="{{ absolute_url(asset('javascript/highcharts.js')) }}"></script>
+    {{ parent() }}
 {% endblock %}
 
 {% block body %}
     <div class="text-center">
-        <h1 {% if spot.imageFile %} ba{% endif %}>
+
             <div class="row">
                 <div class="col-sm-5 centered">
                     {% from "windRosace/rosaceWind.html.twig" import displayRosace %}
                     {{ displayRosace("200px","200px") }}
-                </div>
-
-                <div class="col-sm-2 centered align-middle">
-                    {{ spot.name }}
-                </div>
-
-                <div class="col-sm-5 centered">
-                    {% from "maree/graphFunctions.html.twig" import graphFunctionMaree %}
-                    {{ graphFunctionMaree() }}
-                    {% from "maree/graphMaree.html.twig" import graphMaree %}
-                    {{ graphMaree(spot,"300px","220px" ) }}
 
                     <script>
-                        document.addEventListener('DOMContentLoaded', function () {
-                            buildNewChart{{ spot.id }}();
-                        });
-                    </script>
-
-                </div>
-            </div>
-        </h1>
-    </div>
-
-    <div class="container">
-        {{ spot.description|raw }}
-
-    <div class="row">
-        <div class="col-sm-6 center-block text-center" heigth="220px">
-            <h3 class="titreSVG">Orientation du vent à {{ spot.name }}</h3>
-
-            <div class="row">
-                <div class="col-sm-6 centered">
-
-
-                    <script>
-
                         // **************************************
                         // ** Gestion de l'orientation du vent **
                         // **************************************
@@ -69,30 +39,141 @@
 
                             svgLoad(tabOrientationState, true);
                         }
-
                     </script>
                 </div>
-            </div>
 
-            {% if spot.URLMaree|default is not empty %}
-                <div class="col-sm-6 centered">
-                    <div class="row">
-
-                        <div class="col-sm-6 centered">
-                            {{ spot.descMaree|raw }}
-                        </div>
-                    </div>
+                <div class="col-sm-2 centered align-middle">
+                    {{ spot.name }}<br/>
+                    <div class="d-none d-sm-block">{{ spot.shortDescription|raw }}</div>
                 </div>
-            {% endif %}
 
-        </div>
+                <div class="col-sm-5 centered">
+
+                    {% if (spot.uRLMaree is defined) and (spot.uRLMaree is not null) %}
+                        <img src="{{ asset(urlMareeImage) }}">
+                    {% else %}
+                        <span class="text-info">Aucune contrainte de marée</span>
+                    {% endif %}
+
+                </div>
+            </div>
     </div>
+
+    <div class="container">
+
+        <div class="row">
+            <div class="col-sm-12 center-block">
+                <h3 class="hr"><a href="#spotDesc" data-toggle="collapse" class="titreCollapse">Description du spot</a></h3>
+                <div id="spotDesc">{{ spot.description|raw }}</div>
+
+            </div>
+        </div>
+
+        <h3 class="hr"><a href="#descWind" data-toggle="collapse" class="titreCollapse">Info sur l'orientation du vent</a></h3>
+        <div class="row collapse show" id="descWind">
+            <div class="col-sm-12">
+                {{ spot.descOrientationVent|raw }}
+            </div>
+        </div>
+
+    {% if spot.URLMaree|default is not empty %}
+        <h3 class="hr"><a href="#descMaree" data-toggle="collapse" class="titreCollapse">Info sur les marées</a></h3>
+        <div class="row collapse show" id="descMaree">
+            <div class="col-sm-12">
+                {{ spot.descMaree|raw }}
+            </div>
+        </div>
+    {% endif %}
+
+    {% if spot.descWave|default is not empty %}
+        <h3 class="hr"><a href="#descWave" data-toggle="collapse" class="titreCollapse">Info sur les vagues</a></h3>
+        <div class="row collapse show" id="descWave">
+            <div class="col-sm-12">
+                {{ spot.descWave|raw }}
+            </div>
+        </div>
+    {% endif %}
+
+    {% if spot.isFoil %}
+        <h3 class="hr"><a href="#descFoil" data-toggle="collapse" class="titreCollapse">Info sur le foil</a></h3>
+        <div class="row collapse show" id="descFoil">
+            <div class="col-sm-12">
+                {{ spot.descFoil|raw }}
+            </div>
+        </div>
+    {% endif %}
+
+
+    {% if spot.isContraintEte %}
+        <h3 class="hr"><a href="#descEte" data-toggle="collapse" class="titreCollapse">Contrainte l'été ?</a></h3>
+        <div class="row collapse show" id="descEte">
+            <div class="col-sm-12">
+                {{ spot.descContraintEte|raw }}
+            </div>
+        </div>
+    {% endif %}
+
+        <h3 class="hr"><a href="#descRoute" data-toggle="collapse" class="titreCollapse">Pour y aller</a></h3>
+        <div class="row collapse show" id="descRoute">
+            <div class="col-sm-12">
+                {{ spot.descRoute|raw }}<br/>
+                <br/>
+                Distance de Paris: {{ spot.kmFromParis }}km (dont {{ spot.kmAutorouteFromParis }}km d'autoroute)<br/>
+                Temps de Paris: {{ spot.timeFromParis // 60 }}h{{ spot.timeFromParis % 60 }}<br/>
+                Coordonnées: ({{ spot.gpsLat }},{{ spot.gpsLong }})
+            </div>
+        </div>
+
+
+        <h3 class="hr"><a href="#descPrev" data-toggle="collapse" class="titreCollapse">Site de prévision du vent et autres</a></h3>
+        <div class="row collapse show" id="descPrev">
+            <div class="col-sm-12">
+                <ul>
+                    <li><a href="{{ spot.urlWindFinder }}" target="_blank">Windfinder</a> </li>
+                    <li><a href="{{ spot.uRLWindguru }}" target="_blank">Windguru</a> </li>
+                    <li><a href="{{ spot.uRLMeteoFrance }}" target="_blank">Meteo France</a> </li>
+                    <li><a href="{{ spot.uRLMeteoConsult }}" target="_blank">Meteo Consult</a> </li>
+                    {% if spot.uRLMerteo|default is not empty %}
+                    <li><a href="{{ spot.uRLMerteo }}" target="_blank">Merteo</a> </li>
+                    {% endif %}
+                    {% if spot.uRLTempWater|default is not empty %}
+                    <li><a href="{{ spot.uRLTempWater }}" target="_blank">Temp de l'eau</a> </li>
+                    {% endif %}
+                    {% if spot.uRLMaree|default is not empty %}
+                    <li><a href="{{ spot.uRLMaree }}" target="_blank">Marée</a> </li>
+                    {% endif %}
+                    {% if spot.urlBalise|default is not empty %}
+                    <li><a href="{{ spot.urlBalise }}" target="_blank">Balise</a> </li>
+                    {% endif %}
+                    {% if spot.urlWebcam|default is not empty %}
+                    <li><a href="{{ spot.urlWebcam }}" target="_blank">Webcam</a> </li>
+                    {% endif %}
+                </ul>
+            </div>
+        </div>
+
+    {% if spot.webSiteInfos.count > 0 %}
+        <h3 class="hr"><a href="#descPrev" data-toggle="collapse" class="titreCollapse">Sites parlant du spot</a></h3>
+        <div class="row collapse show" id="descPrev">
+        <div class="col-sm-12">
+            <ul>
+                {% for webSite in spot.webSiteInfos %}
+                <li><a href="{{ webSite.url }}" target="_blank">{{ webSite.name }}</a>:{{ webSite.description|raw }} </li>
+                {% endfor %}
+            </ul>
+        </div>
+     {% endif %}
+
+
+
+    </div>
+
 
     <div class="row">
         <div class="col-12">
             <div class="row">
                 <div class="col-12">
-                    <h3>Commentaires</h3>
+                    <h3 class="hr">Commentaires</h3>
                 </div>
             </div>
             {% for comment in spot.commentaires %}

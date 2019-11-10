@@ -1,14 +1,17 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <meta charset="UTF-8" name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, user-scalable=no">
+        <meta charset="UTF-8" name="viewport" content="width=device-width, initial-scale=1">
         <title>{% block title %}Welcome!{% endblock %}</title>
         <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" crossorigin="anonymous">
         <link rel="stylesheet" href="{{ asset('css/lapoiz.css') }}">
         {% block stylesheets %}{% endblock %}
         {% block headScript %}{% endblock %}
 
-        <script src="https://code.jquery.com/jquery-3.2.1.min.js" crossorigin="anonymous"></script>
+        <!--<script src="https://code.jquery.com/jquery-3.2.1.min.js" crossorigin="anonymous"></script>-->
+
+        <script src="{{ absolute_url(asset('javascript/jquery-3.4.1.slim.min.js')) }}"></script>
+
 
         {% block headerElements %}{% endblock %}
 

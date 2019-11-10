@@ -66,10 +66,11 @@ class SpotController extends AbstractController
         $comment = new Commentaire();
         $form = $this->createForm(CommentaireType::class, $comment);
         $form->handleRequest($request);
-
+        $urlImageMaree = $this->getParameter('maree_image_directory') . DIRECTORY_SEPARATOR . $spot->getId() . '.png';
         return $this->render("spot/show.html.twig", [
             'current_menu' => 'spot',
             'form' => $form->createView(),
+            'urlMareeImage' => $urlImageMaree,
             'spot' => $spot
         ]);
     }
