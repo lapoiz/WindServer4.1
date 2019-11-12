@@ -84,7 +84,7 @@ class AdminInitDataFileController extends AbstractController
     public function downloadDataFileAction(Request $request)
     {
         $filename = $this->getDownloadFileName();
-        return $this->file($filename);
+        return $this->file($filename.".xlsx");
     }
 
 

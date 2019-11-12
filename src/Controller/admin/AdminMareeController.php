@@ -16,6 +16,10 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
+use Symfony\Component\Process\Exception\ProcessFailedException;
+use Symfony\Component\Process\Process;
+
+
 class AdminMareeController extends AbstractController
 {
 
@@ -41,8 +45,10 @@ class AdminMareeController extends AbstractController
     public function mareeToImage(SpotRepository $repository) : Response
     {
         $spots = $repository->findAll();
+        $urlHighchartsExportServer = $this->getParameter('url_highcharts-export-server');
         return $this->render('admin/spot/mareesToImage.html.twig',[
-            "spots" => $spots
+            "spots" => $spots,
+            "urlHighchartsExportServer" => $urlHighchartsExportServer
         ]);
     }
 
@@ -69,6 +75,33 @@ class AdminMareeController extends AbstractController
             }
         //    $reponse->setData(array('result' => 'KO','message'=>'no Ajax request.' ));
         //}
+        return $reponse;
+    }
+
+
+    /**
+     * @Route("highcharts-export-server" , name="highcharts-export-server")
+     * @return Response
+     */
+    public function highchartsExportServer(Request $request) : Response
+    {
+        $reponse = new JsonResponse();
+        $reponse->headers->set('Content-Type', 'application/json');
+        $reponse->setData(array('result' => 'KO','message'=>'par defaut'));
+
+        //if($request->isXmlHttpRequest()) {
+        $chartJson = $request->request->get('options');
+
+        $process = new Process(['highcharts-export-server', '-instr',$chartJson]);
+        $process->run();
+
+        // executes after the command finishes
+        if (!$process->isSuccessful()) {
+            throw new ProcessFailedException($process);
+        }
+
+        $reponse->setData(array('result' => 'OK'));
+
         return $reponse;
     }
 }

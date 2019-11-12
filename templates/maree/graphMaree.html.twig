@@ -45,6 +45,7 @@
 
         // A EFFACER => OUI !!!!!!!!!!!!!! voir avec edit marée
         function drawPlotBandMareeGraphSpot() {
+            console/log("drawPlotBandMareeGraphSpot(): JE PENSEZ QUE PERSONNE NE L'UTILISAIS !!!!!");
             {% for mareeRestriction in spot.mareeRestriction %}
             drawOnePlotBandMareeGraphSpot({{ spot.id }},{{ mareeRestriction.hauteurMin }},{{ mareeRestriction.hauteurMax }},"{{ mareeRestriction.state }}");
             {% endfor %}

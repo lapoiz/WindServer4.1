@@ -2,8 +2,9 @@
 
 {% block title 'Restriction marée' %}
 
-{% block headScript %}
-    <script src="http://code.highcharts.com/highcharts.js"></script>
+{% block headerElements %}
+    <script src="{{ absolute_url(asset('javascript/highcharts.js')) }}"></script>
+    {{ parent() }}
 {% endblock %}
 
 {% block body %}
@@ -16,7 +17,7 @@
         <h3>URL pour récupérer les prévisions de marées</h3>
 
         <div class="row">
-            <div class="col-sm-6">
+            <div class="col-sm-12">
                 <form action="{{ path('admin_maree_edit', {'id':spot.id}) }}" method="POST"
                       id="maree_form">
 
@@ -30,8 +31,7 @@
                     </div>
 
                     <div class="row">
-                        <div class="col-sm-12">
-
+                        <div class="col-sm-6">
                             <h3>Restrictions</h3>
                             <div class="restrictions" data-prototype="
                                 {% filter escape %}
@@ -56,6 +56,23 @@
                                 {% endfor %}
                             </div>
                         </div>
+
+                        <div class="col-sm-6">
+                            {%  set isWithTitle=true %}
+
+                            {% from "maree/graphFunctions.html.twig" import graphFunctionMaree %}
+                            {{ graphFunctionMaree("200","100",true, "white" ) }}
+                            {% if (spot.mareeRestriction is not null and spot.mareeRestriction.count>0) %}
+                                {% from "maree/graphMaree.html.twig" import graphMaree %}
+                                {{ graphMaree(spot,"200","100") }}
+                            {% endif %}
+
+                            <script>
+                                document.addEventListener('DOMContentLoaded', function () {
+                                    buildNewChart{{ spot.id }}();
+                                });
+                            </script>
+                        </div>
                     </div>
 
                     <br />
@@ -68,13 +85,7 @@
                     Cancel
                 </a>
             </div>
-            <div class="col-sm-6">
-                {%  set isWithTitle=true %}
-                {% from "maree/graph.html.twig" import graphMaree %}
-                {{ graphMaree(spot) }}
-            </div>
         </div>
-
     </div>
 
 <script>

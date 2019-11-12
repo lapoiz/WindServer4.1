@@ -5,6 +5,9 @@
     <script src="{{ absolute_url(asset('javascript/highcharts.js')) }}"></script>
     <script src="{{ absolute_url(asset('javascript/highcharts-exporting.js')) }}"></script>
 
+    <script src="https://code.highcharts.com/modules/offline-exporting.js"></script>
+    <script src="https://code.highcharts.com/modules/export-data.js"></script>
+
     {{ parent() }}
 {% endblock %}
 
@@ -49,7 +52,7 @@
                 sendImageMaree();
             });
 
-            var exportUrl = 'http://export.highcharts.com/';
+            var exportUrl = '{{ urlHighchartsExportServer }}';
             var tabSpotId = [];
             var nbSpotIdBloc=0;
             var listIdSpot = [{% for spot in spots %}{% if spot.mareeRestriction is not null and spot.mareeRestriction.count>0 %}{{ spot.id }},{% endif %}{% endfor %}];
@@ -83,6 +86,10 @@
                 tabSpotId[numBlock].forEach(function (spotId) {
                     //console.log("sendImageMareeBloc => "+$('#mareeGraph'+spotId));
                     var chart = $('#mareeGraph'+spotId).highcharts();
+                    var imageMaree=chart.exportChartLocal({
+                        type: 'image/png'
+                    });
+                    console.dir(imageMaree);
                     var options = chart.options;
                     //console.dir(options);
                     var object = {
@@ -94,6 +101,7 @@
                     $.ajax({
                         type: 'post',
                         url: exportUrl,
+                        dataType: "json",
                         data: object,
                         success: function (data) {
                             //console.log("Send spotId: "+spotId);

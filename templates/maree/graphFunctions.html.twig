@@ -189,8 +189,8 @@
     function drawPlotBandGraphMaree(spotId, hMin, hMax, state) {
         //getChartMaree().yAxis[0].addPlotBand({
         //var chart = $('#mareeGraph').highcharts();
-        console.log('drawPlotBandGraphMaree('+spotId+', '+hMin+', '+hMax+', '+state+') ');
-        console.dir($('#mareeGraph'+spotId));
+        //console.log('drawPlotBandGraphMaree('+spotId+', '+hMin+', '+hMax+', '+state+') ');
+        //console.dir($('#mareeGraph'+spotId));
         $('#mareeGraph'+spotId).highcharts().yAxis[0].addPlotBand({
                 color: getColorPlotBandForState(state),
                 from: hMin,
@@ -201,6 +201,9 @@
     function getColorPlotBandForState(state) {
         var color = "white";
         switch (state) {
+            case "top":
+                color="rgba(0,0,255,1)";
+                break;
             case "OK":
                 color="rgba(0,128,0,1)";
                 break;

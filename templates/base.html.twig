@@ -5,12 +5,13 @@
         <title>{% block title %}Welcome!{% endblock %}</title>
         <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" crossorigin="anonymous">
         <link rel="stylesheet" href="{{ asset('css/lapoiz.css') }}">
+
+        <script src="{{ absolute_url(asset('javascript/jquery-3.4.1.min.js')) }}"></script>
+
         {% block stylesheets %}{% endblock %}
         {% block headScript %}{% endblock %}
 
         <!--<script src="https://code.jquery.com/jquery-3.2.1.min.js" crossorigin="anonymous"></script>-->
-
-        <script src="{{ absolute_url(asset('javascript/jquery-3.4.1.slim.min.js')) }}"></script>
 
 
         {% block headerElements %}{% endblock %}
