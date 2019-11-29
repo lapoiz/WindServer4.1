@@ -7,6 +7,7 @@ use App\Entity\Spot;
 use App\Form\MareeRestrictionType;
 use App\Form\MareeType;
 use App\Repository\MareeRestrictionRepository;
+use App\Service\MareetoImage;
 use App\Utils\GetDataMaree;
 use Doctrine\Common\Persistence\ObjectManager;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -40,7 +41,7 @@ class AdminAjaxMareeController extends AbstractController
      * @Route("/admin/maree/edit/{id}", name="admin_maree_edit")
      * @return \Symfony\Component\HttpFoundation\Response
      */
-    public function edit(Spot $spot, Request $request) : Response
+    public function edit(Spot $spot, Request $request, MareetoImage $mareetoImage) : Response
     {
         $form = $this->createForm(MareeType::class, $spot);
 
@@ -57,7 +58,7 @@ class AdminAjaxMareeController extends AbstractController
                 }
                 $this->manager->persist($spot);
                 $this->manager->flush();
-
+                $mareetoImage->createImageMareeFromSpot($spot);
                 $this->addFlash('success', 'Restriction sur les marée modifiée avec succés');
 
             }
@@ -71,6 +72,24 @@ class AdminAjaxMareeController extends AbstractController
     }
 
 
+    /**
+     * @Route("/admin/ajax/maree/image/{id}", name="admin.ajax.maree.to.image")
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
+    public function generateImage(Spot $spot, Request $request, MareetoImage $mareetoImage) : Response
+    {
+
+        $mareetoImage->createImageMaree($spot,
+            $request->request->get('hauteurMHGrandeMaree'),
+            $request->request->get('hauteurMBGrandeMaree'),
+            $request->request->get('hauteurMHPetiteMaree'),
+            $request->request->get('hauteurMBPetiteMaree'),
+            $request->request->get('hauteurMHMoyenneMaree'),
+            $request->request->get('hauteurMBMoyenneMaree'),
+            $request->request->get('contraintes'));
+        $this->addFlash('success', 'Image générée');
+        return new JsonResponse("jobDone!");
+    }
 
     /**
      * @Route("/admin/ajax/maree/delete/{id}", name="admin_ajax_maree_delete")
@@ -78,6 +97,7 @@ class AdminAjaxMareeController extends AbstractController
      */
     public function delete(Spot $spot, Request $request) : Response
     {
+        $form = $this->createForm(MareeType::class, $spot);
         $this->addFlash('success', 'nous n avons rien fait !!!!');
         return $this->render('maree/restrictionMareeForm.html.twig', [
             'spot' => $spot,

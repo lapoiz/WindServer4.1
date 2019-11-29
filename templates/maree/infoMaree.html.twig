@@ -167,8 +167,8 @@
                 hMaréeHaute=hMax;
                 hMaréeBasse=hMin;
                 // On les pousse dans le Input du formulaire, en vue de l'enregistrement
-                $("#laPoiz_windBundle_maree_hauteurMHGrandeMaree").val(hMaréeHaute);
-                $("#laPoiz_windBundle_maree_hauteurMBGrandeMaree").val(hMaréeBasse);
+                $("#maree_hauteurMHGrandeMaree").val(hMaréeHaute);
+                $("#maree_hauteurMBGrandeMaree").val(hMaréeBasse);
 
 
             } else if (typeHauteur=="min") {
@@ -190,8 +190,8 @@
                             hMaréeBasse = hauteur;
                         }
                     }
-                    $("#laPoiz_windBundle_maree_hauteurMHPetiteMaree").val(hMaréeHaute);
-                    $("#laPoiz_windBundle_maree_hauteurMBPetiteMaree").val(hMaréeBasse);
+                    $("#maree_hauteurMHPetiteMaree").val(hMaréeHaute);
+                    $("#maree_hauteurMBPetiteMaree").val(hMaréeBasse);
                 }
             } else if (typeHauteur=="norm") {
                 // on récupére les moyennes
@@ -213,8 +213,8 @@
                 }
                 hMaréeBasse = Math.round((hMaréeBasse/nbMaréeBasse)*100)/100; // arrondi à 2 decimal
                 hMaréeHaute = Math.round((hMaréeHaute/nbMaréeHaute)*100)/100;
-                $("#laPoiz_windBundle_maree_hauteurMHMoyenneMaree").val(hMaréeHaute);
-                $("#laPoiz_windBundle_maree_hauteurMBMoyenneMaree").val(hMaréeBasse);
+                $("#maree_hauteurMHMoyenneMaree").val(hMaréeHaute);
+                $("#maree_hauteurMBMoyenneMaree").val(hMaréeBasse);
             };
 
             //alert(typeHauteur+"->   hMaréeHaute: "+hMaréeHaute+"  hMaréeBasse:"+hMaréeBasse);

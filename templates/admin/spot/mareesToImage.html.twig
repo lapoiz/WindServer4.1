@@ -86,10 +86,10 @@
                 tabSpotId[numBlock].forEach(function (spotId) {
                     //console.log("sendImageMareeBloc => "+$('#mareeGraph'+spotId));
                     var chart = $('#mareeGraph'+spotId).highcharts();
-                    var imageMaree=chart.exportChartLocal({
+                    /*var imageMaree=chart.exportChartLocal({
                         type: 'image/png'
                     });
-                    console.dir(imageMaree);
+                    console.dir(imageMaree);*/
                     var options = chart.options;
                     //console.dir(options);
                     var object = {
@@ -109,6 +109,7 @@
                         },
                         error: function (data) {
                             console.log("Error for export spotId: "+spotId);
+                            console.dir(data);
                             console.log(data.responseText);
                         },
                     });

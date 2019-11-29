@@ -58,6 +58,11 @@
                         </div>
 
                         <div class="col-sm-6">
+
+                            <button class="btn-primary" TYPE="button" onclick="javascript:generateImageMaree()">Générer image Marée</button>
+
+
+
                             {%  set isWithTitle=true %}
 
                             {% from "maree/graphFunctions.html.twig" import graphFunctionMaree %}
@@ -113,6 +118,64 @@
         addRestrictionFormDeleteButton(newFormDiv);
     }
 
+    function generateImageMaree() {
+        //console.log("generateImageMaree");
+
+        var hauteurMHGrandeMaree=parseFloat($("#maree_hauteurMHGrandeMaree").val());
+        var hauteurMBGrandeMaree=parseFloat($("#maree_hauteurMBGrandeMaree").val());
+
+        var hauteurMHPetiteMaree=parseFloat($("#maree_hauteurMHPetiteMaree").val());
+        var hauteurMBPetiteMaree=parseFloat($("#maree_hauteurMBPetiteMaree").val());
+
+        var hauteurMHMoyenneMaree=parseFloat($("#maree_hauteurMHMoyenneMaree").val());
+        var hauteurMBMoyenneMaree=parseFloat($("#maree_hauteurMBMoyenneMaree").val());
+
+        var contraintes={};
+        for (var i=0;i<10;i++) {
+            var input=$("#maree_mareeRestriction_"+i+"_hauteurMin");
+            //console.dir(input);
+            if (null!=input.val()) {
+                var uneContrainte={};
+                //console.log("input "+i+" existe");
+                //console.log("value: "+input.val());
+                uneContrainte.hMin=input.val();
+                uneContrainte.hMax=$("#maree_mareeRestriction_"+i+"_hauteurMax").val();
+                uneContrainte.state=$("#maree_mareeRestriction_"+i+"_state").val();
+                contraintes[i]=uneContrainte;
+            } else {
+                i=10;
+            }
+        }
+
+        var object = {
+            hauteurMHGrandeMaree: hauteurMHGrandeMaree,
+            hauteurMBGrandeMaree: hauteurMBGrandeMaree,
+            hauteurMHPetiteMaree: hauteurMHPetiteMaree,
+            hauteurMBPetiteMaree: hauteurMBPetiteMaree,
+            hauteurMHMoyenneMaree: hauteurMHMoyenneMaree,
+            hauteurMBMoyenneMaree: hauteurMBMoyenneMaree,
+            contraintes: contraintes
+        };
+
+        console.dir(object);
+        var spotId={{ spot.id }};
+        $.ajax({
+            type: 'post',
+            url: "{{ path('admin.ajax.maree.to.image', {id: spot.id}) }}",
+            data: object,
+            success: function (data) {
+                //console.log("Send spotId: "+spotId);
+                // affiche l'image
+                console.dir(data);
+            },
+            error: function (data) {
+                console.log("Error for export spotId: "+spotId);
+                console.dir(data);
+                console.log(data.responseText);
+            },
+        });
+    }
+
 
     //function addRestrictionFormDeleteButton($newFormDiv) {
     function addRestrictionFormDeleteButton(formDiv) {
@@ -150,14 +213,14 @@
         var graph = getChartMaree();
 
         updateSerieGraph(graph.get("serieGM"),
-                parseFloat($("#laPoiz_windBundle_maree_hauteurMHGrandeMaree").val()),
-                parseFloat($("#laPoiz_windBundle_maree_hauteurMBGrandeMaree").val()));
+                parseFloat($("#maree_hauteurMHGrandeMaree").val()),
+                parseFloat($("#maree_hauteurMBGrandeMaree").val()));
         updateSerieGraph(graph.get("seriePM"),
-                parseFloat($("#laPoiz_windBundle_maree_hauteurMHPetiteMaree").val()),
-                parseFloat($("#laPoiz_windBundle_maree_hauteurMBPetiteMaree").val()));
+                parseFloat($("#maree_hauteurMHPetiteMaree").val()),
+                parseFloat($("#maree_hauteurMBPetiteMaree").val()));
         updateSerieGraph(graph.get("serieMM"),
-                parseFloat($("#laPoiz_windBundle_maree_hauteurMHMoyenneMaree").val()),
-                parseFloat($("#laPoiz_windBundle_maree_hauteurMBMoyenneMaree").val()));
+                parseFloat($("#maree_hauteurMHMoyenneMaree").val()),
+                parseFloat($("#maree_hauteurMBMoyenneMaree").val()));
     }
 
     // Ajoute PlotBand au graph en fonction des input

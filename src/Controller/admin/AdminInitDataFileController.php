@@ -15,6 +15,7 @@ use App\Entity\WebSiteInfo;
 use App\Entity\WindOrientation;
 use App\Repository\SpotRepository;
 use App\Service\HTMLtoImage;
+use App\Service\MareetoImage;
 use App\Utils\GetDataMaree;
 use App\Entity\InitDataFile;
 use App\Entity\Spot;
@@ -94,7 +95,7 @@ class AdminInitDataFileController extends AbstractController
      * @param HTMLtoImage $imageGenerator
      * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
      */
-    public function initDataFileAction(Request $request, HTMLtoImage $imageGenerator)
+    public function initDataFileAction(Request $request, HTMLtoImage $imageGenerator, MareetoImage $mareetoImage)
     {
         $initDataFile = new InitDataFile();
         $form = $this->createForm(InitDataFileType::class, $initDataFile);
@@ -110,7 +111,7 @@ class AdminInitDataFileController extends AbstractController
 
             // Move the file to the directory
             try {
-                $this->import($file,$imageGenerator);
+                $this->import($file,$imageGenerator, $mareetoImage);
                 $file->move(
                     $directoryName,
                     $fileName
@@ -138,7 +139,7 @@ class AdminInitDataFileController extends AbstractController
      * @param UploadedFile $file
      * Import le fichier XLSX mis en parametre
      */
-    private function import(UploadedFile $file,HTMLtoImage $imageGenerator)
+    private function import(UploadedFile $file,HTMLtoImage $imageGenerator, MareetoImage $mareetoImage)
     {
         $spreadsheet = $this->excel_to_spreadsheet($file->getPathname());
         if ($spreadsheet != null) {
@@ -158,7 +159,7 @@ class AdminInitDataFileController extends AbstractController
             // Processing on each row of data
             foreach ($data["columnValues"] as $row) {
                 try {
-                    $spot = $this->importRow($row,$tabRegions, $imageGenerator);
+                    $spot = $this->importRow($row,$tabRegions, $imageGenerator, $mareetoImage);
 
                     if (($i % $batchSize) === 0) {
                         $this->manager->flush();
@@ -226,7 +227,7 @@ class AdminInitDataFileController extends AbstractController
         return $data;
     }
 
-    private function importRow($row,$tabRegions, HTMLtoImage $hTMLtoImage)
+    private function importRow($row,$tabRegions, HTMLtoImage $hTMLtoImage, MareetoImage $mareetoImage)
     {
         $spot = new Spot();
         $spot->setName($row['Nom']);
@@ -355,6 +356,7 @@ class AdminInitDataFileController extends AbstractController
         }
         $urlImage=$this->getParameter('rosace_directory_kernel');
         RosaceWindManage::createRosaceWind($spot,$urlImage);
+        $mareetoImage->createImageMaree($spot);
         $hTMLtoImage->createImageCard($spot);
 
         return $spot;
