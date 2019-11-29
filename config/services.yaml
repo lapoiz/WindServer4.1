@@ -39,7 +39,7 @@ services:
     # please note that last definitions always *replace* previous ones
 
 
-    App\Service\MareetoImage:
+    App\Service\MareeToImage:
 
     # Service pour transformer une page HTML en image
     App\Service\HTMLtoImage:

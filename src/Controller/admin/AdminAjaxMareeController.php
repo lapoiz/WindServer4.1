@@ -7,7 +7,7 @@ use App\Entity\Spot;
 use App\Form\MareeRestrictionType;
 use App\Form\MareeType;
 use App\Repository\MareeRestrictionRepository;
-use App\Service\MareetoImage;
+use App\Service\MareeToImage;
 use App\Utils\GetDataMaree;
 use Doctrine\Common\Persistence\ObjectManager;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -41,7 +41,7 @@ class AdminAjaxMareeController extends AbstractController
      * @Route("/admin/maree/edit/{id}", name="admin_maree_edit")
      * @return \Symfony\Component\HttpFoundation\Response
      */
-    public function edit(Spot $spot, Request $request, MareetoImage $mareetoImage) : Response
+    public function edit(Spot $spot, Request $request, MareeToImage $mareetoImage) : Response
     {
         $form = $this->createForm(MareeType::class, $spot);
 
@@ -76,7 +76,7 @@ class AdminAjaxMareeController extends AbstractController
      * @Route("/admin/ajax/maree/image/{id}", name="admin.ajax.maree.to.image")
      * @return \Symfony\Component\HttpFoundation\Response
      */
-    public function generateImage(Spot $spot, Request $request, MareetoImage $mareetoImage) : Response
+    public function generateImage(Spot $spot, Request $request, MareeToImage $mareetoImage) : Response
     {
 
         $mareetoImage->createImageMaree($spot,

@@ -15,7 +15,7 @@ use App\Entity\WebSiteInfo;
 use App\Entity\WindOrientation;
 use App\Repository\SpotRepository;
 use App\Service\HTMLtoImage;
-use App\Service\MareetoImage;
+use App\Service\MareeToImage;
 use App\Utils\GetDataMaree;
 use App\Entity\InitDataFile;
 use App\Entity\Spot;
@@ -95,7 +95,7 @@ class AdminInitDataFileController extends AbstractController
      * @param HTMLtoImage $imageGenerator
      * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
      */
-    public function initDataFileAction(Request $request, HTMLtoImage $imageGenerator, MareetoImage $mareetoImage)
+    public function initDataFileAction(Request $request, HTMLtoImage $imageGenerator, MareeToImage $mareetoImage)
     {
         $initDataFile = new InitDataFile();
         $form = $this->createForm(InitDataFileType::class, $initDataFile);
@@ -139,7 +139,7 @@ class AdminInitDataFileController extends AbstractController
      * @param UploadedFile $file
      * Import le fichier XLSX mis en parametre
      */
-    private function import(UploadedFile $file,HTMLtoImage $imageGenerator, MareetoImage $mareetoImage)
+    private function import(UploadedFile $file,HTMLtoImage $imageGenerator, MareeToImage $mareetoImage)
     {
         $spreadsheet = $this->excel_to_spreadsheet($file->getPathname());
         if ($spreadsheet != null) {
@@ -227,7 +227,7 @@ class AdminInitDataFileController extends AbstractController
         return $data;
     }
 
-    private function importRow($row,$tabRegions, HTMLtoImage $hTMLtoImage, MareetoImage $mareetoImage)
+    private function importRow($row,$tabRegions, HTMLtoImage $hTMLtoImage, MareeToImage $mareetoImage)
     {
         $spot = new Spot();
         $spot->setName($row['Nom']);

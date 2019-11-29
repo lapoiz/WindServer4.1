@@ -19,7 +19,7 @@ define('FontSize',4); // de 1 à 5
 define('HauteurMareeMax',12);
 
 
-class MareetoImage
+class MareeToImage
 {
     private $container;
     private $white, $blue, $green, $red, $orange;
