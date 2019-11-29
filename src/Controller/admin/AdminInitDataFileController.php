@@ -356,7 +356,7 @@ class AdminInitDataFileController extends AbstractController
         }
         $urlImage=$this->getParameter('rosace_directory_kernel');
         RosaceWindManage::createRosaceWind($spot,$urlImage);
-        $mareetoImage->createImageMaree($spot);
+        $mareetoImage->createImageMareeFromSpot($spot);
         $hTMLtoImage->createImageCard($spot);
 
         return $spot;
