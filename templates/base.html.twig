@@ -5,6 +5,7 @@
         <title>{% block title %}Welcome!{% endblock %}</title>
         <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" crossorigin="anonymous">
         <link rel="stylesheet" href="{{ asset('css/lapoiz.css') }}">
+        <link rel="stylesheet" href="{{ asset('css/navBar.css') }}">
 
         <script src="{{ absolute_url(asset('javascript/jquery-3.4.1.min.js')) }}"></script>
 
@@ -19,7 +20,9 @@
     </head>
     <body>
         <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+
             <a class="navbar-brand" href="{{ path('home') }}">LaPoiz</a>
+
             <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
@@ -36,16 +39,28 @@
                             Les Spots <span class="sr-only">(current)</span>
                         </a>
                     </li>
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" {% if current_menu is defined and current_menu == 'spot' %} active {% endif %}">
+                    <li class="nav-item dropdown active">
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuSpots"
+                           role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" {% if current_menu is defined and current_menu == 'spot' %} active {% endif %}">
                             Liste des spots
                         </a>
-                        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                            <a class="dropdown-item" href="{{ path('spot.index') }}">St Aubin</a>
-                            <a class="dropdown-item" href="#">Wissant</a>
-                            <div class="dropdown-divider"></div>
-                            <a class="dropdown-item" href="#"  aria-disabled="true">Nouveau</a>
-                        </div>
+                        <ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuSpots">
+                            {% for regionName,spotsTab in regionsNavBar %}
+                                {% set idSousMenu = 1 %}
+                            <li class="dropdown-submenu">
+                                <a class="dropdown-item dropdown-toggle" href="#">{{ regionName }}</a>
+                                <ul class="dropdown-menu">
+                                    {% for spot in spotsTab %}
+                                    <li><a class="dropdown-item" href="{{ path('spot.show', {id: spot.id, slug: spot.slug}) }}">
+                                            {{ spot.name }}</a>
+                                    </li>
+                                    {%  endfor %}
+                                </ul>
+                            </li>
+
+                                {% set idSousMenu = idSousMenu+1 %}
+                            {%  endfor %}
+                        </ul>
                     </li>
                 </ul>
 
@@ -87,6 +102,8 @@
                 integrity="sha384-B0UglyR+jN6CkvvICOB2joaf5I4l3gm9GU6Hc1og6Ls7i6U/mkkaduKaBhlAXv9k" crossorigin="anonymous"></script>
 
         {% block javascripts %}{% endblock %}
+
+        <script src="{{ asset('javascript/navBar.js') }}"></script>
 
     </body>
 </html>

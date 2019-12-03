@@ -14,6 +14,7 @@ use App\Entity\Region;
 use App\Entity\WebSiteInfo;
 use App\Entity\WindOrientation;
 use App\Repository\SpotRepository;
+use App\Service\DisplayObject;
 use App\Service\HTMLtoImage;
 use App\Service\MareeToImage;
 use App\Utils\GetDataMaree;
@@ -95,7 +96,7 @@ class AdminInitDataFileController extends AbstractController
      * @param HTMLtoImage $imageGenerator
      * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
      */
-    public function initDataFileAction(Request $request, HTMLtoImage $imageGenerator, MareeToImage $mareetoImage)
+    public function initDataFileAction(Request $request, HTMLtoImage $imageGenerator, MareeToImage $mareetoImage, DisplayObject $displayObject)
     {
         $initDataFile = new InitDataFile();
         $form = $this->createForm(InitDataFileType::class, $initDataFile);
@@ -128,8 +129,9 @@ class AdminInitDataFileController extends AbstractController
             }
 
         }
-
+        $spots = $this->repository->findAll();
         return $this->render('admin/dataFile/index.html.twig', [
+            "regionsNavBar" => $displayObject->regionsForNavBar($spots),
             'form' => $form->createView(),
         ]);
     }

@@ -7,6 +7,8 @@ use App\Entity\Spot;
 use App\Form\MareeRestrictionType;
 use App\Form\MareeType;
 use App\Repository\MareeRestrictionRepository;
+use App\Repository\SpotRepository;
+use App\Service\DisplayObject;
 use App\Service\MareeToImage;
 use App\Utils\GetDataMaree;
 use Doctrine\Common\Persistence\ObjectManager;
@@ -41,7 +43,7 @@ class AdminAjaxMareeController extends AbstractController
      * @Route("/admin/maree/edit/{id}", name="admin_maree_edit")
      * @return \Symfony\Component\HttpFoundation\Response
      */
-    public function edit(Spot $spot, Request $request, MareeToImage $mareetoImage) : Response
+    public function edit(Spot $spot, Request $request, MareeToImage $mareetoImage, SpotRepository $spotRepository, DisplayObject $displayObject) : Response
     {
         $form = $this->createForm(MareeType::class, $spot);
 
@@ -64,9 +66,10 @@ class AdminAjaxMareeController extends AbstractController
             }
         }
         //$form->add('Save',SubmitType::class);
-
+        $spots = $spotRepository->findAll();
         return $this->render('maree/mareeEdit.html.twig', [
             'spot' => $spot,
+            "regionsNavBar" => $displayObject->regionsForNavBar($spots),
             'form' => $form->createView()
         ]);
     }

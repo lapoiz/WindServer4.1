@@ -10,6 +10,7 @@ namespace App\Controller\admin;
 
 
 use App\Repository\SpotRepository;
+use App\Service\DisplayObject;
 use App\Service\HTMLtoImage;
 use Convertio\Convertio;
 use Doctrine\Common\Persistence\ObjectManager;
@@ -37,13 +38,15 @@ class AdminTestController extends AbstractController
      * @param Request $request
      * @return
      */
-    public function testAction(HTMLtoImage $hTMLtoImage)
+    public function testAction(HTMLtoImage $hTMLtoImage, DisplayObject $displayObject)
     {
         $spot = $this->repository->findFirst();
         $hTMLtoImage->createImageCard($spot);
 
+        $spots = $this->repository->findAll();
         return $this->render('admin/test/index.html.twig', [
             'spot' => $spot,
+            "regionsNavBar" => $displayObject->regionsForNavBar($spots),
             'urlImage' => $this->getParameter('rosace_directory').DIRECTORY_SEPARATOR,
         ]);
     }
@@ -53,7 +56,7 @@ class AdminTestController extends AbstractController
      * @param Request $request
      * @return
      */
-    public function test2Action(Request $request)
+    public function test2Action(Request $request, DisplayObject $displayObject)
     {
         $spot = $this->repository->findFirst();
 
@@ -81,8 +84,10 @@ class AdminTestController extends AbstractController
         ->download($immagePath)                        // Download Result To Local File
         ->delete();
 
+        $spots = $this->repository->findAll();
         return $this->render('admin/test/index.html.twig', [
             'spot' => $spot,
+            "regionsNavBar" => $displayObject->regionsForNavBar($spots),
             'urlImage' => $this->getParameter('rosace_directory').DIRECTORY_SEPARATOR,
         ]);
     }

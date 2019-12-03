@@ -5,6 +5,7 @@ namespace App\Controller\admin;
 use App\Form\SpotType;
 use App\Form\WebsiteInfoSpotType;
 use App\Repository\SpotRepository;
+use App\Service\DisplayObject;
 use App\Service\HTMLtoImage;
 use App\Utils\RosaceWindManage;
 use Doctrine\Common\Persistence\ObjectManager;
@@ -38,10 +39,12 @@ class AdminSpotController extends AbstractController
      * @Route("/admin", name="admin_spot_index")
      * @return \Symfony\Component\HttpFoundation\Response
      */
-    public function index() : Response
+    public function index(DisplayObject $displayObject) : Response
     {
         $spots = $this->repository->findAll();
-        return $this->render("admin/spot/index.html.twig", compact('spots'));
+        $regionsNavBar = $displayObject->regionsForNavBar($spots);
+        return $this->render("admin/spot/index.html.twig",
+            compact('spots', 'regionsNavBar'));
     }
 
     /**
@@ -49,7 +52,7 @@ class AdminSpotController extends AbstractController
      * @param Request $request
      * @return Response
      */
-    public function new(Request $request) : Response
+    public function new(Request $request, DisplayObject $displayObject) : Response
     {
         $spot = new Spot();
         $form = $this->createForm(SpotType::class, $spot);
@@ -63,9 +66,10 @@ class AdminSpotController extends AbstractController
             $this->addFlash('success', 'Spot crée avec succés');
             return $this->redirectToRoute('admin_spot_index');
         }
-
+        $spots = $this->repository->findAll();
         return $this->render('admin/spot/new.html.twig', [
             'spot' => $spot,
+            "regionsNavBar" => $displayObject->regionsForNavBar($spots),
             'form' => $form->createView()
         ]);
     }
@@ -77,7 +81,7 @@ class AdminSpotController extends AbstractController
      * @param HTMLtoImage $cardGenerator
      * @return \Symfony\Component\HttpFoundation\Response
      */
-    public function edit(Spot $spot, Request $request, HTMLtoImage $cardGenerator) : Response
+    public function edit(Spot $spot, Request $request, HTMLtoImage $cardGenerator, DisplayObject $displayObject) : Response
     {
         $form = $this->createForm(SpotType::class, $spot);
         $form->handleRequest($request);
@@ -96,8 +100,10 @@ class AdminSpotController extends AbstractController
             return $this->redirectToRoute('admin_spot_index');
         }
 
+        $spots = $this->repository->findAll();
         return $this->render('admin/spot/edit.html.twig', [
             'spot' => $spot,
+            "regionsNavBar" => $displayObject->regionsForNavBar($spots),
             "urlCardImage" => $this->getParameter('card_image_directory'),
             'form' => $form->createView()
         ]);
@@ -126,7 +132,7 @@ class AdminSpotController extends AbstractController
      * @param Request $request
      * @return \Symfony\Component\HttpFoundation\Response
      */
-    public function websiteInfoEdit(Spot $spot, Request $request) : Response
+    public function websiteInfoEdit(Spot $spot, Request $request, DisplayObject $displayObject) : Response
     {
         $form = $this->createForm(WebsiteInfoSpotType::class, $spot);
 
@@ -149,8 +155,10 @@ class AdminSpotController extends AbstractController
         }
         //$form->add('Save',SubmitType::class);
 
+        $spots = $this->repository->findAll();
         return $this->render('admin/spot/websiteInfoEdit.html.twig', [
             'spot' => $spot,
+            "regionsNavBar" => $displayObject->regionsForNavBar($spots),
             'form' => $form->createView()
         ]);
     }

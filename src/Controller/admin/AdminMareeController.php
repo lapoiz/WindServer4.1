@@ -10,6 +10,7 @@ namespace App\Controller\admin;
 
 
 use App\Repository\SpotRepository;
+use App\Service\DisplayObject;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -42,12 +43,13 @@ class AdminMareeController extends AbstractController
      * @Route("admin/spots/maree/toimage" , name="admin.spots.maree.to.image")
      * @return Response
      */
-    public function mareeToImage(SpotRepository $repository) : Response
+    public function mareeToImage(SpotRepository $repository, DisplayObject $displayObject) : Response
     {
         $spots = $repository->findAll();
         $urlHighchartsExportServer = $this->getParameter('url_highcharts-export-server');
         return $this->render('admin/spot/mareesToImage.html.twig',[
             "spots" => $spots,
+            "regionsNavBar" => $displayObject->regionsForNavBar($spots),
             "urlHighchartsExportServer" => $urlHighchartsExportServer
         ]);
     }
