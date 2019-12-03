@@ -1,0 +1,29 @@
+{{ form_start(form) }}
+
+<div class="row">
+    <div class="col-12">
+        {{ form_row(form.nom) }}
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-12">
+        {{ form_row(form.codeRegion) }}
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-12">
+        {{ form_row(form.numDisplay) }}
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-12">
+        {{ form_row(form.description) }}
+    </div>
+</div>
+
+<button class="btn btn-primary">{{ button|default('Enregistrer') }}</button>
+
+{{ form_end(form) }}

@@ -2,8 +2,11 @@
 namespace App\Controller\admin;
 
 
+use App\Entity\Region;
+use App\Form\RegionType;
 use App\Form\SpotType;
 use App\Form\WebsiteInfoSpotType;
+use App\Repository\RegionRepository;
 use App\Repository\SpotRepository;
 use App\Service\DisplayObject;
 use App\Service\HTMLtoImage;
@@ -195,6 +198,35 @@ class AdminSpotController extends AbstractController
             'spot' => $spot,
             'urlImage' => $urlImage,
         ]);
-
     }
+
+
+    /**
+     * @Route("/admin/region/create", name="admin_region_new")
+     * @param Request $request
+     * @return Response
+     */
+    public function newRegion(Request $request,RegionRepository $regionRepository, DisplayObject $displayObject) : Response
+    {
+        $region = new Region();
+        $form = $this->createForm(RegionType::class, $region);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $this->manager->persist($region);
+            $this->manager->flush();
+            $this->addFlash('success', 'Region crée avec succés');
+            return $this->redirectToRoute('admin_spot_index');
+        }
+        $spots = $this->repository->findAll();
+        $regions = $regionRepository->findAll();
+
+        return $this->render('admin/region/new.html.twig', [
+            'region' => $region,
+            'regions' => $regions,
+            "regionsNavBar" => $displayObject->regionsForNavBar($spots),
+            'form' => $form->createView()
+        ]);
+    }
+
 }
