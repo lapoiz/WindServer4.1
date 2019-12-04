@@ -420,16 +420,16 @@ class AdminInitDataFileController extends AbstractController
      */
     private function getWebsiteInfo($row, $spot, $num) {
         $websiteInfo=null;
-        if (!empty($row['URL '.$num]) and trim($row['URL '.$num]) != '') {
+        if (!empty($row['URL'.$num]) and trim($row['URL'.$num]) != '') {
             $websiteInfo = new WebSiteInfo();
-            $websiteInfo->setUrl($row['URL '.$num]);
+            $websiteInfo->setUrl($row['URL'.$num]);
         }
         if ($websiteInfo!=null) {
-            if (!empty($row['Titre '.$num]) and trim($row['Titre '.$num]) != '') {
-                $websiteInfo->setName($row['Titre '.$num]);
+            if (!empty($row['Titre'.$num]) and trim($row['Titre'.$num]) != '') {
+                $websiteInfo->setName($row['Titre'.$num]);
             }
-            if (!empty($row['Commentaire '.$num]) and trim($row['Commentaire '.$num]) != '') {
-                $websiteInfo->setDescription($row['Commentaire '.$num]);
+            if (!empty($row['Commentaire'.$num]) and trim($row['Commentaire'.$num]) != '') {
+                $websiteInfo->setDescription($row['Commentaire'.$num]);
             }
             $websiteInfo->setSpot($spot);
             $spot->addWebSiteInfos($websiteInfo);
