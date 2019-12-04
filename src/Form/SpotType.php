@@ -36,6 +36,8 @@ class SpotType extends AbstractType
 
             ->add('description', TextareaType::class, array('attr' => array('class' => 'ckeditor')))
 
+            ->add('descOrientationVent', TextareaType::class, array('attr' => array('class' => 'ckeditor')))
+
             ->add('isFoil', ChoiceType::class, [
                 'choices' => [
                     'Oui' => true,
