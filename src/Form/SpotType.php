@@ -3,11 +3,11 @@
 namespace App\Form;
 
 use App\Entity\Spot;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
-use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -101,6 +101,13 @@ class SpotType extends AbstractType
                 'label' =>false,
             ])
 
+            ->add('region', EntityType::class, array(
+                'class' => 'App\Entity\Region',
+                'choice_label' => 'nom',
+                'expanded' => false,
+                'multiple' => false,
+
+            ))
         ;
     }
 
