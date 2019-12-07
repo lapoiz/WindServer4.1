@@ -40,3 +40,21 @@ a.titreCollapse:link {
     /* espace les traits du texte */
     margin: 0 .5em;
 }
+
+.sous-titre-spot {
+    font-size: large ;
+    color: #0055aa;
+    font-weight: bold;
+}
+
+.titreCollapse {
+    color: #0055aa;
+}
+
+.liste-optimise {
+    margin-bottom: 0px;
+}
+
+.liste-optimise li p {
+    margin-bottom: 0px;
+}

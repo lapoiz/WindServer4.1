@@ -7,108 +7,135 @@
 
 {% block headerElements %}
     <script src="{{ absolute_url(asset('javascript/jquery-3.4.1.slim.min.js')) }}"></script>
+    <style>
+        #spot_map {
+            width: 100%; /* important! if you need full width display */
+            height: 400px;
+            margin: 0;
+            border-radius: 5px;
+        }
+    </style>
     {{ parent() }}
 {% endblock %}
+
+{% block stylesheets %}
+    <!-- Import Leaflet CSS Style Sheet -->
+    <link rel="stylesheet" href="https://npmcdn.com/leaflet@1.0.0-rc.2/dist/leaflet.css" />
+    {{ parent() }}
+{% endblock %}
+
+{% block headScript %}
+    <!-- Import Leaflet JS Library -->
+    <script src="https://npmcdn.com/leaflet@1.0.0-rc.2/dist/leaflet.js"></script>
+    {{ parent() }}
+{% endblock %}
+
+
 
 {% block body %}
     <div class="text-center">
 
             <div class="row">
-                <div class="col-sm-5 centered">
-                    {% from "windRosace/rosaceWind.html.twig" import displayRosace %}
-                    {{ displayRosace("200px","200px") }}
 
-                    <script>
-                        // **************************************
-                        // ** Gestion de l'orientation du vent **
-                        // **************************************
-                        var tabOrientationState = new Array(); // Array with orientation => state, used for rosace wind
-
-                        getOrientationDataFromSpot();
-
-                        // Récupére les données de l'objet spot et les pousse dans la rosace
-
-                        function getOrientationDataFromSpot() {
-                            // Parcour la liste des WindOrientation
-                            {% for windOrientation in spot.windOrientation %}
-                            tabOrientationState["{{ windOrientation.orientation }}"]="{{ windOrientation.state?windOrientation.state:"?" }}";
-                            {% endfor %}
-
-                            svgLoad(tabOrientationState, true);
-                        }
-                    </script>
-                </div>
-
-                <div class="col-sm-2 centered align-middle">
-                    {{ spot.name }}<br/>
+                <div class="col-sm-12 centered align-middle">
+                    <h1>{{ spot.name }}</h1>
                     <div class="d-none d-sm-block">{{ spot.shortDescription|raw }}</div>
                 </div>
 
-                <div class="col-sm-5 centered">
-
-                    {% if (spot.uRLMaree is defined) and (spot.uRLMaree is not null) %}
-                        <img src="{{ asset(urlMareeImage) }}">
-                    {% else %}
-                        <span class="text-info">Aucune contrainte de marée</span>
-                    {% endif %}
-
-                </div>
             </div>
     </div>
 
     <div class="container">
 
+    <!-- Description & Carte -->
+        <h3 class="hr"><a href="#spotDesc" data-toggle="collapse" class="titreCollapse">Description du spot</a></h3>
         <div class="row">
-            <div class="col-sm-12 center-block">
-                <h3 class="hr"><a href="#spotDesc" data-toggle="collapse" class="titreCollapse">Description du spot</a></h3>
+            <div class="col-sm-6 center-block">
                 <div id="spotDesc">{{ spot.description|raw }}</div>
-
+            </div>
+            <div class="col-sm-6 center-block">
+                <div id="spot_map"></div>
             </div>
         </div>
 
+    <!-- Vent -->
         <h3 class="hr"><a href="#descWind" data-toggle="collapse" class="titreCollapse">Info sur l'orientation du vent</a></h3>
         <div class="row collapse show" id="descWind">
-            <div class="col-sm-12">
+            <div class="col-sm-3 centered">
+                {% from "windRosace/rosaceWind.html.twig" import displayRosace %}
+                {{ displayRosace("200px","200px") }}
+
+                <script>
+                    // **************************************
+                    // ** Gestion de l'orientation du vent **
+                    // **************************************
+                    var tabOrientationState = new Array(); // Array with orientation => state, used for rosace wind
+
+                    getOrientationDataFromSpot();
+
+                    // Récupére les données de l'objet spot et les pousse dans la rosace
+
+                    function getOrientationDataFromSpot() {
+                        // Parcour la liste des WindOrientation
+                        {% for windOrientation in spot.windOrientation %}
+                        tabOrientationState["{{ windOrientation.orientation }}"]="{{ windOrientation.state?windOrientation.state:"?" }}";
+                        {% endfor %}
+
+                        svgLoad(tabOrientationState, true);
+                    }
+                </script>
+            </div>
+            <div class="col-sm-9">
                 {{ spot.descOrientationVent|raw }}
             </div>
         </div>
 
+    <!-- Marée -->
     {% if spot.URLMaree|default is not empty %}
         <h3 class="hr"><a href="#descMaree" data-toggle="collapse" class="titreCollapse">Info sur les marées</a></h3>
         <div class="row collapse show" id="descMaree">
-            <div class="col-sm-12">
+            <div class="col-sm-9">
                 {{ spot.descMaree|raw }}
             </div>
+            <div class="col-sm-3 centered">
+                {% if (spot.uRLMaree is defined) and (spot.uRLMaree is not null) %}
+                    <img src="{{ asset(urlMareeImage) }}" width="200px">
+                {% else %}
+                    <span class="text-info">Aucune contrainte de marée</span>
+                {% endif %}
+            </div>
         </div>
     {% endif %}
 
-    {% if spot.descWave|default is not empty %}
-        <h3 class="hr"><a href="#descWave" data-toggle="collapse" class="titreCollapse">Info sur les vagues</a></h3>
-        <div class="row collapse show" id="descWave">
-            <div class="col-sm-12">
+    <!-- Autre -->
+    <h3 class="hr"><a href="#descAutre" data-toggle="collapse" class="titreCollapse">Info divers sur {{ spot.name }}</a></h3>
+        <div class="row collapse show" id="descAutre">
+
+            <!-- Vagues -->
+            {% if spot.descWave|default is not empty %}
+            <div class="col-sm-4">
+                <span class="sous-titre-spot">Vagues</span>
                 {{ spot.descWave|raw }}
             </div>
-        </div>
-    {% endif %}
+            {% endif %}
 
-    {% if spot.isFoil %}
-        <h3 class="hr"><a href="#descFoil" data-toggle="collapse" class="titreCollapse">Info sur le foil</a></h3>
-        <div class="row collapse show" id="descFoil">
-            <div class="col-sm-12">
-                {{ spot.descFoil|raw }}
-            </div>
-        </div>
-    {% endif %}
+            <!-- Foil -->
+            {% if spot.isFoil %}
+                <div class="col-sm-4">
+                    <span class="sous-titre-spot">Foil</span>
+                    {{ spot.descFoil|raw }}
+                </div>
+            {% endif %}
 
-
-    {% if spot.isContraintEte %}
-        <h3 class="hr"><a href="#descEte" data-toggle="collapse" class="titreCollapse">Contrainte l'été ?</a></h3>
-        <div class="row collapse show" id="descEte">
-            <div class="col-sm-12">
-                {{ spot.descContraintEte|raw }}
-            </div>
+            <!-- Eté -->
+            {% if spot.isContraintEte %}
+                <div class="col-sm-4">
+                    <span class="sous-titre-spot">L'été</span>
+                    {{ spot.descContraintEte|raw }}
+                </div>
+            {% endif %}
         </div>
-    {% endif %}
+
 
         <h3 class="hr"><a href="#descRoute" data-toggle="collapse" class="titreCollapse">Pour y aller</a></h3>
         <div class="row collapse show" id="descRoute">
@@ -122,14 +149,23 @@
         </div>
 
 
-        <h3 class="hr"><a href="#descPrev" data-toggle="collapse" class="titreCollapse">Site de prévision du vent et autres</a></h3>
-        <div class="row collapse show" id="descPrev">
-            <div class="col-sm-12">
-                <ul>
+        <h3 class="hr"><a href="#descLink" data-toggle="collapse" class="titreCollapse">Sites internet sur le spot</a></h3>
+        <div class="row collapse show" id="descLink">
+            <div class="col-sm-5">
+                <span class="sous-titre-spot">Prévisions météo</span>
+                <ul class="liste-optimise">
+                    {% if spot.urlWindFinder|default is not empty %}
                     <li><a href="{{ spot.urlWindFinder }}" target="_blank">Windfinder</a> </li>
+                    {% endif %}
+                    {% if spot.uRLWindguru|default is not empty %}
                     <li><a href="{{ spot.uRLWindguru }}" target="_blank">Windguru</a> </li>
+                    {% endif %}
+                    {% if spot.uRLMeteoFrance|default is not empty %}
                     <li><a href="{{ spot.uRLMeteoFrance }}" target="_blank">Meteo France</a> </li>
+                    {% endif %}
+                    {% if spot.uRLMeteoConsult|default is not empty %}
                     <li><a href="{{ spot.uRLMeteoConsult }}" target="_blank">Meteo Consult</a> </li>
+                    {% endif %}
                     {% if spot.uRLMerteo|default is not empty %}
                     <li><a href="{{ spot.uRLMerteo }}" target="_blank">Merteo</a> </li>
                     {% endif %}
@@ -147,63 +183,55 @@
                     {% endif %}
                 </ul>
             </div>
-        </div>
-
-    {% if spot.webSiteInfos.count > 0 %}
-        <h3 class="hr"><a href="#descPrev" data-toggle="collapse" class="titreCollapse">Sites parlant du spot</a></h3>
-        <div class="row collapse show" id="descPrev">
-        <div class="col-sm-12">
-            <ul>
-                {% for webSite in spot.webSiteInfos %}
-                <li><a href="{{ webSite.url }}" target="_blank">{{ webSite.name }}</a>:{{ webSite.description|raw }} </li>
-                {% endfor %}
-            </ul>
-        </div>
-     {% endif %}
 
 
-
-    </div>
-
-
-    <div class="row">
-        <div class="col-12">
-            <div class="row">
-                <div class="col-12">
-                    <h3 class="hr">Commentaires</h3>
+            {% if spot.webSiteInfos.count > 0 %}
+                <div class="col-sm-7">
+                    <span class="sous-titre-spot">Sites sur le spot</span>
+                    <ul class="liste-optimise">
+                        {% for webSite in spot.webSiteInfos %}
+                            <li><a href="{{ webSite.url }}" target="_blank">{{ webSite.name }}</a>:{{ webSite.description|raw }} </li>
+                        {% endfor %}
+                    </ul>
                 </div>
-            </div>
+            {% endif %}
+
+        </div>
+
+
+
+    <h3 class="hr"><a href="#descComment" data-toggle="collapse" class="titreCollapse">Commentaires</a></h3>
+    <div class="row collapse show" id="descComment">
+
             {% for comment in spot.commentaires %}
                 {% if comment.isVisible %}
             <div class="row">
-                <h4>{{ comment.titre }}</h4>
                 <div class="col-12">
+                    <span class="sous-titre-spot">{{ comment.titre }}</span>
                     {{ comment.description }}
                 </div>
             </div>
+
                 {% else %}
                     {% if app.user %}
-                    <div class="row">
-                        <h4>{{ comment.titre }}</h4>
-                        <div class="col-11">
-                            {{ comment.description }}
-                        </div>
-                        <div class="col-1">
-                            <button class="btn-secondary" onclick="putVisibleComment({{ comment.id }})">Visible</button>
-                        </div>
-                    </div>
+            <div class="row">
+                <div class="col-11">
+                    <span class="sous-titre-spot">{{ comment.titre }}</span>
+                    {{ comment.description }}
+                </div>
+                <div class="col-1">
+                    <button class="btn-secondary" onclick="putVisibleComment({{ comment.id }})">Visible</button>
+                </div>
+            </div>
                     {% endif %}
                 {% endif %}
             {% endfor %}
 
-
             <div class="row">
-                <h4>Nouveau commentaire </h4>
+                <span class="sous-titre-spot">Nouveau commentaire</span>
                 <div class="col-12">
-
                     <form action="{{ path('spot_add_comment', {'id':spot.id}) }}" method="POST"
                           id="comment_form">
-
                     <div class="row">
                         <div class="col-4">
                             {{ form_row(form.titre) }}
@@ -223,7 +251,6 @@
                     </div>
 
                     {{ form_end(form) }}
-
                 </div>
             </div>
 
@@ -234,6 +261,24 @@
         function putVisibleComment(idComment) {
             alert("il va falloir coder l'ajax ...");
         }
+
+        var mymap = L.map('spot_map', {
+            center: [{{ spot.gpsLat }}, {{ spot.gpsLong }}], /* set GPS Coordinates */
+            zoom: 14, /* define the zoom level */
+            zoomControl: true, /* false = no zoom control buttons displayed */
+            scrollWheelZoom: false /* false = scrolling zoom on the map is locked */
+        });
+
+        L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token=pk.eyJ1IjoibGFwb2l6IiwiYSI6ImNrM3VjMmkzNzBiMmYzbnBzZmQzdG1pbHYifQ.JI_lvA9ARHVS7QbIsNUrOQ', {
+            maxZoom: 20, /* zoom limit of the map */
+            /*attribution: 'Données &copy; Contributeurs <a href="http://openstreetmap.org">OpenStreetMap</a> + ' +
+                '<a href="http://mapbox.com">Mapbox</a> | ' +
+                'Lapoiz', /* set the map's caption */
+            id: 'mapbox.satellite' /* mapbox.light / dark / streets / outdoors / satellite */
+        }).addTo(mymap);
+
+        L.marker([{{ spot.gpsLat }}, {{ spot.gpsLong }}]).addTo(mymap); /* set your location's GPS Coordinates : [LAT,LON] */
+
     </script>
 
 {% endblock %}
