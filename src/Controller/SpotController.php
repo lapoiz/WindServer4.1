@@ -69,12 +69,14 @@ class SpotController extends AbstractController
         $form = $this->createForm(CommentaireType::class, $comment);
         $form->handleRequest($request);
         $urlImageMaree = $this->getParameter('maree_image_directory') . DIRECTORY_SEPARATOR .'maree.'. $spot->getId() . '.jpg';
+        $urlGeoJsonSpot = $this->getParameter('geo_json_directory') . '/' . $spot->getCodeSpot() . '_geo.json';
         $spots = $this->repositery->findAll();
         return $this->render("spot/show.html.twig", [
             'current_menu' => 'spot',
             "regionsNavBar" => $displayObject->regionsForNavBar($spots),
             'form' => $form->createView(),
             'urlMareeImage' => $urlImageMaree,
+            'urlGeoJsonSpot' => $urlGeoJsonSpot,
             'spot' => $spot
         ]);
     }

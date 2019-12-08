@@ -14,6 +14,7 @@ parameters:
     card_directory_kernel : '%kernel.project_dir%/public/%card_image_directory%'
     maree_image_directory: 'maree'
     maree_directory_kernel: '%kernel.project_dir%/public/%maree_image_directory%'
+    geo_json_directory: 'json/geo'
     url_highcharts-export-server-old: 'http://lapoiz.fr/highcharts-export-server'
     url_highcharts-export-server: 'http://export.highcharts.com/'
 

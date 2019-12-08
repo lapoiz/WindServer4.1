@@ -58,3 +58,10 @@ a.titreCollapse:link {
 .liste-optimise li p {
     margin-bottom: 0px;
 }
+
+.leaflet-tooltip.zoneGeoMap {
+    background-color: transparent;
+    border: transparent;
+    box-shadow: none;
+
+}
