@@ -201,7 +201,6 @@ class AdminSpotController extends AbstractController
         ]);
     }
 
-
     /**
      * @Route("/admin/region/create", name="admin_region_new")
      * @param Request $request
@@ -230,4 +229,18 @@ class AdminSpotController extends AbstractController
         ]);
     }
 
+
+    /**
+     * @Route("/admin/spot/generateCard", name="admin_spot_generate_card")
+     * @param Request $request
+     * @return Response
+     */
+    public function generateCard(HTMLtoImage $hTMLtoImage) : Response
+    {
+        $spots = $this->repository->findAll();
+        foreach ($spots as $spot) {
+            $hTMLtoImage->createImageCard($spot);
+        }
+        return $this->redirectToRoute('admin_spot_index');
+    }
 }

@@ -951,19 +951,19 @@ class Spot
         return $this->noteGeneral;
     }
 
-    public function setNoteGeneral(?int $noteGeneral): self
+    public function setNoteGeneral($noteGeneral): self
     {
         $this->noteGeneral = $noteGeneral;
 
         return $this;
     }
 
-    public function getNiveauMin(): ?string
+    public function getNiveauMin()
     {
         return $this->niveauMin;
     }
 
-    public function setNiveauMin(?string $niveauMin): self
+    public function setNiveauMin($niveauMin): self
     {
         $this->niveauMin = $niveauMin;
 

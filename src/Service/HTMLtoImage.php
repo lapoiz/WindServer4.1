@@ -41,7 +41,8 @@ class HTMLtoImage
                 'spot/card.html.twig',
                 array(
                     'spot'  => $spot,
-                    'urlRosaceImage' => $urlRosaceImage
+                    'urlRosaceImage' => $urlRosaceImage,
+                    'urlMareeImage' => $this->container->getParameter('maree_image_directory').DIRECTORY_SEPARATOR,
                 )
             ),
             $immagePath
