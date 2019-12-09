@@ -213,8 +213,8 @@
                 {% if comment.isVisible %}
             <div class="row">
                 <div class="col-12">
-                    <span class="sous-titre-spot">{{ comment.titre }}</span>
-                    {{ comment.description }}
+                    <span class="sous-titre-spot">{{ comment.titre }} : </span>
+                    {{ comment.commentaire }}
                 </div>
             </div>
 
@@ -223,7 +223,7 @@
             <div class="row">
                 <div class="col-11">
                     <span class="sous-titre-spot">{{ comment.titre }}</span>
-                    {{ comment.description }}
+                    {{ comment.commentaire }}
                 </div>
                 <div class="col-1">
                     <button class="btn-secondary" onclick="putVisibleComment({{ comment.id }})">Visible</button>
@@ -266,7 +266,13 @@
 
     <script>
         function putVisibleComment(idComment) {
-            alert("il va falloir coder l'ajax ...");
+            var urlPath = '{{ path('spot_set_visible_comment', {'id':'__id__'}) }}';
+            urlPath = urlPath.replace('__id__', idComment);
+                $.ajax({
+                    url : urlPath,
+                    type : 'POST',
+                    data : 'id=' + idComment
+                });
         }
 
         var mymap = L.map('spot_map', {
