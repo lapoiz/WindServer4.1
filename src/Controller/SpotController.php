@@ -5,10 +5,12 @@ namespace App\Controller;
 use App\Entity\Commentaire;
 use App\Entity\Spot;
 use App\Form\CommentaireType;
+use App\Repository\CommentaireRepository;
 use App\Repository\SpotRepository;
 use App\Service\DisplayObject;
 use Doctrine\Common\Persistence\ObjectManager;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -88,8 +90,9 @@ class SpotController extends AbstractController
      * @param ObjectManager $manager
      * @return \Symfony\Component\HttpFoundation\Response
      */
-    public function addComment(Spot $spot, Request $request, ObjectManager $manager, DisplayObject $displayObject) : Response
+    public function addComment($id, Request $request, ObjectManager $manager, DisplayObject $displayObject) : Response
     {
+        $spot = $this->repositery->find($id);
         $comment = new Commentaire();
         $form = $this->createForm(CommentaireType::class, $comment);
         $form->handleRequest($request);
@@ -98,6 +101,7 @@ class SpotController extends AbstractController
             $comment = $form->getData();
             $comment->setIsVisible(false);
             $spot->addCommentaire($comment);
+            $comment->setSpot($spot);
             $manager->persist($spot);
             $manager->persist($comment);
             $manager->flush();
@@ -115,5 +119,23 @@ class SpotController extends AbstractController
             'form' => $form->createView()
         ]);
     }
+
+
+    /**
+     * @Route("/spot/set/visible/comment/{id}", name="spot_set_visible_comment")
+     * @param $id
+     * @param ObjectManager $manager
+     * @return JsonResponse
+     */
+    public function setVisibleComment($id, CommentaireRepository $repository, ObjectManager $manager) : JsonResponse
+    {
+        $jsonData = array('result'=>'ok');
+        $comment=$repository->find($id);
+        $comment->setIsVisible(true);
+        $manager->persist($comment);
+        $manager->flush();
+        return new JsonResponse($jsonData);
+    }
+
 
 }

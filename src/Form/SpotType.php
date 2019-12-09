@@ -34,7 +34,9 @@ class SpotType extends AbstractType
                     'label' => 'Niveau minimum pour naviguer.'
             ))
 
-            ->add('description', TextareaType::class, array('attr' => array('class' => 'ckeditor')))
+            ->add('description', TextareaType::class, array(
+                'attr' => array('class' => 'ckeditor'),
+                'help' => 'Couleurs: top: Navy, OK: darkgreen, warn: orange, KO: red '))
 
             ->add('descOrientationVent', TextareaType::class, array('attr' => array('class' => 'ckeditor')))
 

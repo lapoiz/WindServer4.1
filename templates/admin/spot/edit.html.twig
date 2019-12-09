@@ -7,16 +7,14 @@
 {% endblock %}
 
 {% block body %}
-    <div class="container mt-4">
+    <div class="container">
         <h1>Edit</h1>
         <a href="{{ path('admin_spot_index') }}">admin</a>
 
        {{  include('admin/spot/_form.html.twig', {form: form, button: 'Save'}) }}
 
-        <a
-                class="dt-button buttons-collection buttons-colvis btn btn-white btn-secondary btn-bold"
-                href="{{ path('admin_spot_index') }}"
-        >
+        <a class="dt-button buttons-collection buttons-colvis btn btn-white btn-secondary btn-bold"
+           href="{{ path('admin_spot_index') }}">
             Cancel
         </a>
     </div>
