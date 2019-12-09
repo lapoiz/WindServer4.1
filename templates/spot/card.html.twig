@@ -112,20 +112,7 @@
                     <tr>
                             {% if (spot.uRLMaree is defined) and (spot.uRLMaree is not null) %}
                         <td style="width: 100px">
-
-                            {% from "maree/graphFunctions.html.twig" import graphFunctionMaree %}
-                            {{ graphFunctionMaree("100","75",true, "white" ) }}
-
-
-                            {% from "maree/graphMaree.html.twig" import graphMaree %}
-                            {{ graphMaree(spot,"100","75") }}
-
-
-                            <script>
-                                document.addEventListener('DOMContentLoaded', function () {
-                                    buildNewChart{{ spot.id }}();
-                                });
-                            </script>
+                            <img src="{{ absolute_url(asset(urlMareeImage ~ 'maree.' ~ spot.id ~ '.jpg')) }}" width="120px">
                         </td>
                             {% endif %}
                         <td style="width: 200px">

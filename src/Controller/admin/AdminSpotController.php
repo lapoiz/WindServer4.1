@@ -179,6 +179,7 @@ class AdminSpotController extends AbstractController
         return $this->render("spot/card.html.twig", [
             'spot' => $spot,
             'urlRosaceImage' => $this->getParameter('rosace_directory').DIRECTORY_SEPARATOR,
+            'urlMareeImage' => $this->getParameter('maree_image_directory').DIRECTORY_SEPARATOR,
         ]);
     }
 
