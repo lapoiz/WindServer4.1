@@ -1,0 +1,483 @@
+{
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {
+        "nom": "E",
+        "type": "marqueurZone"
+      },
+      "geometry": {
+        "coordinates": [
+          -0.211425,
+          49.284903
+        ],
+        "type": "Point"
+      },
+      "id": "3448bb3c62248a7bf3deceba4a5ed4e7"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "popupMsg": "Chemin pour le spot",
+        "type": "chemin"
+      },
+      "geometry": {
+        "coordinates": [
+          [
+            -0.211286,
+            49.28461
+          ],
+          [
+            -0.211485,
+            49.284677
+          ],
+          [
+            -0.212041,
+            49.28463
+          ],
+          [
+            -0.212566,
+            49.285494
+          ],
+          [
+            -0.212494,
+            49.285852
+          ],
+          [
+            -0.213727,
+            49.286661
+          ]
+        ],
+        "type": "LineString"
+      },
+      "id": "34901a4ded1fad8a7d582a6545e816bb"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nom": "F",
+        "type": "marqueurZone"
+      },
+      "geometry": {
+        "coordinates": [
+          -0.21102,
+          49.284229
+        ],
+        "type": "Point"
+      },
+      "id": "39cbb6dfc2a89a29dc68e0ee13943296"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "popupMsg": "Zone de navigation en Kite !",
+        "type": "KiteZone"
+      },
+      "geometry": {
+        "coordinates": [
+          [
+            [
+              -0.21213,
+              49.287053
+            ],
+            [
+              -0.211628,
+              49.294401
+            ],
+            [
+              -0.240325,
+              49.294623
+            ],
+            [
+              -0.240243,
+              49.288728
+            ],
+            [
+              -0.229619,
+              49.286659
+            ],
+            [
+              -0.224533,
+              49.287392
+            ],
+            [
+              -0.223011,
+              49.286922
+            ],
+            [
+              -0.220112,
+              49.287156
+            ],
+            [
+              -0.216899,
+              49.287275
+            ],
+            [
+              -0.21213,
+              49.287053
+            ]
+          ]
+        ],
+        "type": "Polygon"
+      },
+      "id": "66549052550a4cae41b55a5c2f210216"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nom": "D",
+        "type": "marqueurZone"
+      },
+      "geometry": {
+        "coordinates": [
+          -0.221732,
+          49.282376
+        ],
+        "type": "Point"
+      },
+      "id": "6bd4580efe87c3f2b6ad57ccfca3c3f4"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nom": "C",
+        "type": "marqueurZone"
+      },
+      "geometry": {
+        "coordinates": [
+          -0.230657,
+          49.283158
+        ],
+        "type": "Point"
+      },
+      "id": "72e76e0a08cd4d754946fcc11325b437"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "popupMsg": "Parking de la Redoute",
+        "type": "Parking"
+      },
+      "geometry": {
+        "coordinates": [
+          [
+            [
+              -0.221806,
+              49.282673
+            ],
+            [
+              -0.222143,
+              49.28244
+            ],
+            [
+              -0.222156,
+              49.282324
+            ],
+            [
+              -0.221602,
+              49.282107
+            ],
+            [
+              -0.22134,
+              49.28221
+            ],
+            [
+              -0.221277,
+              49.282346
+            ],
+            [
+              -0.221806,
+              49.282673
+            ]
+          ]
+        ],
+        "type": "Polygon"
+      },
+      "id": "90799c4bf489814a36def688752b207f"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nom": "A",
+        "type": "marqueurZone"
+      },
+      "geometry": {
+        "coordinates": [
+          -0.225981,
+          49.290783
+        ],
+        "type": "Point"
+      },
+      "id": "9a8f8ae5ea237d6107c1175d028032b7"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "popupMsg": "Chemin depuit parking la Redoute",
+        "type": "chemin"
+      },
+      "geometry": {
+        "coordinates": [
+          [
+            -0.221743,
+            49.282657
+          ],
+          [
+            -0.221681,
+            49.282926
+          ],
+          [
+            -0.221702,
+            49.283099
+          ],
+          [
+            -0.221494,
+            49.283421
+          ],
+          [
+            -0.221345,
+            49.283667
+          ],
+          [
+            -0.221508,
+            49.284118
+          ],
+          [
+            -0.22153,
+            49.28434
+          ],
+          [
+            -0.221643,
+            49.284495
+          ],
+          [
+            -0.221425,
+            49.284855
+          ],
+          [
+            -0.22142,
+            49.284943
+          ],
+          [
+            -0.221458,
+            49.28504
+          ],
+          [
+            -0.221567,
+            49.285147
+          ],
+          [
+            -0.221594,
+            49.285409
+          ],
+          [
+            -0.221584,
+            49.28576
+          ],
+          [
+            -0.220713,
+            49.285912
+          ],
+          [
+            -0.220338,
+            49.28668
+          ],
+          [
+            -0.220346,
+            49.286923
+          ]
+        ],
+        "type": "LineString"
+      },
+      "id": "9e472798ddc6bdd5912243158c5f5e33"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "popupMsg": "Zone dangereuse, fort courant !",
+        "type": "Danger"
+      },
+      "geometry": {
+        "coordinates": [
+          [
+            [
+              -0.242825,
+              49.29357
+            ],
+            [
+              -0.239565,
+              49.284162
+            ],
+            [
+              -0.226556,
+              49.280253
+            ],
+            [
+              -0.223736,
+              49.276433
+            ],
+            [
+              -0.228237,
+              49.277635
+            ],
+            [
+              -0.24498,
+              49.279376
+            ],
+            [
+              -0.246255,
+              49.28584
+            ],
+            [
+              -0.247335,
+              49.294032
+            ],
+            [
+              -0.242825,
+              49.29357
+            ]
+          ]
+        ],
+        "type": "Polygon"
+      },
+      "id": "a1128a21f908594977b41f6d86484aa5"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nom": "B",
+        "type": "marqueurZone"
+      },
+      "geometry": {
+        "coordinates": [
+          -0.241578,
+          49.282525
+        ],
+        "type": "Point"
+      },
+      "id": "b6c01b11309c78e019c2eb63d928f50d"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "popupMsg": "Parking au bord de la route",
+        "type": "Parking"
+      },
+      "geometry": {
+        "coordinates": [
+          [
+            [
+              -0.21131,
+              49.284513
+            ],
+            [
+              -0.211202,
+              49.284548
+            ],
+            [
+              -0.210549,
+              49.283694
+            ],
+            [
+              -0.210655,
+              49.28366
+            ],
+            [
+              -0.21131,
+              49.284513
+            ]
+          ]
+        ],
+        "type": "Polygon"
+      },
+      "id": "bce7242506c90dab949c505758a3c2f3"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "popupMsg": "Parkinh reservé R-Kite",
+        "type": "Parking"
+      },
+      "geometry": {
+        "coordinates": [
+          [
+            [
+              -0.211585,
+              49.284995
+            ],
+            [
+              -0.211362,
+              49.285012
+            ],
+            [
+              -0.211269,
+              49.284801
+            ],
+            [
+              -0.211421,
+              49.284789
+            ],
+            [
+              -0.211411,
+              49.284747
+            ],
+            [
+              -0.211472,
+              49.284742
+            ],
+            [
+              -0.211538,
+              49.284914
+            ],
+            [
+              -0.211585,
+              49.284995
+            ]
+          ]
+        ],
+        "type": "Polygon"
+      },
+      "id": "dba5ef0393c88741c79ef6369d2478af"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "popupMsg": "Zone navigable en marée haute.",
+        "type": "KiteZone"
+      },
+      "geometry": {
+        "coordinates": [
+          [
+            [
+              -0.229809,
+              49.285418
+            ],
+            [
+              -0.228399,
+              49.28089
+            ],
+            [
+              -0.233063,
+              49.282376
+            ],
+            [
+              -0.232575,
+              49.283013
+            ],
+            [
+              -0.233388,
+              49.283296
+            ],
+            [
+              -0.229809,
+              49.285418
+            ]
+          ]
+        ],
+        "type": "Polygon"
+      },
+      "id": "f5665b27e1c4f00e62e1c4685a79df6f"
+    }
+  ],
+  "type": "FeatureCollection"
+}
