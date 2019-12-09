@@ -25,97 +25,94 @@
 </div>
 
 <div class="row">
-    <div class="col-mid-12">
+    <div class="col-12">
         {{ form_row(form.shortDescription) }}
     </div>
 </div>
 
 <div class="row">
-    <div class="col-mid-12">
+    <div class="col-12">
         {{ form_row(form.description) }}
     </div>
 </div>
 
 <div class="row">
-    <div class="col-mid-12">
+    <div class="col-12">
         {{ form_row(form.descOrientationVent) }}
     </div>
 </div>
 
 <div class="row">
-    <div class="col-mid-6">
+    <div class="col-6">
         {{ form_row(form.uRLMap) }}
-    </div>
-    <div class="col-mid-6">
-
     </div>
 </div>
 
 
 <div class="row">
-    <div class="col-mid-2">
+    <div class="col-2">
         {{ form_row(form.isFoil) }}
     </div>
-    <div class="col-mid-10">
+    <div class="col-10">
         {{ form_row(form.descFoil) }}
     </div>
 </div>
 
 <div class="row">
-    <div class="col-mid-2">
+    <div class="col-2">
         {{ form_row(form.isContraintEte) }}
     </div>
-    <div class="col-mid-10">
+    <div class="col-10">
         {{ form_row(form.descContraintEte) }}
     </div>
 </div>
 
 <div class="row">
-    <div class="col-mid-12">
+    <div class="col-12">
         {{ form_row(form.descWave) }}
     </div>
 </div>
 
 <div id="fieldsURL" style="display: none">
     <div class="row">
-        <div class="col-mid-4">
+        <div class="col-4">
             {{ form_row(form.urlBalise) }}
         </div>
-        <div class="col-mid-4">
+        <div class="col-4">
             {{ form_row(form.uRLTempWater) }}
         </div>
-        <div class="col-mid-4">
+        <div class="col-4">
             {{ form_row(form.urlWebcam) }}
         </div>
     </div>
 
     <div class="row">
-        <div class="col-mid-4">
+        <div class="col-4">
             {{ form_row(form.uRLWindguru) }}
         </div>
-        <div class="col-mid-4">
+        <div class="col-4">
             {{ form_row(form.urlWindFinder) }}
         </div>
-        <div class="col-mid-4">
+        <div class="col-4">
             {{ form_row(form.uRLMeteoFrance) }}
         </div>
     </div>
 
     <div class="row">
-        <div class="col-mid-4">
+        <div class="col-4">
             {{ form_row(form.uRLMeteoConsult) }}
         </div>
-        <div class="col-mid-4">
+        <div class="col-4">
             {{ form_row(form.uRLMerteo) }}
         </div>
-        <div class="col-mid-4">
+        <div class="col-4">
             {{ form_row(form.uRLTempWater) }}
         </div>
     </div>
 </div>
 <div class="row">
 
-    <div class="col-mid-3">
+    <div class="col-3">
         <a  id="buttonURL"
             class="dt-button buttons-collection buttons-colvis btn btn-white btn-primary btn-bold"
             href=""
@@ -123,10 +120,10 @@
             Gestion des URL
         </a>
     </div>
-    <div class="col-mid-1"></div>
+    <div class="col-1"></div>
 
 {% if spot.id is not null %}
-    <div class="col-mid-3">
+    <div class="col-3">
         <a
                 class="dt-button buttons-collection buttons-colvis btn btn-white btn-primary btn-bold"
                 href="{{ path('admin_maree_edit', {'id':spot.id}) }}"
@@ -135,8 +132,8 @@
         </a>
     </div>
 
-    <div class="col-mid-1"></div>
-    <div class="col-mid-3">
+    <div class="col-1"></div>
+    <div class="col-3">
         <a
                 class="dt-button buttons-collection buttons-colvis btn btn-white btn-primary btn-bold"
                 href="{{ path('admin_spot_websiteInfo_edit', {'id':spot.id}) }}"
@@ -149,24 +146,24 @@
 </div>
 
 <div class="row">
-    <div class="col-mid-12">
+    <div class="col-12">
         {{ form_row(form.desc_route) }}
     </div>
 </div>
 <div class="row">
-    <div class="col-mid-3">{{ form_row(form.time_from_paris) }}</div>
-    <div class="col-mid-3">{{ form_row(form.price_autoroute_from_paris) }}</div>
-    <div class="col-mid-3">{{ form_row(form.km_from_paris) }}</div>
-    <div class="col-mid-3">{{ form_row(form.km_autoroute_from_paris) }}</div>
+    <div class="col-3">{{ form_row(form.time_from_paris) }}</div>
+    <div class="col-3">{{ form_row(form.price_autoroute_from_paris) }}</div>
+    <div class="col-3">{{ form_row(form.km_from_paris) }}</div>
+    <div class="col-3">{{ form_row(form.km_autoroute_from_paris) }}</div>
 </div>
 
 <div class="row">
-    <div class="col-mid-6">{{ form_row(form.gps_lat) }}</div>
-    <div class="col-mid-6">{{ form_row(form.gps_long) }}</div>
+    <div class="col-6">{{ form_row(form.gps_lat) }}</div>
+    <div class="col-6">{{ form_row(form.gps_long) }}</div>
 </div>
 
 <div class="row" id="rosace">
-    <div class="col-mid-12">
+    <div class="col-12">
         {% from "windRosace/rosaceWind.html.twig" import displayRosace %}
         {{ displayRosace() }}
     </div>
