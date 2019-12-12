@@ -19,9 +19,14 @@ class HomeController  extends AbstractController
     public function index(SpotRepository $repository, DisplayObject $displayObject) : Response
     {
         $spots = $repository->findAll();
+        if ($spots!=null)
+            $regionsNavBar = $displayObject->regionsForNavBar($spots);
+        else
+            $regionsNavBar =  null;
+
         return $this->render('pages/Home.html.twig',[
             "spots" => $spots,
-            "regionsNavBar" => $displayObject->regionsForNavBar($spots),
+            "regionsNavBar" => $regionsNavBar,
             "urlImage" => $this->getParameter('card_image_directory')
         ]);
     }
