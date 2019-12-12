@@ -21,12 +21,14 @@ class DisplayObject
      */
     public function regionsForNavBar($spots) {
         $regions = [];
-        foreach ($spots as $spot) {
-            if (!array_key_exists($spot->getRegion()->getNom(),$regions)) {
-                // Région pas dans le tableau
-                $regions[$spot->getRegion()->getNom()]=[];
+        if ($spots != null) {
+            foreach ($spots as $spot) {
+                if (!array_key_exists($spot->getRegion()->getNom(), $regions)) {
+                    // Région pas dans le tableau
+                    $regions[$spot->getRegion()->getNom()] = [];
+                }
+                $regions[$spot->getRegion()->getNom()][] = $spot;
             }
-            $regions[$spot->getRegion()->getNom()][]=$spot;
         }
         return $regions;
     }
