@@ -37,8 +37,8 @@ class HTMLtoImage
             $filesystem->remove($immagePath);
         }
         $snappyImage = $this->container->get('knp_snappy.image');
-        //$snappyImage->setOption('quality', 100);
-        //$snappyImage->setOption('javascript-delay', 1000);
+        $snappyImage->setOption('quality', 100);
+        $snappyImage->setOption('javascript-delay', 1000);
         $snappyImage->generateFromHtml(
             $this->templating->render(
                 'spot/card.html.twig',
