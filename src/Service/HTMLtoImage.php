@@ -36,7 +36,10 @@ class HTMLtoImage
         if ($filesystem->exists($immagePath)) {
             $filesystem->remove($immagePath);
         }
-        $this->container->get('knp_snappy.image')->generateFromHtml(
+        $snappyImage = $this->container->get('knp_snappy.image');
+        $snappyImage->setOption('image-quality', 100);
+        $snappyImage->setOption('javascript-delay', 1000);
+        $snappyImage->generateFromHtml(
             $this->templating->render(
                 'spot/card.html.twig',
                 array(
