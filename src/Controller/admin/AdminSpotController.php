@@ -184,6 +184,20 @@ class AdminSpotController extends AbstractController
     }
 
     /**
+     * @Route("/spot/emptyCard/{id}", name="admin.spot.show.emptyCard")
+     * @param Request $request
+     * @return Response
+     */
+    public function showEmptyCard($id, Request $request) : Response
+    {
+        $spot = $this->repository->find($id);
+
+        return $this->render("spot/emptyCard.html.twig", [
+            'spot' => $spot,
+        ]);
+    }
+
+    /**
      * @Route("/admin/spot/card/jpg/{id}", name="admin.spot.show.image.card")
      * @param Request $request
      * @return Response

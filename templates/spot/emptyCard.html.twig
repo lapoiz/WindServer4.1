@@ -2,6 +2,8 @@
     <head>
         <meta charset="UTF-8">
 
+        <link href="{{ absolute_url(asset('fontawsome/css/all.css')) }}" rel="stylesheet">
+
         <link rel="stylesheet" href="{{ absolute_url(asset('css/bootstrap.min.css')) }}">
 
         <link rel="stylesheet" href="{{ absolute_url(asset('css/leaflet.css')) }}">
@@ -66,8 +68,8 @@
                                         </td>
                                     </tr>
                                     <tr>
-                                        <td></td>
-                                        <td>
+                                        <td style="width: 25%"></td>
+                                        <td style="width: 25%">
                                             {% if spot.isFoil %}
                                                 <img src="{{ absolute_url(asset('images/foil.png')) }}" width="30px">
                                             {% else %}
@@ -77,7 +79,7 @@
                                                 </div>
                                             {% endif %}
                                         </td>
-                                        <td>
+                                        <td style="width: 25%">
                                             {% if spot.isContraintEte %}
                                                 <img class="imgInterditSrc" src="{{ absolute_url(asset('images/été.png')) }}" width="30px">
                                                 <img class="imgInterdit" src="{{ absolute_url(asset('images/interdit.png')) }}" width="30px">
@@ -85,7 +87,7 @@
                                                 <img src="{{ absolute_url(asset('images/été.png')) }}" width="30px">
                                             {% endif %}
                                         </td>
-                                        <td></td>
+                                        <td style="width: 25%"></td>
                                     </tr>
                                 </table>
 
