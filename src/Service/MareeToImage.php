@@ -86,7 +86,7 @@ class MareeToImage
             $this->dessineCourbe($image, $tabPointPetiteMaree, $black,true);
             $this->dessineCourbe($image, $tabPointMoyenneMaree, $black,false);
 
-            imagepng($image, $immagePath); // on enregistre l'image
+            imagejpeg($image, $immagePath); // on enregistre l'image
 
             imagedestroy($image); // libération de l'espace mémoire utilisé
         } catch (\Exception $e) {

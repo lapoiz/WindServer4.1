@@ -1,0 +1,125 @@
+<html>
+    <head>
+        <meta charset="UTF-8">
+
+        <link rel="stylesheet" href="{{ absolute_url(asset('css/bootstrap.min.css')) }}">
+
+        <link rel="stylesheet" href="{{ absolute_url(asset('css/leaflet.css')) }}">
+        <script src="{{ absolute_url(asset('js/leaflet.js')) }}" ></script>
+
+        <link rel="stylesheet" href="{{ absolute_url(asset('css/lapoiz.card.css')) }}">
+
+        <script type="text/javascript">
+            // On initialise la latitude et la longitude de Paris (centre de la carte)
+            var lat = {{ spot.gpsLat }};
+            var lon = {{ spot.gpsLong }};
+            var macarte = null;
+
+            function initMap() {
+                macarte = L.map('map', {
+                    center: [lat, lon],
+                    zoom: 9,
+                    zoomControl: false
+                });
+                L.tileLayer('https://{s}.tile.openstreetmap.fr/osmfr/{z}/{x}/{y}.png', {
+                    minZoom: 1,
+                    maxZoom: 20
+                }).addTo(macarte);
+                L.marker([lat, lon]).addTo(macarte);
+
+            }
+            window.onload = function(){
+                initMap();
+            };
+        </script>
+
+    </head>
+
+    <body>
+        <div class="myCard">
+        <div class="sub-card">
+                <table>
+                    <tbody>
+                        <tr>
+                            <td height="120px"></td>
+                            <td class="text-black-50">
+                                <table>
+                                    <tr>
+                                        <td colspan="4">
+                                            {{ spot.name }} <br>
+                                            <small class="text-muted">{{ spot.region.nom }}</small>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="4">
+                                            {% if spot.noteGeneral is not null %}
+                                                {% from "spot/note.html.twig" import star %}
+                                                {{ star(spot.noteGeneral) }}
+                                            {%  endif %}
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="4">
+                                            <small>Niveau min:
+                                                {% from "spot/niveau.html.twig" import level %}
+                                                {{ level(spot.niveauMin) }}</small>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td></td>
+                                        <td>
+                                            {% if spot.isFoil %}
+                                                <img src="{{ absolute_url(asset('images/foil.png')) }}" width="30px">
+                                            {% else %}
+                                                <div>
+                                                    <img class="imgInterditSrc" src="{{ absolute_url(asset('images/foil.png')) }}" width="30px">
+                                                    <img class="imgInterdit" src="{{ absolute_url(asset('images/interdit.png')) }}" width="30px">
+                                                </div>
+                                            {% endif %}
+                                        </td>
+                                        <td>
+                                            {% if spot.isContraintEte %}
+                                                <img class="imgInterditSrc" src="{{ absolute_url(asset('images/été.png')) }}" width="30px">
+                                                <img class="imgInterdit" src="{{ absolute_url(asset('images/interdit.png')) }}" width="30px">
+                                            {% else %}
+                                                <img src="{{ absolute_url(asset('images/été.png')) }}" width="30px">
+                                            {% endif %}
+                                        </td>
+                                        <td></td>
+                                    </tr>
+                                </table>
+
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+        </div>
+
+        <div class="sub-card">
+            <div id="map">
+            </div>
+        </div>
+
+
+        <div class="sub-card bg-white" style="position: fixed; width: 300px">
+            {% if (spot.uRLMaree is defined) and (spot.uRLMaree is not null) %}
+            <table>
+                <tbody>
+                    <tr>
+                        <td style="height: 120px">
+
+                        </td>
+
+                        <td style="width: 200px">
+                            {{ spot.shortDescription|raw }}
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            {% else %}
+                {{ spot.shortDescription|raw }}
+            {% endif %}
+        </div>
+    </div>
+    </body>
+</html>

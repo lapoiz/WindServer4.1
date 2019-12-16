@@ -28,20 +28,43 @@ class HTMLtoImage
 
     public function createImageCard(Spot $spot) {
 
-        $immagePath = $this->cardImageDirectoryKernel.DIRECTORY_SEPARATOR.'card.'.$spot->getId().'.jpg';
-        $urlRosaceImage = $this->container->getParameter('rosace_directory').DIRECTORY_SEPARATOR;
+        $emptyImagePath = $this->cardImageDirectoryKernel.DIRECTORY_SEPARATOR.'emptyCard.'.$spot->getId().'.jpg';
+        $imagePath = $this->cardImageDirectoryKernel.DIRECTORY_SEPARATOR.'card.'.$spot->getId().'.jpg';
+        $urlRosaceImage = $this->container->getParameter('rosace_directory_kernel').DIRECTORY_SEPARATOR.$spot->getId().'.png';
+        $urlMareeImage = $this->container->getParameter('maree_directory_kernel').DIRECTORY_SEPARATOR.'maree.'.$spot->getId().'.jpg';
 
         $filesystem = new Filesystem();
+        $this->removeFile($filesystem,$emptyImagePath);
+        $this->removeFile($filesystem,$imagePath);
 
-        if ($filesystem->exists($immagePath)) {
-            $filesystem->remove($immagePath);
-        }
         $snappyImage = $this->container->get('knp_snappy.image');
-        $snappyImage->setOption('quality', 100);
+        //$snappyImage->setOption('quality', 100); // image trop lourd pour peu d'avantage
         $snappyImage->setOption('javascript-delay', 1000);
-        //$snappyImage->setOption('dpi', 900);
         $snappyImage->setOption('no-stop-slow-scripts', true);
 
+        $snappyImage->generateFromHtml(
+            $this->templating->render(
+                'spot/emptyCard.html.twig',
+                array(
+                    'spot'  => $spot,
+                )
+            ),
+            $emptyImagePath
+        );
+        $emptyImage = imagecreatefromjpeg($emptyImagePath);
+        $rosaceImage= imagecreatefrompng($urlRosaceImage);
+
+        imagecopyresampled($emptyImage, $rosaceImage,5,5,0,0,120, 120,imagesx($rosaceImage), imagesy($rosaceImage));
+
+        if ($spot->getURLMaree() != null && !empty($spot->getURLMaree())) {
+            $mareeImage = imagecreatefromjpeg($urlMareeImage);
+            imagecopyresampled($emptyImage,$mareeImage,5,360,0,0,120, 120,imagesx($mareeImage),imagesy($mareeImage));
+        }
+
+
+        imagejpeg($emptyImage,$imagePath);
+
+        /* with card.html.twig
         $snappyImage->generateFromHtml(
             $this->templating->render(
                 'spot/card.html.twig',
@@ -51,8 +74,14 @@ class HTMLtoImage
                     'urlMareeImage' => $this->container->getParameter('maree_image_directory').DIRECTORY_SEPARATOR,
                 )
             ),
-            $immagePath
+            $imagePath
         );
+        */
+    }
 
+    private function removeFile($filesystem, $pathFile) {
+        if ($filesystem->exists($pathFile)) {
+            $filesystem->remove($pathFile);
+        }
     }
 }
