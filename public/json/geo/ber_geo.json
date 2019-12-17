@@ -1,0 +1,96 @@
+{
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {
+        "type": "Parking",
+        "popupMsg": "Parking au bord de la route."
+      },
+      "geometry": {
+        "coordinates": [
+          [
+            [
+              1.562134,
+              50.411557
+            ],
+            [
+              1.562233,
+              50.411553
+            ],
+            [
+              1.561904,
+              50.410754
+            ],
+            [
+              1.561818,
+              50.410753
+            ],
+            [
+              1.562134,
+              50.411557
+            ]
+          ]
+        ],
+        "type": "Polygon"
+      },
+      "id": "41dee1c40e8376df46fdd927f26fde01"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "type": "chemin",
+        "popupMsg": "Chemin pour aller au spot"
+      },
+      "geometry": {
+        "coordinates": [
+          [
+            1.562203,
+            50.411554
+          ],
+          [
+            1.559915,
+            50.411831
+          ]
+        ],
+        "type": "LineString"
+      },
+      "id": "e4c74ad9baeae13da0175cbdc3d81529"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "type": "KiteZone",
+        "popupMsg": "Zone de Kite"
+      },
+      "geometry": {
+        "coordinates": [
+          [
+            [
+              1.558906,
+              50.411884
+            ],
+            [
+              1.565254,
+              50.429059
+            ],
+            [
+              1.552394,
+              50.430215
+            ],
+            [
+              1.533434,
+              50.402533
+            ],
+            [
+              1.558906,
+              50.411884
+            ]
+          ]
+        ],
+        "type": "Polygon"
+      },
+      "id": "ea1b897157859016a42211dcc7147d05"
+    }
+  ],
+  "type": "FeatureCollection"
+}

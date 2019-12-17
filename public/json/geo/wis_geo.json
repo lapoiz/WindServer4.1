@@ -1,0 +1,170 @@
+{
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {
+        "type": "Parking",
+        "popupMsg": "2nd Parking (au bord de la route)"
+      },
+      "geometry": {
+        "coordinates": [
+          [
+            [
+              1.661178,
+              50.887508
+            ],
+            [
+              1.66122,
+              50.887529
+            ],
+            [
+              1.662002,
+              50.887052
+            ],
+            [
+              1.66196,
+              50.887023
+            ],
+            [
+              1.661178,
+              50.887508
+            ]
+          ]
+        ],
+        "type": "Polygon"
+      },
+      "id": "84f3c715a052f67c8203ee9b0d84a5fa"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "type": "chemin",
+        "popupMsg": "Chemin pour aller au spot"
+      },
+      "geometry": {
+        "coordinates": [
+          [
+            1.661187,
+            50.887514
+          ],
+          [
+            1.660707,
+            50.887915
+          ],
+          [
+            1.662563,
+            50.889861
+          ]
+        ],
+        "type": "LineString"
+      },
+      "id": "9a86b015db8c63c780fadf039fb00e62"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "type": "KiteZone",
+        "popupMsg": "Zone de Kite toute les saisons"
+      },
+      "geometry": {
+        "coordinates": [
+          [
+            [
+              1.660412,
+              50.888408
+            ],
+            [
+              1.670548,
+              50.896547
+            ],
+            [
+              1.662227,
+              50.899799
+            ],
+            [
+              1.651339,
+              50.891912
+            ],
+            [
+              1.660412,
+              50.888408
+            ]
+          ]
+        ],
+        "type": "Polygon"
+      },
+      "id": "b25725f28e347f37818cba7e624f64a8"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "type": "KiteZone",
+        "popupMsg": "Zone de Kite sauf l'été et à marée haute"
+      },
+      "geometry": {
+        "coordinates": [
+          [
+            [
+              1.660147,
+              50.888269
+            ],
+            [
+              1.646757,
+              50.88091
+            ],
+            [
+              1.640494,
+              50.885644
+            ],
+            [
+              1.651493,
+              50.891773
+            ],
+            [
+              1.660147,
+              50.888269
+            ]
+          ]
+        ],
+        "type": "Polygon"
+      },
+      "id": "b8d9b945b4f0a59edab334c58d58714b"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "type": "Parking",
+        "popupMsg": "1er Parking"
+      },
+      "geometry": {
+        "coordinates": [
+          [
+            [
+              1.659155,
+              50.887166
+            ],
+            [
+              1.659352,
+              50.886965
+            ],
+            [
+              1.660172,
+              50.887262
+            ],
+            [
+              1.659921,
+              50.887471
+            ],
+            [
+              1.659155,
+              50.887166
+            ]
+          ]
+        ],
+        "type": "Polygon"
+      },
+      "id": "f038f6b67b0266aefd5ab554187661dd"
+    }
+  ],
+  "type": "FeatureCollection"
+}

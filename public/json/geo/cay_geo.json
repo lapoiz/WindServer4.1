@@ -1,0 +1,104 @@
+{
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {
+        "type": "Parking",
+        "popupMsg": "Parking le plus proche"
+      },
+      "geometry": {
+        "coordinates": [
+          [
+            [
+              1.523421,
+              50.202714
+            ],
+            [
+              1.523291,
+              50.202925
+            ],
+            [
+              1.526003,
+              50.203115
+            ],
+            [
+              1.526049,
+              50.202937
+            ],
+            [
+              1.523421,
+              50.202714
+            ]
+          ]
+        ],
+        "type": "Polygon"
+      },
+      "id": "340d0f8695cef81a093c98562b00e21d"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "type": "chemin",
+        "popupMsg": "Chemin pour aller au spot."
+      },
+      "geometry": {
+        "coordinates": [
+          [
+            1.52372,
+            50.202959
+          ],
+          [
+            1.521766,
+            50.204324
+          ],
+          [
+            1.520092,
+            50.204608
+          ],
+          [
+            1.518826,
+            50.206302
+          ]
+        ],
+        "type": "LineString"
+      },
+      "id": "70151d1048e1f6726949cf0a7dd834af"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "type": "KiteZone",
+        "popupMsg": "Zone de Kite"
+      },
+      "geometry": {
+        "coordinates": [
+          [
+            [
+              1.496402,
+              50.19553
+            ],
+            [
+              1.542874,
+              50.221881
+            ],
+            [
+              1.544733,
+              50.239421
+            ],
+            [
+              1.468426,
+              50.212246
+            ],
+            [
+              1.496402,
+              50.19553
+            ]
+          ]
+        ],
+        "type": "Polygon"
+      },
+      "id": "b88f14e2dd669ec1f0a618fef454ebc2"
+    }
+  ],
+  "type": "FeatureCollection"
+}
