@@ -32,6 +32,9 @@ class HTMLtoImage
         $imagePath = $this->cardImageDirectoryKernel.DIRECTORY_SEPARATOR.'card.'.$spot->getId().'.jpg';
         $urlRosaceImage = $this->container->getParameter('rosace_directory_kernel').DIRECTORY_SEPARATOR.$spot->getId().'.png';
         $urlMareeImage = $this->container->getParameter('maree_directory_kernel').DIRECTORY_SEPARATOR.'maree.'.$spot->getId().'.jpg';
+        //$utlFoilImage = $this->container->getParameter('image_directory_kernel').DIRECTORY_SEPARATOR.'foil.png';
+        //$utlInterditImage = $this->container->getParameter('image_directory_kernel').DIRECTORY_SEPARATOR.'interdit.png';
+        //$utlEteImage = $this->container->getParameter('image_directory_kernel').DIRECTORY_SEPARATOR.'été.png';
 
         $filesystem = new Filesystem();
         $this->removeFile($filesystem,$emptyImagePath);
@@ -53,6 +56,9 @@ class HTMLtoImage
         );
         $emptyImage = imagecreatefromjpeg($emptyImagePath);
         $rosaceImage= imagecreatefrompng($urlRosaceImage);
+        //$foilImage= imagecreatefrompng($utlFoilImage);
+        //$eteImage= imagecreatefrompng($utlEteImage);
+        //$interditImage= imagecreatefrompng($utlInterditImage);
 
         imagecopyresampled($emptyImage, $rosaceImage,5,5,0,0,120, 120,imagesx($rosaceImage), imagesy($rosaceImage));
 
@@ -61,6 +67,17 @@ class HTMLtoImage
             imagecopyresampled($emptyImage,$mareeImage,5,360,0,0,120, 120,imagesx($mareeImage),imagesy($mareeImage));
         }
 
+        /*
+        imagecopyresampled($emptyImage, $foilImage,180,95,0,0,30, 30,imagesx($foilImage), imagesy($foilImage));
+        imagecopyresampled($emptyImage, $eteImage,220,95,0,0,30, 30,imagesx($eteImage), imagesy($eteImage));
+
+        if (!$spot->getIsFoil()) {
+            imagecopyresampled($emptyImage, $interditImage,180,95,0,0,30, 30,imagesx($interditImage), imagesy($interditImage));
+        }
+        if (!$spot->getIsContraintEte()) {
+            imagecopyresampled($emptyImage, $interditImage,220,95,0,0,30, 30,imagesx($interditImage), imagesy($interditImage));
+        }
+        */
 
         imagejpeg($emptyImage,$imagePath);
 
