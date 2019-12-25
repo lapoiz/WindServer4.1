@@ -3,6 +3,7 @@
 namespace App\Form;
 
 use App\Entity\Spot;
+use FOS\CKEditorBundle\Form\Type\CKEditorType;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
@@ -24,8 +25,8 @@ class SpotType extends AbstractType
             ->add('noteGeneral', TextType::class,[
                 'label' => 'Note du spot de 0 à 5.'])
 
-            ->add('shortDescription', TextareaType::class, array(
-                'attr' => array('class' => 'ckeditor'),
+            ->add('shortDescription', CKEditorType::class, array(
+
                 'label' => 'Courte description du spot.')
             )
 
@@ -34,11 +35,14 @@ class SpotType extends AbstractType
                     'label' => 'Niveau minimum pour naviguer.'
             ))
 
-            ->add('description', TextareaType::class, array(
-                'attr' => array('class' => 'ckeditor'),
-                'help' => 'Couleurs: top: Navy, OK: darkgreen, warn: orange, KO: red '))
+            ->add('description', CKEditorType::class, array(
 
-            ->add('descOrientationVent', TextareaType::class, array('attr' => array('class' => 'ckeditor')))
+                'help' => 'Couleurs: top: Navy, OK: darkgreen, warn: orange, KO: red '
+            ))
+
+            ->add('descOrientationVent', TextareaType::class, array(
+                'label' => 'Description sur l orientation du vent'
+            ))
 
             ->add('isFoil', ChoiceType::class, [
                 'choices' => [
@@ -47,9 +51,9 @@ class SpotType extends AbstractType
                 ],
                 'label' => 'Foil praticable'
             ])
-            ->add('descFoil', TextareaType::class, array(
-                'attr' => array('class' => 'ckeditor'),
-                'label' => 'Description des conditions pour le foil.'))
+            ->add('descFoil', CKEditorType::class, array(
+                'label' => 'Description des conditions pour le foil.'
+            ))
 
             ->add('isContraintEte', ChoiceType::class, [
                 'choices' => [
@@ -57,13 +61,11 @@ class SpotType extends AbstractType
                     'Non'  => false,
                 ],
                 'label' => 'Contraintes en été ?'])
-            ->add('descContraintEte', TextareaType::class, array(
-                'attr' => array('class' => 'ckeditor'),
+            ->add('descContraintEte', CKEditorType::class, array(
                 'label' => 'Description concernant les contraintes en été.'))
 
 
-            ->add('descWave', TextareaType::class, array(
-                'attr' => array('class' => 'ckeditor'),
+            ->add('descWave', CKEditorType::class, array(
                 'label' => 'Description des conditions de vagues.'))
 
             ->add('uRLMap', null, [
@@ -89,8 +91,8 @@ class SpotType extends AbstractType
                 'required' => false
             ])
 
-            ->add('desc_route', TextareaType::class, array(
-                'attr' => array('class' => 'ckeditor'),
+            ->add('desc_route', CKEditorType::class, array(
+
                 'label' => 'Description de la route pour se rendre au spot'))
             ->add('time_from_paris')
             ->add('km_from_paris')
