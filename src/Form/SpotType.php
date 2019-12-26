@@ -40,7 +40,7 @@ class SpotType extends AbstractType
                 'help' => 'Couleurs: top: Navy, OK: darkgreen, warn: orange, KO: red '
             ))
 
-            ->add('descOrientationVent', TextareaType::class, array(
+            ->add('descOrientationVent', CKEditorType::class, array(
                 'label' => 'Description sur l orientation du vent'
             ))
 
