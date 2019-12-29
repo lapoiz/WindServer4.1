@@ -53,7 +53,7 @@ class AdminInitDataFileController extends AbstractController
      * @param Request $request
      * @return
      */
-    public function generateDataFileAction(Request $request, HTMLtoImage $imageGenerator)
+    public function generateDataFileAction(Request $request, HTMLtoImage $imageGenerator, MareeToImage $mareetoImage, DisplayObject $displayObject)
     {
         try {
             $spreadsheet = new Spreadsheet();
@@ -75,7 +75,7 @@ class AdminInitDataFileController extends AbstractController
         } catch (\Exception $exception) {
             $this->addFlash('danger', 'probleme:'.$exception->getMessage());
         }
-        return $this->initDataFileAction($request, $imageGenerator);
+        return $this->initDataFileAction($request, $imageGenerator, $mareetoImage, $displayObject);
     }
 
     /**
