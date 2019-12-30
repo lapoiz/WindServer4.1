@@ -10,6 +10,7 @@ use App\Repository\RegionRepository;
 use App\Repository\SpotRepository;
 use App\Service\DisplayObject;
 use App\Service\HTMLtoImage;
+use App\Service\MareeToImage;
 use App\Utils\RosaceWindManage;
 use Doctrine\Common\Persistence\ObjectManager;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -243,6 +244,23 @@ class AdminSpotController extends AbstractController
         ]);
     }
 
+
+    /**
+     * @Route("/admin/spot/generateAllImages", name="admin_spot_generate_all_images")
+     * @param Request $request
+     * @return Response
+     */
+    public function generateAllImage(HTMLtoImage $hTMLtoImage, MareeToImage $mareetoImage) : Response
+    {
+        $spots = $this->repository->findAll();
+        foreach ($spots as $spot) {
+            $urlImage=$this->getParameter('rosace_directory_kernel');
+            RosaceWindManage::createRosaceWind($spot,$urlImage);
+            $mareetoImage->createImageMareeFromSpot($spot);
+            $hTMLtoImage->createImageCard($spot);
+        }
+        return $this->redirectToRoute('admin_spot_index');
+    }
 
     /**
      * @Route("/admin/spot/generateCard", name="admin_spot_generate_card")
