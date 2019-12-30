@@ -253,24 +253,40 @@ class AdminSpotController extends AbstractController
 
     /**
      * @Route("/admin/spot/generateAllImages", name="admin_spot_generate_all_images")
-     * @param Request $request
+     * @param HTMLtoImage $hTMLtoImage
+     * @param MareeToImage $mareeToImage
+     * @param RosaceWindManage $rosaceWindManage
      * @return Response
      */
-    public function generateAllImage(HTMLtoImage $hTMLtoImage, RosaceWindManage $rosaceWindManage,  MareeToImage $mareetoImage) : Response
+    public function generateAllImage(HTMLtoImage $hTMLtoImage, RosaceWindManage $rosaceWindManage,  MareeToImage $mareeToImage) : Response
     {
         $spots = $this->repository->findAll();
         foreach ($spots as $spot) {
             $urlImage=$this->getParameter('rosace_directory_kernel');
             $rosaceWindManage->createRosaceWind($spot,$urlImage);
-            $mareetoImage->createImageMareeFromSpot($spot);
+            $mareeToImage->createImageMareeFromSpot($spot);
             $hTMLtoImage->createImageCard($spot);
         }
         return $this->redirectToRoute('admin_spot_index');
     }
 
     /**
+     * @Route("/admin/spot/generateImageMaree", name="admin_spot_generate_maree_images")
+     * @param MareeToImage $mareeToImage
+     * @return Response
+     */
+    public function generateImagesMaree(MareeToImage $mareeToImage) : Response
+    {
+        $spots = $this->repository->findAll();
+        foreach ($spots as $spot) {
+            $mareeToImage->createImageMareeFromSpot($spot);
+        }
+        return $this->redirectToRoute('admin_spot_index');
+    }
+
+    /**
      * @Route("/admin/spot/generateCard", name="admin_spot_generate_card")
-     * @param Request $request
+     * @param HTMLtoImage $hTMLtoImage
      * @return Response
      */
     public function generateCard(HTMLtoImage $hTMLtoImage) : Response
