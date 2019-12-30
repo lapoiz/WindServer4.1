@@ -83,9 +83,13 @@ class AdminSpotController extends AbstractController
      * @param Spot $spot
      * @param Request $request
      * @param HTMLtoImage $cardGenerator
+     * @param MareeToImage $mareeToImage
+     * @param RosaceWindManage $rosaceWindManage
+     * @param DisplayObject $displayObject
      * @return \Symfony\Component\HttpFoundation\Response
      */
-    public function edit(Spot $spot, Request $request, HTMLtoImage $cardGenerator, MareeToImage $mareetoImage, RosaceWindManage $rosaceWindManage, DisplayObject $displayObject) : Response
+    public function edit(Spot $spot, Request $request, HTMLtoImage $cardGenerator, MareeToImage $mareeToImage,
+                         RosaceWindManage $rosaceWindManage, DisplayObject $displayObject) : Response
     {
         $form = $this->createForm(SpotType::class, $spot);
         $form->handleRequest($request);
@@ -98,7 +102,7 @@ class AdminSpotController extends AbstractController
 
             // Créé l'image .svg dans repertoire définit dans config/services.yaml, utile pour inserer dans map France
             $rosaceWindManage->createRosaceWind($spot, $this->getParameter('rosace_directory_kernel'));
-            $mareetoImage->createImageMareeFromSpot($spot);
+            $mareeToImage->createImageMareeFromSpot($spot);
 
             $cardGenerator->createImageCard($spot);
 

@@ -50,10 +50,14 @@ class AdminInitDataFileController extends AbstractController
     /**
      * @Route("/data_file/generate", name="admin_generate_data_file")
      * @param HTMLtoImage $imageGenerator
+     * @param MareeToImage $mareetoImage
+     * @param RosaceWindManage $rosaceWindManage
+     * @param DisplayObject $displayObject
      * @param Request $request
      * @return
      */
-    public function generateDataFileAction(Request $request, HTMLtoImage $imageGenerator, MareeToImage $mareetoImage, DisplayObject $displayObject)
+    public function generateDataFileAction(Request $request, HTMLtoImage $imageGenerator, MareeToImage $mareetoImage,
+                                           RosaceWindManage $rosaceWindManage, DisplayObject $displayObject)
     {
         try {
             $spreadsheet = new Spreadsheet();
@@ -75,7 +79,7 @@ class AdminInitDataFileController extends AbstractController
         } catch (\Exception $exception) {
             $this->addFlash('danger', 'probleme:'.$exception->getMessage());
         }
-        return $this->initDataFileAction($request, $imageGenerator, $mareetoImage, $displayObject);
+        return $this->initDataFileAction($request, $imageGenerator, $mareetoImage, $rosaceWindManage, $displayObject);
     }
 
     /**
@@ -94,6 +98,9 @@ class AdminInitDataFileController extends AbstractController
      * @Route("/data_file/init", name="admin_init_data_file")
      * @param Request $request
      * @param HTMLtoImage $imageGenerator
+     * @param MareeToImage $mareetoImage
+     * @param RosaceWindManage $rosaceWindManage
+     * @param DisplayObject $displayObject
      * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
      */
     public function initDataFileAction(Request $request, HTMLtoImage $imageGenerator, MareeToImage $mareetoImage, RosaceWindManage $rosaceWindManage, DisplayObject $displayObject)
