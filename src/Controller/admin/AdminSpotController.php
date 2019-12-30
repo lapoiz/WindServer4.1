@@ -11,7 +11,7 @@ use App\Repository\SpotRepository;
 use App\Service\DisplayObject;
 use App\Service\HTMLtoImage;
 use App\Service\MareeToImage;
-use App\Utils\RosaceWindManage;
+use App\Service\RosaceWindManage;
 use Doctrine\Common\Persistence\ObjectManager;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -56,13 +56,13 @@ class AdminSpotController extends AbstractController
      * @param Request $request
      * @return Response
      */
-    public function new(Request $request, DisplayObject $displayObject) : Response
+    public function new(Request $request, RosaceWindManage $rosaceWindManage, DisplayObject $displayObject) : Response
     {
         $spot = new Spot();
         $form = $this->createForm(SpotType::class, $spot);
         $form->handleRequest($request);
 
-        RosaceWindManage::createRosaceWind($spot, $this->getParameter('rosace_directory_kernel'));
+        $rosaceWindManage->createRosaceWind($spot, $this->getParameter('rosace_directory_kernel'));
 
         if ($form->isSubmitted() && $form->isValid()) {
             $this->manager->persist($spot);
@@ -85,7 +85,7 @@ class AdminSpotController extends AbstractController
      * @param HTMLtoImage $cardGenerator
      * @return \Symfony\Component\HttpFoundation\Response
      */
-    public function edit(Spot $spot, Request $request, HTMLtoImage $cardGenerator, DisplayObject $displayObject) : Response
+    public function edit(Spot $spot, Request $request, HTMLtoImage $cardGenerator, MareeToImage $mareetoImage, RosaceWindManage $rosaceWindManage, DisplayObject $displayObject) : Response
     {
         $form = $this->createForm(SpotType::class, $spot);
         $form->handleRequest($request);
@@ -97,7 +97,9 @@ class AdminSpotController extends AbstractController
             $this->manager->flush();
 
             // Créé l'image .svg dans repertoire définit dans config/services.yaml, utile pour inserer dans map France
-            RosaceWindManage::createRosaceWind($spot, $this->getParameter('rosace_directory_kernel'));
+            $rosaceWindManage->createRosaceWind($spot, $this->getParameter('rosace_directory_kernel'));
+            $mareetoImage->createImageMareeFromSpot($spot);
+
             $cardGenerator->createImageCard($spot);
 
             $this->addFlash('success', 'Spot '.$spot->getName().', modifié avec succés');
@@ -250,12 +252,12 @@ class AdminSpotController extends AbstractController
      * @param Request $request
      * @return Response
      */
-    public function generateAllImage(HTMLtoImage $hTMLtoImage, MareeToImage $mareetoImage) : Response
+    public function generateAllImage(HTMLtoImage $hTMLtoImage, RosaceWindManage $rosaceWindManage,  MareeToImage $mareetoImage) : Response
     {
         $spots = $this->repository->findAll();
         foreach ($spots as $spot) {
             $urlImage=$this->getParameter('rosace_directory_kernel');
-            RosaceWindManage::createRosaceWind($spot,$urlImage);
+            $rosaceWindManage->createRosaceWind($spot,$urlImage);
             $mareetoImage->createImageMareeFromSpot($spot);
             $hTMLtoImage->createImageCard($spot);
         }
