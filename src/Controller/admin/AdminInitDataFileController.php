@@ -582,9 +582,9 @@ class AdminInitDataFileController extends AbstractController
         $columnLetter++;
         $sheet->setCellValue($columnLetter.'1', 'Region');
         $columnLetter++;
-        $sheet->setCellValue($columnLetter.'1', 'Note');
-        $columnLetter++;
         $sheet->setCellValue($columnLetter.'1', 'CodeRegion');
+        $columnLetter++;
+        $sheet->setCellValue($columnLetter.'1', 'Note');
         $columnLetter++;
         $sheet->setCellValue($columnLetter.'1', 'Description');
         $columnLetter++;
