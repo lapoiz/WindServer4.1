@@ -245,16 +245,20 @@ class AdminInitDataFileController extends AbstractController
             $spot->setCodeSpot($row['CodeSpot']);
         }
 
-        if (!empty($row['Description'])) {
-            $spot->setDescription($this->cleanDescription($row['Description']));
-        }
-
         if (!empty($row['Note'])) {
             $spot->setNoteGeneral($this->cleanDecimal($row['Note']));
         }
 
+        if (!empty($row['ShortDescription'])) {
+            $spot->setShortDescription($this->cleanDescription($row['ShortDescription']));
+        }
+
+        if (!empty($row['Description'])) {
+            $spot->setDescription($this->cleanDescription($row['Description']));
+        }
+
         if (!empty($row['WaveDesc'])) {
-            $spot->setDescription($this->cleanDescription($row['WaveDesc']));
+            $spot->setDescWave($this->cleanDescription($row['WaveDesc']));
         }
 
         if (!empty($row['IsFoil'])) {
@@ -262,11 +266,13 @@ class AdminInitDataFileController extends AbstractController
         }
 
         if (!empty($row['FoilDesc'])) {
-            $spot->setDescription($this->cleanDescription($row['FoilDesc']));
+            $spot->setDescFoil($this->cleanDescription($row['FoilDesc']));
         }
+
         if (!empty($row['ContraintEteDesc'])) {
-            $spot->setDescription($this->cleanDescription($row['ContraintEteDesc']));
+            $spot->setDescContraintEte($this->cleanDescription($row['ContraintEteDesc']));
         }
+
         if (!empty($row['IsContraintEte'])) {
             $spot->setIsContraintEte($this->isIt($row['IsContraintEte']));
         }
@@ -476,6 +482,8 @@ class AdminInitDataFileController extends AbstractController
             $columnLetter++;
             $sheet->setCellValue($columnLetter.$numLine, $spot->getNoteGeneral());
             $columnLetter++;
+            $sheet->setCellValue($columnLetter.$numLine, $this->cleanExportExcel($spot->getShortDescription()));
+            $columnLetter++;
             $sheet->setCellValue($columnLetter.$numLine, $this->cleanExportExcel($spot->getDescription()));
             $columnLetter++;
             $sheet->setCellValue($columnLetter.$numLine, $this->cleanExportExcel($spot->getDescRoute()));
@@ -586,6 +594,8 @@ class AdminInitDataFileController extends AbstractController
         $columnLetter++;
         $sheet->setCellValue($columnLetter.'1', 'Note');
         $columnLetter++;
+        $sheet->setCellValue($columnLetter.'1', 'ShortDescription');
+        $columnLetter++;
         $sheet->setCellValue($columnLetter.'1', 'Description');
         $columnLetter++;
         $sheet->setCellValue($columnLetter.'1', 'Localisation');
@@ -610,7 +620,7 @@ class AdminInitDataFileController extends AbstractController
         $columnLetter++;
         $sheet->setCellValue($columnLetter.'1', 'IsContraintEte');
         $columnLetter++;
-        $sheet->setCellValue($columnLetter.'1', 'ContraintEte');
+        $sheet->setCellValue($columnLetter.'1', 'ContraintEteDesc');
         $columnLetter++;
         $sheet->setCellValue($columnLetter.'1', 'Long');
         $columnLetter++;
