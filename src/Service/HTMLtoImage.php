@@ -64,7 +64,7 @@ class HTMLtoImage
 
         if ($spot->getURLMaree() != null && !empty($spot->getURLMaree()) && file_exists($urlMareeImage)) {
             $mareeImage = imagecreatefromjpeg($urlMareeImage);
-            imagecopyresampled($emptyImage,$mareeImage,5,360,0,0,120, 120,imagesx($mareeImage),imagesy($mareeImage));
+            imagecopyresampled($emptyImage,$mareeImage,5,365,0,0,120, 120,imagesx($mareeImage),imagesy($mareeImage));
         }
 
         /*
