@@ -249,6 +249,9 @@ class AdminInitDataFileController extends AbstractController
             $spot->setDescription($this->cleanDescription($row['Description']));
         }
 
+        if (!empty($row['Note'])) {
+            $spot->setNoteGeneral($this->cleanDecimal($row['Note']));
+        }
 
         if (!empty($row['WaveDesc'])) {
             $spot->setDescription($this->cleanDescription($row['WaveDesc']));
@@ -470,6 +473,8 @@ class AdminInitDataFileController extends AbstractController
             } else {
                 $columnLetter++;
             }
+            $columnLetter++;
+            $sheet->setCellValue($columnLetter.$numLine, $spot->getNoteGeneral());
             $columnLetter++;
             $sheet->setCellValue($columnLetter.$numLine, $this->cleanExportExcel($spot->getDescription()));
             $columnLetter++;
