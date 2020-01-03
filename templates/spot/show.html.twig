@@ -1,7 +1,7 @@
 {% extends 'base.html.twig' %}
 
 {% block title  %}
-    <h1>{{ spot.name }}</h1>
+    {{ spot.name }}
 {% endblock %}
 
 
@@ -93,6 +93,12 @@
                 </script>
             </div>
             <div class="col-sm-9">
+                <p>
+                    <span class="badge badge-primary">condition idéal</span>
+                    <span class="badge badge-success">bonne condition</span>
+                    <span class="badge badge-warning">navigable, mais attention</span>
+                    <span class="badge badge-danger">non navigable</span>
+                </p>
                 {{ spot.descOrientationVent|raw }}
             </div>
         </div>
@@ -102,6 +108,29 @@
         <h3 class="hr"><a href="#descMaree" data-toggle="collapse" class="titreCollapse">Info sur les marées</a></h3>
         <div class="row collapse show" id="descMaree">
             <div class="col-sm-9">
+                {% if (spot.uRLMaree is defined) and (spot.uRLMaree is not null) %}
+                    <div>
+                        <a href="{{ spot.uRLMaree }}" target="_blank">Site pour la prévision des marées</a><br>
+                        Les contraintes selon la hauteur de l'eau:
+                        <ul>
+                        {% for mareeRestriction in spot.mareeRestriction %}
+                            <li>De {{ mareeRestriction.hauteurMin }} m à {{ mareeRestriction.hauteurMax }} m,
+
+                            {% if mareeRestriction.state =="top" %}
+                                <span class="badge badge-primary">condition idéal.</span>
+                             {% elseif mareeRestriction.state =="OK" %}
+                                 <span class="badge badge-success">bonne condition.</span>
+                             {% elseif mareeRestriction.state =="warn" %}
+                                 <span class="badge badge-warning">navigable, mais attention.</span>
+                             {% elseif mareeRestriction.state =="KO" %}
+                                 <span class="badge badge-danger">non navigable.</span>
+                            {% endif %}
+
+                            </li>
+                        {% endfor %}
+                        </ul>
+                    </div>
+                {% endif %}
                 {{ spot.descMaree|raw }}
             </div>
             <div class="col-sm-3 centered">
