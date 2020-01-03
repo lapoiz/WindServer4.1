@@ -164,12 +164,14 @@
             {% endif %}
 
             <!-- Eté -->
+            <div class="col-sm-4">
+                <span class="sous-titre-spot">L'été</span>
             {% if spot.isContraintEte %}
-                <div class="col-sm-4">
-                    <span class="sous-titre-spot">L'été</span>
-                    {{ spot.descContraintEte|raw }}
-                </div>
+                {{ spot.descContraintEte|raw }}
+            {% else %}
+                A priori aucune contrainte l'été sur ce spot.
             {% endif %}
+            </div>
         </div>
 
     <!-- La route -->
@@ -205,18 +207,6 @@
                     {% if spot.uRLMerteo|default is not empty %}
                     <li><a href="{{ spot.uRLMerteo }}" target="_blank">Merteo</a> </li>
                     {% endif %}
-                    {% if spot.uRLTempWater|default is not empty %}
-                    <li><a href="{{ spot.uRLTempWater }}" target="_blank">Temp de l'eau</a> </li>
-                    {% endif %}
-                    {% if spot.uRLMaree|default is not empty %}
-                    <li><a href="{{ spot.uRLMaree }}" target="_blank">Marée</a> </li>
-                    {% endif %}
-                    {% if spot.urlBalise|default is not empty %}
-                    <li><a href="{{ spot.urlBalise }}" target="_blank">Balise</a> </li>
-                    {% endif %}
-                    {% if spot.urlWebcam|default is not empty %}
-                    <li><a href="{{ spot.urlWebcam }}" target="_blank">Webcam</a> </li>
-                    {% endif %}
                 </ul>
             </div>
 
@@ -225,8 +215,18 @@
                 <div class="col-sm-7">
                     <span class="sous-titre-spot">Sites sur le spot</span>
                     <ul class="liste-optimise">
+
+                        {% if spot.urlWebcam|default is not empty %}
+                            <li><a href="{{ spot.urlWebcam }}" target="_blank">Webcam</a> </li>
+                        {% endif %}
+                        {% if spot.urlBalise|default is not empty %}
+                            <li><a href="{{ spot.urlBalise }}" target="_blank">Balise</a> </li>
+                        {% endif %}
+                        {% if spot.uRLTempWater|default is not empty %}
+                            <li><a href="{{ spot.uRLTempWater }}" target="_blank">Temp de l'eau</a> </li>
+                        {% endif %}
                         {% for webSite in spot.webSiteInfos %}
-                            <li><a href="{{ webSite.url }}" target="_blank">{{ webSite.name }}</a>:{{ webSite.description|raw }} </li>
+                            <li><a href="{{ webSite.url }}" target="_blank">{{ webSite.name }}</a>: {{ webSite.description|raw }} </li>
                         {% endfor %}
                     </ul>
                 </div>
