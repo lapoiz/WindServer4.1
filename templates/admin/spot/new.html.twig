@@ -2,9 +2,51 @@
 
 {% block title 'Gérer les spots' %}
 
+{% block headScript %}
+    <script src="http://code.highcharts.com/highcharts.js"></script>
+{% endblock %}
+
 {% block body %}
     <div class="container mt-4">
         <h1>Nouveau Spot</h1>
+        <a href="{{ path('admin_spot_index') }}">admin</a>
+
        {{  include('admin/spot/_form.html.twig', {form: form, button: 'Créer'}) }}
+
+        <a class="dt-button buttons-collection buttons-colvis btn btn-white btn-secondary btn-bold"
+           href="{{ path('admin_spot_index') }}">
+            Cancel
+        </a>
+
+
     </div>
+
+    <script>
+
+        // **************************************
+        // ** Gestion de l'orientation du vent **
+        // **************************************
+        var tabOrientationState = new Array(); // Array with orientation => state, used for rosace wind
+
+        getOrientationDataFromSpot();
+
+        // Récupére les données de l'objet spot et les pousse dans la rosace
+
+        function getOrientationDataFromSpot() {
+
+            // Parcour la liste des WindOrientation
+            {% for windOrientation in spot.windOrientation %}
+            tabOrientationState["{{ windOrientation.orientation }}"]="{{ windOrientation.state?windOrientation.state:"?" }}";
+            {% endfor %}
+
+            svgLoad(tabOrientationState, true);
+        }
+
+    </script>
+
+    {% from "windRosace/rosaceWindAdminJS.html.twig" import js %}
+    {{ js(spot) }}
+
+
+
 {% endblock %}
