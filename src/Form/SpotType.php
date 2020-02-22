@@ -22,6 +22,9 @@ class SpotType extends AbstractType
             ->add('name', null,  [
                 'label' => 'Nom du spot'
             ])
+            ->add('codeSpot', null,  [
+                'label' => 'Code du spot ~3 char)'
+            ])
             ->add('noteGeneral', TextType::class,[
                 'label' => 'Note du spot de 0 à 5.'])
 
